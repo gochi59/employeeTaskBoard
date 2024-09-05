@@ -4,13 +4,13 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -600,
-    "scrollLeft": 0,
+    "scrollTop": 0,
+    "scrollLeft": -786.6667,
     "zoomLevel": 1,
     "show": 431,
     "database": 4,
-    "databaseName": "caseStudy",
-    "canvasType": "@dineug/erd-editor/builtin-schema-sql",
+    "databaseName": "assgn",
+    "canvasType": "ERD",
     "language": 1,
     "tableNameCase": 4,
     "columnNameCase": 2,
@@ -49,7 +49,7 @@
       -1,
       -1,
       {
-        "databaseName": 1725447779352
+        "databaseName": 1725540018132
       }
     ]
   }
