@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.TaskRepository;
@@ -19,8 +20,6 @@ public class TaskService {
     private final EmployeeRepo employeeRepo;
     private final TaskInputToObject taskInputToObject;
 
-    
-
     public TaskService(TaskRepository taskRepo, EmployeeRepo employeeRepo, TaskInputToObject taskInputToObject) {
         this.taskRepo = taskRepo;
         this.employeeRepo = employeeRepo;
@@ -32,57 +31,62 @@ public class TaskService {
     }
 
     public void add(TaskInput input) {
-        taskRepo.save(taskInputToObject.convertToObject(input));
+        try {
+            taskRepo.save(taskInputToObject.convertToObject(input));
+        } catch (TransactionSystemException e) {
+            throw e;
+        }
     }
 
     public void deleteTask(int empId, int taskId) {
-        Employee employee = employeeRepo.findById(empId).orElse(null);
-        if (employee != null) {
-            List<Task> empTasks = employee.getEmp_Tasks();
-            for (Task empTask : empTasks) {
-                if (empTask.getTaskId() == taskId) {
-                    empTasks.remove(empTask);
-                    break;
-                }
+        Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException());
+        List<Task> empTasks = employee.getEmp_Tasks();
+        boolean exists=false;
+        for (Task empTask : empTasks) {
+            if (empTask.getTaskId() == taskId) {
+                empTasks.remove(empTask);
+                exists=true;
+                break;
             }
+        }
+        if(!exists)
+            throw new IllegalArgumentException();
+        try {
             employee.setEmp_Tasks(empTasks);
             employeeRepo.save(employee);
             taskRepo.deleteById(taskId);
+        } catch (Exception e) {
+            throw e;
         }
     }
 
-    public void updateTask(int id, TaskInput input) {
-        Task task = taskRepo.findById(id).orElse(null);
-        if (task != null) {
-            if (!input.getTitle().isEmpty()) {
+    public void updateTask(int empId, int taskId, TaskInput input) {
+        Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException());
+        boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
+        if (check) {
+            try {
+                Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException());
                 task.setTitle(input.getTitle());
-            }
-            task.setMarkedForAppraisal(input.isMarkedForAppraisal());
-            if (!input.getWorkLocation().isEmpty()) {
+                task.setMarkedForAppraisal(input.isMarkedForAppraisal());
                 task.setWorkLocation(input.getWorkLocation());
-            }
-            if (!input.getProject().isEmpty()) {
                 task.setProject(input.getProject());
-            }
-            if (!input.getTime().isEmpty()) {
                 task.setTime(input.getTime());
-            }
-            if (!input.getDescription().isEmpty()) {
                 task.setDescription(input.getDescription());
-            }
-            if (!input.getDate().isEmpty()) {
                 task.setDate(input.getDate());
+                taskRepo.save(task);
+            } catch (IllegalArgumentException | TransactionSystemException e) {
+                throw e;
             }
-            taskRepo.save(task);
-        }
+        } else
+            throw new IllegalArgumentException();
 
     }
 
     public List<EmployeeDTO> findTasksByNameContaining(String name) {
-        
-        List<Employee> empList=employeeRepo.findByFirstNameContaining(name);
-        return empList.stream().map(emp->{
-            EmployeeDTO dto=new EmployeeDTO();
+
+        List<Employee> empList = employeeRepo.findByFirstNameContaining(name);
+        return empList.stream().map(emp -> {
+            EmployeeDTO dto = new EmployeeDTO();
             dto.setEmpId(emp.getEmpId());
             dto.setFirstName(emp.getFirstName());
             dto.setLastName(emp.getLastName());

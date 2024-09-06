@@ -1,9 +1,9 @@
 package com.apprasail.beesheet.beesheet.Services;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
@@ -23,25 +23,22 @@ public class EmployeeDashboardService {
     }
 
     public List<Task> getTaskofEmployee(int id) {
-       Employee emp=employeeRepo.findById(id).orElse(null);
-       if(emp!=null)
-       {
+        Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("invalid Employee Id"));
         return emp.getEmp_Tasks();
-       }
-       return Collections.<Task>emptyList();
     }
 
     public void addTaskToEmp(int id, TaskInput input) {
-        Employee emp=employeeRepo.findById(id).orElse(null);
-        if(emp!=null)
-        {
-            List<Task>taskList=emp.getEmp_Tasks();
-
+        Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
+        try {
+            List<Task> taskList = emp.getEmp_Tasks();
             taskList.add(taskInputToObject.convertToObject(input));
             emp.setEmp_Tasks(taskList);
             employeeRepo.save(emp);
+        } catch (TransactionSystemException tse) {
+            throw tse;
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
-        //errorImplementationForWrongId
     }
 
 }

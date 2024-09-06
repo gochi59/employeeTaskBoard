@@ -18,6 +18,8 @@ public class AdminDashboardServices {
 
     public List<Employee> findAll() {
         List<Employee>list=employeeRepo.findAll();
+        if(list.isEmpty())
+            throw new IllegalStateException();
         return list;
     }
     

@@ -1,7 +1,9 @@
 package com.apprasail.beesheet.beesheet.Controllers;
 
-import java.util.List;
+import  java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,23 +19,47 @@ public class AdminDashboardController {
 
     private final AdminDashboardServices adminDashboardServices;
     private final SignUpService signUpService;
+   
     public AdminDashboardController(AdminDashboardServices adminDashboardServices, SignUpService signUpService) {
         this.adminDashboardServices = adminDashboardServices;
         this.signUpService = signUpService;
     }
+   
     @GetMapping("/employees")
-    public List<Employee> getMethodName() {
-        return adminDashboardServices.findAll();
+    public ResponseEntity<List<Employee>> getMethodName() {
+        try {
+            List<Employee> employees=adminDashboardServices.findAll();
+            return new ResponseEntity<>(employees,HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
+   
     @GetMapping("/employee/approve/{id}")
-    public void aproveEmployee(@PathVariable int id) {
-        signUpService.approveUser(id);
+    public ResponseEntity<Object> aproveEmployee(@PathVariable int id) {
+        try {
+            signUpService.approveUser(id);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/employee/reject/{id}")
-    public void rejectEmployee(@PathVariable int id)
+    public ResponseEntity<?> rejectEmployee(@PathVariable int id)
     {
-        signUpService.rejectEmployee(id);
+        try {
+            signUpService.rejectEmployee(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/employees")
+    public void deleteAllEmployees()
+    {
+        signUpService.deleteAllEmployees();
     }
     
     
