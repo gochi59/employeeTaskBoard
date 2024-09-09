@@ -2,6 +2,7 @@ package com.apprasail.beesheet.beesheet.Controllers;
 
 import java.util.List;
 
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,12 @@ public class DesignationController {
 
     @PostMapping("/designation")
     public void postMethodName(@RequestBody DesignationInput input) {
-        designationService.addDesignation(input);    
+        try {
+            designationService.addDesignation(input); 
+        } catch (TransactionSystemException exception) {
+            throw exception;
+
+        }   
     }
 
     @GetMapping("/alldes")

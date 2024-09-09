@@ -30,8 +30,8 @@ public class AdminDashboardController {
         try {
             List<Employee> employees=adminDashboardServices.findAll();
             return new ResponseEntity<>(employees,HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException exception) {
+            throw exception;
         }
     }
    
@@ -40,8 +40,8 @@ public class AdminDashboardController {
         try {
             signUpService.approveUser(id);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException exception) {
+            throw exception;
         }
     }
 
@@ -51,8 +51,8 @@ public class AdminDashboardController {
         try {
             signUpService.rejectEmployee(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException exception) {
+            throw exception;
         }
     }
 

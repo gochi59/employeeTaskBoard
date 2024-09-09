@@ -24,9 +24,8 @@ public class SignUpPageController {
         try {
             signup.addEmployee(input);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (IllegalArgumentException|TransactionSystemException tse) {
-            System.err.println(tse.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (IllegalArgumentException|TransactionSystemException exception) {
+            throw exception;
         }
     }
 

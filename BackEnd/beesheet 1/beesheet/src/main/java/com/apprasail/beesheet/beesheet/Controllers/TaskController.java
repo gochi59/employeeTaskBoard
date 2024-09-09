@@ -46,11 +46,9 @@ public class TaskController {
         try {
             service.updateTask(empId, taskId, input);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (TransactionSystemException tse) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        } catch (IllegalArgumentException|TransactionSystemException exception) {
+            throw exception;
+        } 
     }
 
     @DeleteMapping("task/{empId}/{taskId}")
@@ -58,8 +56,8 @@ public class TaskController {
         try {
             service.deleteTask(empId, taskId);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException exception) {
+            throw exception;
         }
     }
 

@@ -34,10 +34,8 @@ public class EmployeeDashboardService {
             taskList.add(taskInputToObject.convertToObject(input));
             emp.setEmp_Tasks(taskList);
             employeeRepo.save(emp);
-        } catch (TransactionSystemException tse) {
+        } catch (TransactionSystemException | IllegalArgumentException tse) {
             throw tse;
-        } catch (IllegalArgumentException e) {
-            throw e;
         }
     }
 

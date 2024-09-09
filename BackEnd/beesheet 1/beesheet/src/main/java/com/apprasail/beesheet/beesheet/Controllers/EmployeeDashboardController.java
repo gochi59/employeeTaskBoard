@@ -29,8 +29,8 @@ public class EmployeeDashboardController {
         try {
                 service.getTaskofEmployee(id);
                 return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException exception) {
+           throw exception;
         }
     }
 
@@ -40,12 +40,8 @@ public class EmployeeDashboardController {
             service.addTaskToEmp(id,input);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } 
-        catch (TransactionSystemException cve) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-        catch(IllegalArgumentException e)
-        {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch (TransactionSystemException | IllegalArgumentException exception) {
+            throw exception;
         }
         
     }
