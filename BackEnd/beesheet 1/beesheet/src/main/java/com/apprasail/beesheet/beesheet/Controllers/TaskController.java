@@ -17,6 +17,8 @@ import com.apprasail.beesheet.beesheet.Services.TaskService;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class TaskController {
 
@@ -42,28 +44,22 @@ public class TaskController {
 
     @PutMapping("/task/{empId}/{taskId}")
     public ResponseEntity<Object> updateTask(@PathVariable int empId, @PathVariable int taskId,
-            @RequestBody TaskInput input) {
-        try {
-            service.updateTask(empId, taskId, input);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException|TransactionSystemException exception) {
-            throw exception;
-        } 
+            @RequestBody @Valid TaskInput input) {
+        service.updateTask(empId, taskId, input);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("task/{empId}/{taskId}")
     public ResponseEntity<Object> deleteTask(@PathVariable int empId, @PathVariable int taskId) {
-        try {
-            service.deleteTask(empId, taskId);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException exception) {
-            throw exception;
-        }
+        service.deleteTask(empId, taskId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/tasksemp/{name}")
     public ResponseEntity<?> getTaskByNameContaining(@PathVariable String name) {
-       return service.findTasksByNameContaining(name).isEmpty()?new ResponseEntity<>(service.findTasksByNameContaining(name),HttpStatus.NOT_FOUND):new ResponseEntity<>(service.findTasksByNameContaining(name),HttpStatus.OK);
+        return service.findTasksByNameContaining(name).isEmpty()
+                ? new ResponseEntity<>(service.findTasksByNameContaining(name), HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(service.findTasksByNameContaining(name), HttpStatus.OK);
     }
 
 }

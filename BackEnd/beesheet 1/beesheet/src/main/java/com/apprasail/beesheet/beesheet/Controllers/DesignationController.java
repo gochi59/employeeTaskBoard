@@ -2,7 +2,6 @@ package com.apprasail.beesheet.beesheet.Controllers;
 
 import java.util.List;
 
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +12,8 @@ import com.apprasail.beesheet.beesheet.Services.DesignationService;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.DesignationInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeByDesignationDTO;
+
+import jakarta.validation.Valid;
 
 
 
@@ -28,13 +29,8 @@ public class DesignationController {
     }
 
     @PostMapping("/designation")
-    public void postMethodName(@RequestBody DesignationInput input) {
-        try {
+    public void postMethodName(@RequestBody @Valid DesignationInput input) {
             designationService.addDesignation(input); 
-        } catch (TransactionSystemException exception) {
-            throw exception;
-
-        }   
     }
 
     @GetMapping("/alldes")
