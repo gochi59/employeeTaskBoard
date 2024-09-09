@@ -2,6 +2,8 @@ package com.apprasail.beesheet.beesheet.model.Entities;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -19,6 +21,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@Component
 public class Employee {
 
     @Id
