@@ -26,7 +26,7 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception {
         https.csrf(csrfCustomizer -> csrfCustomizer.disable())
                 .authorizeHttpRequests(
-                        request -> request.anyRequest().authenticated())
+                        request -> request.requestMatchers("employees","signup").permitAll() .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return https.build();
