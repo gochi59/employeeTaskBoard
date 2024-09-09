@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -23,25 +24,39 @@ public class Employee {
     @Id
     @GeneratedValue
     int empId;
-    @NotNull(message = "invalid input")
+    @NotNull(message = "Invalid firstname")
+    @NotBlank(message="Invalid firstname")
     String firstName;
+
     String lastName;
-    @NotNull(message="invalid username")
+
+    @NotNull(message="Invalid username")
+    @NotBlank(message="Invalid username")
     String username;
-    @NotNull(message = "invalid password")
+    
+    @NotNull(message = "Invalid password")
+    @NotBlank(message = "Invalid password")
     String password;
-    @Email(message="invalid email")
+    
+    @Email(message="Invalid email")
     String email;
-    @NotNull(message="invalid date of joining")
+    
+    @NotNull(message="Invalid date of joining")
+    @NotBlank(message = "Invalid password")
     String dOJ;
+    
     @ManyToOne(fetch=FetchType.LAZY)
     @JsonBackReference
     Designation designation;
-    @NotNull(message="invalid contact number")
-    @Pattern(regexp="^\\d{10}$",message="invalid mobile number")
+    
+    @NotNull(message="Invalid contact number")
+    @Pattern(regexp="^\\d{10}$",message="Invalid mobile number")
     String contactNumber;
+    
     @NotNull
+    @NotBlank(message = "Invalid Role")
     String role;
+    
     @OneToMany(cascade=CascadeType.ALL)
     List<Task>emp_Tasks;
     String attributeRating;
