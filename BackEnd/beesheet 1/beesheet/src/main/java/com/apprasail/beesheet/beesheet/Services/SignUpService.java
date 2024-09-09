@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 
 import com.apprasail.beesheet.beesheet.Repository.DesignationRepo;
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
@@ -16,8 +16,6 @@ import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.Entities.TemporaryUser;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class SignUpService {
 
@@ -25,6 +23,7 @@ public class SignUpService {
     private final TemporaryUserRepo temporaryUserRepo;
     private final DesignationRepo designationRepo;
     private final EmailService emailService;
+    private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
 
     public SignUpService(EmployeeRepo employeeRepo, DesignationRepo designationRepo,
             TemporaryUserRepo temporaryUserRepo, EmailService emailService) {
@@ -34,10 +33,8 @@ public class SignUpService {
         this.emailService = emailService;
     }
 
-    @Transactional
     public void addEmployee(TemporaryUser input) {
-        try
-        {String inputEmail = input.getEmail();
+        String inputEmail = input.getEmail();
         List<Employee> employees = employeeRepo.findAll();
         List<TemporaryUser> temps = temporaryUserRepo.findAll();
         boolean alreadyExists = employees.stream().anyMatch(emp -> emp.getEmail().equals(inputEmail))
@@ -45,11 +42,8 @@ public class SignUpService {
         if (alreadyExists) {
             throw new IllegalArgumentException();
         }
-        temporaryUserRepo.save(input);}
-        catch(TransactionSystemException tse)
-        {
-            throw tse;
-        }
+        input.setPassword(encoder.encode(input.getPassword()));
+        temporaryUserRepo.save(input);
     }
 
     public List<EmployeeDTO> findAll() {

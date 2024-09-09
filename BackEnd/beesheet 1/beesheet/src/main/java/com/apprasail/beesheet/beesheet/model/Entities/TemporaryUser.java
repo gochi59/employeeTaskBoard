@@ -48,4 +48,6 @@ public class TemporaryUser {
     @NotNull(message = "Invalid password")
     @NotBlank(message = "Invalid password")
     String password;
+
+    boolean isApproved=false;
 }
