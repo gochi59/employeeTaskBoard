@@ -36,8 +36,9 @@ public class JWTService {
         return Base64.getEncoder().encodeToString(secret.getEncoded());
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email,String Role) {
         Map<String,Object>claims=new HashMap<>();
+        claims.put("Role", Role);
         return Jwts
                     .builder()
                     .claims(claims)

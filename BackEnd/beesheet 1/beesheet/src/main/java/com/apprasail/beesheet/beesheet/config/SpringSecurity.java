@@ -24,16 +24,18 @@ public class SpringSecurity {
     private final UserDetailsService userDetailsService;
     private final JWTFilter jWTFilter;
 
-    public SpringSecurity(UserDetailsService userDetailsService,JWTFilter jwtFilter) {
+    public SpringSecurity(UserDetailsService userDetailsService, JWTFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
-        this.jWTFilter=jwtFilter;
+        this.jWTFilter = jwtFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception {
         https.csrf(csrfCustomizer -> csrfCustomizer.disable())
                 .authorizeHttpRequests(
-                        request -> request.requestMatchers("login","signup").permitAll() .anyRequest().authenticated())
+                        request -> request.requestMatchers("login", "signup").permitAll()
+                                .requestMatchers("/admin/**").hasAuthority("ADMIN").anyRequest().authenticated()
+                                )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jWTFilter, UsernamePasswordAuthenticationFilter.class);
@@ -49,8 +51,7 @@ public class SpringSecurity {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception
-    {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }
