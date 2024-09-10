@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,8 +52,14 @@ public class ExceptionHandlerAll {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String>handleGeneralException(Exception exception)
+    public ResponseEntity<?>handleGeneralException(Exception exception)
     {
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.I_AM_A_TEAPOT);
+        return new ResponseEntity<>(exception.getClass().getName(),HttpStatus.I_AM_A_TEAPOT);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String>handleBadCredentialsException(BadCredentialsException exception)
+    {
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.UNAUTHORIZED);
     }
 }
