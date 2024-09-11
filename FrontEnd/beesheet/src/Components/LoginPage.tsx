@@ -8,7 +8,6 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import { StyledText } from "../models/AllModels";
 
 
-
 const LoginPage = () => {
   const [navigate,setNavigate]=useState(false);
   const [submitting,setSubmitting]=useState(false);
