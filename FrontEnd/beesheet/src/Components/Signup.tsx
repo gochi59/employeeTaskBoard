@@ -72,7 +72,8 @@ const Signup = () => {
       console.log(res);
       setErrorPresent("Submitted Succesfully \n Wait for Approval ")
     } catch (error: any) {
-      setErrorPresent(JSON.stringify(error.response.data));
+      const err=(error.response.data);
+      setErrorPresent("Error: "+err);
     }
   };
 
