@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-export interface Designation{
-attributes: string[];
-empList: string[],
-id: number,
-title: string
+export interface Designation {
+  attributes: string[];
+  empList: string[];
+  id: number;
+  title: string;
 }
 
 export const StyledText = styled.p`
@@ -12,12 +12,24 @@ export const StyledText = styled.p`
 `;
 
 export interface FormDataForSignup {
-    firstname: string;
-    lastname: string;
-    password: string;
-    role: "empl" | "ADMIN";
-    designation: string;
-    number: string;
-    doj: string;
-    email: string;
-  }
+  firstname: string;
+  lastname: string;
+  password: string;
+  role: "empl" | "ADMIN";
+  designation: string;
+  number: string;
+  doj: string;
+  email: string;
+}
+
+export interface Task {
+  date: string;
+  description: string;
+  markedForAppraisal: boolean;
+  project: string;
+  taskId: number;
+  taskRating: string;
+  time: string;
+  title: string;
+  workLocation: string;
+}
