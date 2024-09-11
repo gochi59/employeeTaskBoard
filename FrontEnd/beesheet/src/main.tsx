@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from './Components/LoginPage';
 import EmployeeDashBoard from './Components/EmployeeDashBoard';

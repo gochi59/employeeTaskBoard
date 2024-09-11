@@ -90,7 +90,7 @@ public class TaskService {
             dto.setEmpId(emp.getEmpId());
             dto.setFirstName(emp.getFirstName());
             dto.setLastName(emp.getLastName());
-            dto.setUsername(emp.getUsername());
+            // dto.setUsername(emp.getUsername());
             dto.setEmail(emp.getEmail());
             dto.setDoj(emp.getDOJ());
             dto.setContactNumber(emp.getContactNumber());

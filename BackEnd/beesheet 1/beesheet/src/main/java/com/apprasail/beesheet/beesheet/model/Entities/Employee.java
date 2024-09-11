@@ -16,7 +16,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -32,10 +31,6 @@ public class Employee {
     String firstName;
 
     String lastName;
-
-    @NotNull(message="Invalid username")
-    @NotBlank(message="Invalid username")
-    String username;
     
     @NotNull(message = "Invalid password")
     @NotBlank(message = "Invalid password")
@@ -52,8 +47,7 @@ public class Employee {
     @JsonBackReference
     Designation designation;
     
-    @NotNull(message="Invalid contact number")
-    @Pattern(regexp="^\\d{10}$",message="Invalid mobile number")
+    @NotBlank(message="Invalid contact number")
     String contactNumber;
     
     @NotNull

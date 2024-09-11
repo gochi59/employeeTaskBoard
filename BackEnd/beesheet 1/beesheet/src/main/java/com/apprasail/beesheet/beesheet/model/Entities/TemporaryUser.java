@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -22,9 +21,6 @@ public class TemporaryUser {
     String firstName;
     String lastName;
     
-    @NotNull(message = "Invalid username")
-    @NotBlank(message = "Invalid username")
-    String userName;
     
     @Email(message = "Invalid email")
     String email;
@@ -33,8 +29,7 @@ public class TemporaryUser {
     @NotBlank(message="Invalid date of joining")
     String dateOfJoin;
     
-    @NotNull(message = "Invalid contact number")
-    @Pattern(regexp="^\\d{10}$",message="invalid mobile number")
+    @NotBlank(message = "Invalid contact number")
     String contactNumber;
     
     @NotNull(message="Invalid designation")

@@ -40,7 +40,7 @@ public class SignUpService {
         boolean alreadyExists = employees.stream().anyMatch(emp -> emp.getEmail().equals(inputEmail))
                 || temps.stream().anyMatch(temp -> temp.getEmail().equals(inputEmail));
         if (alreadyExists) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Email already Exists");
         }
         input.setPassword(encoder.encode(input.getPassword()));
         temporaryUserRepo.save(input);
@@ -53,7 +53,7 @@ public class SignUpService {
             dto.setEmpId(emp.getEmpId());
             dto.setFirstName(emp.getFirstName());
             dto.setLastName(emp.getLastName());
-            dto.setUsername(emp.getUsername());
+            // dto.setUsername(emp.getUsername());
             dto.setEmail(emp.getEmail());
             dto.setDoj(emp.getDOJ());
             dto.setContactNumber(emp.getContactNumber());
@@ -73,7 +73,6 @@ public class SignUpService {
         emp.setContactNumber(input.getContactNumber());
         Designation designation = designationRepo.findByTitle(input.getDesignation());
         emp.setDesignation(designation);
-        emp.setUsername(input.getUserName());
         emp.setPassword(input.getPassword());
         emp.setEmail(input.getEmail());
         emp.setRole(input.getRole());
