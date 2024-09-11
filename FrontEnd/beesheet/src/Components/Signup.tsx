@@ -15,6 +15,7 @@ const Signup = () => {
   const [designationList, setDesignationList] = useState<Designation[]>([]);
   const [errorPresent, setErrorPresent] = useState<string | null>(null);
   const [schema, setSchema] = useState<ZodSchema<any>>(z.object({}));
+  const [isSubmitting,setIsSubmitting]=useState(false);
 
   useEffect(() => {
     const designationTitles =
@@ -53,10 +54,12 @@ const Signup = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormDataForSignup>({ resolver: zodResolver(schema) });
 
   const formSubmit = async (data: FieldValues) => {
+    setIsSubmitting(true);
     const employee = {
       firstName: data.firstname,
       lastName: data.lastname,
@@ -70,10 +73,14 @@ const Signup = () => {
     try {
       const res = await axios.post("http://localhost:8080/signup", employee);
       console.log(res);
-      setErrorPresent("Submitted Succesfully \n Wait for Approval ")
+      setErrorPresent("Submitted Succesfully Wait for Approval ")
+      reset();
     } catch (error: any) {
       const err=(error.response.data);
       setErrorPresent("Error: "+err);
+    }
+    finally{
+      setIsSubmitting(false);
     }
   };
 
@@ -206,7 +213,7 @@ const Signup = () => {
             {errors.number && (
               <p className="text-danger">{errors.number.message}</p>
             )}
-            <button type="submit" className="btn btn-dark my-3">
+            <button type="submit" disabled={isSubmitting} className="btn btn-dark my-3">
               Submit
             </button>
           </form>
