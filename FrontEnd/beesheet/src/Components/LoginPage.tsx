@@ -1,15 +1,13 @@
 import axios from "axios";
 import { FieldValues, useForm } from "react-hook-form";
 import { Link, Navigate } from "react-router-dom";
-import styled from "styled-components";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import { StyledText } from "../models/AllModels";
 
-const StyledText = styled.p`
-  font-family: "Monsterrat", sans-serif;
-`;
+
 
 const LoginPage = () => {
   const [navigate,setNavigate]=useState(false);

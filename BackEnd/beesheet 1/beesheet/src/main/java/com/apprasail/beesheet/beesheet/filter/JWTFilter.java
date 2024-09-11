@@ -34,7 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String url = request.getRequestURI();
-        if (url.equals("/login") || url.equals("signup")) {
+        if (url.equals("login") || url.equals("signup") || url.equals("alldes")) {
             filterChain.doFilter(request, response);
             return;
         }
