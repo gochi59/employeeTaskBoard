@@ -71,7 +71,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Except
     public CorsConfigurationSource corsConfigurationSource()
     {
         CorsConfiguration corsConfiguration=new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5174"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET","PUT","POST","DELETE"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization","Content-Type"));
         UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();

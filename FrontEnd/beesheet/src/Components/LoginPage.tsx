@@ -13,6 +13,7 @@ const StyledText = styled.p`
 
 const LoginPage = () => {
   const [navigate,setNavigate]=useState(false);
+  const [submitting,setSubmitting]=useState(false);
   const schema = z.object({
     email: z
       .string()
@@ -31,6 +32,7 @@ const LoginPage = () => {
       password: data.password,
     };
     try {
+      setSubmitting(true);
       const jwtToken = await axios.post("http://localhost:8080/login", user);
       localStorage.setItem("userToken", jwtToken.data);
       setNavigate(true);
@@ -39,6 +41,9 @@ const LoginPage = () => {
       if (error.response.status === 401) {
         alert("Invalid Username or password");
       }
+    }
+    finally{
+      setSubmitting(false);
     }
   };
   if(navigate)
@@ -96,7 +101,7 @@ const LoginPage = () => {
             <p className="text-danger">{String(errors.password.message)}</p>
           )}
 
-          <button type="submit" className="btn btn-dark me-2">
+          <button type="submit" disabled={submitting} className="btn btn-dark me-2">
             Submit
           </button>
           <Link to="/signup">
