@@ -22,8 +22,8 @@ public class EmployeeDashboardService {
         this.taskInputToObject = taskInputToObject;
     }
 
-    public List<Task> getTaskofEmployee(int id) {
-        Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("invalid Employee Id"));
+    public List<Task> getTaskofEmployee(String id) {
+        Employee emp = employeeRepo.findByEmail(id);
         return emp.getEmp_Tasks();
     }
 

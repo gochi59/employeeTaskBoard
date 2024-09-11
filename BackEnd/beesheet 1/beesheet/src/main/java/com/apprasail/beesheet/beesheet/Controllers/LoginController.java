@@ -1,6 +1,5 @@
 package com.apprasail.beesheet.beesheet.Controllers;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +21,6 @@ public class LoginController {
         this.loginService=loginService;
     }
 
-    @CrossOrigin(origins = "http://localhost:5174")
     @PostMapping("/login")
     public String login(@RequestBody @Valid LoginInput loginInput) {
         return loginService.login(loginInput);

@@ -35,6 +35,7 @@ const LoginPage = () => {
       localStorage.setItem("userToken", jwtToken.data);
       setNavigate(true);
     } catch (error: any) {
+        console.log(error);
       if (error.response.status === 401) {
         alert("Invalid Username or password");
       }

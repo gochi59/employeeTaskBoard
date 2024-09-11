@@ -2,13 +2,11 @@ package com.apprasail.beesheet.beesheet.Services;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,16 +24,10 @@ public class JWTService {
 
     public JWTService() throws NoSuchAlgorithmException
     {
-        this.secretKey=GenerateSecretKey();
+        this.secretKey="APlx0SV4i1ShPnyUF/qX+cYOji7WWy88e/G66GLIRb0=";
+        // System.out.println(secretKey); 
     }
     
-    private String GenerateSecretKey() throws NoSuchAlgorithmException
-    {
-        KeyGenerator keyGenerator=KeyGenerator.getInstance("HmacSHA256");
-        SecretKey secret=keyGenerator.generateKey();
-        return Base64.getEncoder().encodeToString(secret.getEncoded());
-    }
-
     public String generateToken(String email,String Role) {
         Map<String,Object>claims=new HashMap<>();
         claims.put("Role", Role);

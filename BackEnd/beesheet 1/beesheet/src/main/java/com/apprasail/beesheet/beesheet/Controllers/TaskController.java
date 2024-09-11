@@ -51,8 +51,8 @@ public class TaskController {
 
     @DeleteMapping("task/{empId}/{taskId}")
     public ResponseEntity<Object> deleteTask(@PathVariable int empId, @PathVariable int taskId) {
-        service.deleteTask(empId, taskId);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            service.deleteTask(empId, taskId);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/tasksemp/{name}")

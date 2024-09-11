@@ -13,6 +13,7 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 
 import jakarta.validation.Valid;
 
+
 @RestController
 public class EmployeeDashboardController {
 
@@ -23,10 +24,11 @@ public class EmployeeDashboardController {
     }
 
     @GetMapping("/tasks/{id}")
-    public ResponseEntity<?> findEmpListOfEmployee(@PathVariable int id) {
-        service.getTaskofEmployee(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    public ResponseEntity<?> findTaskListOfEmployee(@PathVariable String id) {
+        
+        return new ResponseEntity<>(service.getTaskofEmployee(id),HttpStatus.ACCEPTED);
     }
+
 
     @PostMapping("/tasks/{id}")
     public ResponseEntity<Object> addTaskToEmployee(@RequestBody @Valid TaskInput input, @PathVariable int id) {
