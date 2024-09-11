@@ -3,10 +3,20 @@ import Navbar from "./Navbar";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import axios from "axios";
 import { Task } from "../models/AllModels";
+import { FieldValues } from "react-hook-form";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    password: "",
+    workLocation: "",
+    project: "",
+    time: "",
+  });
+
   useEffect(() => {
     const jwtToken = String(localStorage.getItem("userToken"));
     const { sub } = jwtDecode<JwtPayload>(jwtToken);
@@ -26,10 +36,16 @@ const EmployeeDashBoard = () => {
     }
     getTaskList();
   }, []);
-  //   console.log(taskList);
+
   const addTask = () => {
     setTogalModal(true);
   };
+
+
+  const handleSubmit = (e: FieldValues) => {
+    
+  };
+
   return (
     <div>
       <Navbar></Navbar>
@@ -38,7 +54,7 @@ const EmployeeDashBoard = () => {
           {!taskList && <h2>No Tasks Added</h2>}
           {taskList &&
             taskList.map((tasks) => (
-              <div className="card p-1 mb-3">
+              <div className="card p-1 mb-3" key={tasks.id}>
                 <div className="card-header">
                   <div className="row justify-content-between">
                     <span className="h5 col-7">{tasks.title}</span>{" "}
@@ -72,9 +88,9 @@ const EmployeeDashBoard = () => {
           ></i>
         </button>
       </div>
+
       {togalModal && (
         <>
-          {" "}
           <div className="modal-backdrop fade show"></div>
           <div className="modal show fade d-block" role="dialog" tabIndex="-1">
             <div className="modal-dialog d-flex justify-content-center">
@@ -89,13 +105,21 @@ const EmployeeDashBoard = () => {
                     onClick={() => setTogalModal(false)}
                   ></button>
                 </div>
-                <div className="modal-body p-4">
-                  <form>
+                
+                <form onSubmit={handleSubmit}>
+                  <div className="modal-body p-4" style={{ maxHeight: "300px", overflowY: "auto" }}>
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="title">
                         Title
                       </label>
-                      <input type="text" id="title" className="form-control" />
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        className="form-control"
+                        value={formData.title}
+                        
+                      />
                     </div>
 
                     <div className="form-outline mb-4">
@@ -105,7 +129,10 @@ const EmployeeDashBoard = () => {
                       <input
                         type="text"
                         id="description"
+                        name="description"
                         className="form-control"
+                        value={formData.description}
+                        
                       />
                     </div>
 
@@ -116,19 +143,30 @@ const EmployeeDashBoard = () => {
                       <input
                         type="password"
                         id="password2"
+                        name="password"
                         className="form-control"
+                        value={formData.password}
+                        
                       />
                     </div>
+
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="workLocation">
                         Work Location
                       </label>
-                      <select name="workLocation" id="workLocation" className="form-select">
+                      <select
+                        name="workLocation"
+                        id="workLocation"
+                        className="form-select"
+                        value={formData.workLocation}
+                        
+                      >
                         <option value=""></option>
                         <option value="office">Office</option>
                         <option value="home">Home</option>
                       </select>
                     </div>
+
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="project">
                         Project
@@ -136,9 +174,13 @@ const EmployeeDashBoard = () => {
                       <input
                         type="text"
                         id="project"
+                        name="project"
                         className="form-control"
+                        value={formData.project}
+                        
                       />
                     </div>
+
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="time">
                         Time
@@ -146,19 +188,21 @@ const EmployeeDashBoard = () => {
                       <input
                         type="time"
                         id="time"
+                        name="time"
                         className="form-control"
+                        value={formData.time}
+                        
                       />
                     </div>
-                    <button
-                      type="submit"
-                    
-                    
-                      className="btn btn-primary btn-block"
-                    >
-                      Sign up
+                  </div>
+                
+                  {/* Submit Button within the Form */}
+                  <div className="modal-footer">
+                    <button type="submit" className="btn btn-primary btn-block">
+                      Submit
                     </button>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
