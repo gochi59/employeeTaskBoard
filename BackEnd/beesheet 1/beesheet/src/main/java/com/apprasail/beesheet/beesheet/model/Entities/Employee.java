@@ -16,7 +16,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -27,20 +26,18 @@ public class Employee {
     @Id
     @GeneratedValue
     int empId;
-    @NotNull(message = "Invalid firstname")
+
     @NotBlank(message="Invalid firstname")
     String firstName;
 
     String lastName;
     
-    @NotNull(message = "Invalid password")
     @NotBlank(message = "Invalid password")
     String password;
     
     @Email(message="Invalid email")
     String email;
     
-    @NotNull(message="Invalid date of joining")
     @NotBlank(message = "Invalid password")
     String dOJ;
     
@@ -51,7 +48,6 @@ public class Employee {
     @NotBlank(message="Invalid contact number")
     String contactNumber;
     
-    @NotNull
     @NotBlank(message = "Invalid Role")
     String role;
     

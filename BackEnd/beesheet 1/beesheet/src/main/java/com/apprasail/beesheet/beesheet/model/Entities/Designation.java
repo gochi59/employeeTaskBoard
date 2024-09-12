@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -23,11 +22,9 @@ public class Designation {
     @GeneratedValue
     private int id;
     
-    @NotNull(message = "invalid designation name")
     @NotBlank(message = "invalid designation name")
     private String title;
 
-    @NotNull(message="invalid attributes list")
     @NotEmpty(message="invalid attributes list")
     private List<String> attributes;
     
