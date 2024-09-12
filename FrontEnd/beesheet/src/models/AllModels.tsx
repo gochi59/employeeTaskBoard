@@ -31,13 +31,13 @@ export interface Task {
   taskRating: string;
   time: string;
   title: string;
-  workLocation: ["office","home"];
+  workLocation: "office" | "home"; // Change this to a union of string literals
 }
 
 export interface taskInput{
     title:string;
     markedForAppraisal:boolean;
-    workLocation:["office","home"];
+    workLocation:"office" | "home"; 
     project:string;
     time:string;
     description:string;

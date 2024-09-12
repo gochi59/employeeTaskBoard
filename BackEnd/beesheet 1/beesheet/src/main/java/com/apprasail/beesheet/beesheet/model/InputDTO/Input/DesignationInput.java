@@ -11,10 +11,9 @@ import lombok.Data;
 @Data
 public class DesignationInput {
 
-    @NotNull(message = "Invalid designation name")
     @NotBlank(message="Invalid designation name")
     String name;
-    @NotNull(message="Invalid attribute list")
+    
     @NotEmpty(message="Invalid attribute list")
     List<String> attributes;
     
