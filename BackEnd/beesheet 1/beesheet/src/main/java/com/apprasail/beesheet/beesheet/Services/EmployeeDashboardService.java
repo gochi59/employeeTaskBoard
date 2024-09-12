@@ -3,7 +3,6 @@ package com.apprasail.beesheet.beesheet.Services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
@@ -27,16 +26,14 @@ public class EmployeeDashboardService {
         return emp.getEmp_Tasks();
     }
 
-    public void addTaskToEmp(int id, TaskInput input) {
-        Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
-        try {
-            List<Task> taskList = emp.getEmp_Tasks();
-            taskList.add(taskInputToObject.convertToObject(input));
-            emp.setEmp_Tasks(taskList);
-            employeeRepo.save(emp);
-        } catch (TransactionSystemException | IllegalArgumentException tse) {
-            throw tse;
-        }
+    public void addTaskToEmp(String id, TaskInput input) {
+        Employee emp = employeeRepo.findByEmail(id);
+        if(emp==null)
+            throw new IllegalArgumentException("Invalid Email Id");
+        List<Task> taskList = emp.getEmp_Tasks();
+        taskList.add(taskInputToObject.convertToObject(input));
+        emp.setEmp_Tasks(taskList);
+        employeeRepo.save(emp);
     }
 
 }

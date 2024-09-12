@@ -38,18 +38,20 @@ public class TaskService {
         }
     }
 
-    public void deleteTask(int empId, int taskId) {
-        Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException());
+    public void deleteTask(String empId, int taskId) {
+        Employee employee = employeeRepo.findByEmail(empId);
+        if (employee == null)
+            throw new IllegalArgumentException("Invalid email id");
         List<Task> empTasks = employee.getEmp_Tasks();
-        boolean exists=false;
+        boolean exists = false;
         for (Task empTask : empTasks) {
             if (empTask.getTaskId() == taskId) {
                 empTasks.remove(empTask);
-                exists=true;
+                exists = true;
                 break;
             }
         }
-        if(!exists)
+        if (!exists)
             throw new IllegalArgumentException();
         try {
             employee.setEmp_Tasks(empTasks);
@@ -60,25 +62,24 @@ public class TaskService {
         }
     }
 
-    public void updateTask(int empId, int taskId, TaskInput input) {
-        Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException());
+    public void updateTask(String empId, int taskId, TaskInput input) {
+        Employee employee = employeeRepo.findByEmail(empId);
+        if (employee == null)
+            throw new IllegalArgumentException("Invalid Email id");
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
-            try {
-                Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException());
-                task.setTitle(input.getTitle());
-                task.setMarkedForAppraisal(input.isMarkedForAppraisal());
-                task.setWorkLocation(input.getWorkLocation());
-                task.setProject(input.getProject());
-                task.setTime(input.getTime());
-                task.setDescription(input.getDescription());
-                task.setDate(input.getDate());
-                taskRepo.save(task);
-            } catch (IllegalArgumentException | TransactionSystemException e) {
-                throw e;
-            }
-        } else
+            Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException());
+            task.setTitle(input.getTitle());
+            task.setMarkedForAppraisal(input.isMarkedForAppraisal());
+            task.setWorkLocation(input.getWorkLocation());
+            task.setProject(input.getProject());
+            task.setTime(input.getTime());
+            task.setDescription(input.getDescription());
+            task.setDate(input.getDate());
+            taskRepo.save(task);
+        } else {
             throw new IllegalArgumentException();
+        }
 
     }
 

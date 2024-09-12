@@ -31,7 +31,7 @@ public class EmployeeDashboardController {
 
 
     @PostMapping("/tasks/{id}")
-    public ResponseEntity<Object> addTaskToEmployee(@RequestBody @Valid TaskInput input, @PathVariable int id) {
+    public ResponseEntity<Object> addTaskToEmployee(@RequestBody @Valid TaskInput input, @PathVariable String id) {
         service.addTaskToEmp(id, input);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

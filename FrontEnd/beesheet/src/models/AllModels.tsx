@@ -31,5 +31,15 @@ export interface Task {
   taskRating: string;
   time: string;
   title: string;
-  workLocation: string;
+  workLocation: ["office","home"];
+}
+
+export interface taskInput{
+    title:string;
+    markedForAppraisal:boolean;
+    workLocation:["office","home"];
+    project:string;
+    time:string;
+    description:string;
+    date:string;
 }
