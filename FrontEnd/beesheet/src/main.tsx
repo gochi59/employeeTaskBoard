@@ -9,6 +9,7 @@ import EmployeeDashBoard from './Components/EmployeeDashBoard';
 import 'font-awesome/css/font-awesome.min.css';
 import AdminDashboard from './Components/AdminDashboard';
 import Signup from './Components/Signup';
+import AdminApprovalDashboard from './Components/AdminApprovalDashboard';
 
 
 const router=createBrowserRouter([
@@ -27,6 +28,10 @@ const router=createBrowserRouter([
   {
     path:"/signup",
     element:<Signup/>
+  },
+  {
+    path:"/admin/approval",
+    element:<AdminApprovalDashboard/>
   }
 ])
 

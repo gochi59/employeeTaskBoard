@@ -18,6 +18,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 
 
@@ -58,7 +59,7 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/project")
-    public List<Project> getAllProject() {
+    public List<ProjectDTO> getAllProject() {
         return adminDashboardServices.findAllProjects();
     }
     

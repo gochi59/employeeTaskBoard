@@ -12,6 +12,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 @Service
 public class AdminDashboardServices {
@@ -32,8 +33,17 @@ public class AdminDashboardServices {
         return employeeDTOList;
     }
 
-    public List<Project> findAllProjects() {
-        return projectRepo.findAll();
+    public List<ProjectDTO> findAllProjects() {
+        List<ProjectDTO>dtoList;
+        List<Project>projects=projectRepo.findAll();
+        dtoList=projects.stream().map(project->{
+            ProjectDTO projectDTO=new ProjectDTO();
+            projectDTO.setId(project.getId());
+            projectDTO.setName(project.getName());
+            projectDTO.setEmp(project.getEmp().stream().map(emp->emp.getFirstName()+" "+emp.getLastName()).toList());
+            return projectDTO;
+        }).toList();
+        return dtoList;
     }
 
     public void addProject(ProjectInput projectInput) {
