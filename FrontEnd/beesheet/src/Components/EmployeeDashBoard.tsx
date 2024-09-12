@@ -126,7 +126,6 @@ const EmployeeDashBoard = () => {
   const deleteTask = async (task: Task) => {
     console.log(task);
     const id = task.taskId;
-    console.log(typeof empEmail, typeof id);
     try {
       const res = await axios.delete(
         "http://localhost:8080/task/" + empEmail + "/" + id,

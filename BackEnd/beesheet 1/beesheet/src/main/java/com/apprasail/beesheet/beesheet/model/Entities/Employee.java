@@ -57,4 +57,6 @@ public class Employee {
     @OneToMany(cascade=CascadeType.ALL)
     List<Task>emp_Tasks;
     String attributeRating;
+
+    
 }
