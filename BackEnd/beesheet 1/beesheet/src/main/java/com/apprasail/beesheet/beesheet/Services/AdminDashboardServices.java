@@ -2,6 +2,7 @@ package com.apprasail.beesheet.beesheet.Services;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -10,23 +11,25 @@ import com.apprasail.beesheet.beesheet.Repository.ProjectRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
 @Service
 public class AdminDashboardServices {
 
     private final EmployeeRepo employeeRepo;
     private final ProjectRepo projectRepo;
+    private final EmployeeToDTO employeeToDTO;
 
-    public AdminDashboardServices(EmployeeRepo employeeRepo,ProjectRepo projectRepo) {
+    public AdminDashboardServices(EmployeeRepo employeeRepo,ProjectRepo projectRepo,EmployeeToDTO employeeToDTO) {
         this.employeeRepo = employeeRepo;
         this.projectRepo=projectRepo;
+        this.employeeToDTO=employeeToDTO;
     }
 
-    public List<Employee> findAll() {
+    public List<EmployeeDTO> findAll() {
         List<Employee>list=employeeRepo.findAll();
-        if(list.isEmpty())
-            throw new IllegalStateException();
-        return list;
+        List<EmployeeDTO>employeeDTOList=list.stream().map(emp->employeeToDTO.employeeDTO(emp)).collect(Collectors.toList());
+        return employeeDTOList;
     }
 
     public List<Project> findAllProjects() {

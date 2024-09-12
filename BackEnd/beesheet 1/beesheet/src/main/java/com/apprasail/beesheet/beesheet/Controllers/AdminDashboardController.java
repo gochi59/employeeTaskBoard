@@ -17,6 +17,7 @@ import com.apprasail.beesheet.beesheet.Services.SignUpService;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
 
 
@@ -34,8 +35,8 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getMethodName() {
-        List<Employee> employees = adminDashboardServices.findAll();
+    public ResponseEntity<List<EmployeeDTO>> getMethodName() {
+        List<EmployeeDTO> employees = adminDashboardServices.findAll();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 

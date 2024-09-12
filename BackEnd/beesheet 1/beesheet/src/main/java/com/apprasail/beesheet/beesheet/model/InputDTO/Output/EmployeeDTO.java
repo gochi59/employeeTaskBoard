@@ -17,5 +17,6 @@ public class EmployeeDTO {
     private String contactNumber;
     private String role;
     private String designationTitle; 
+    private List<String>projectTitles;
     private List<Task> empTask;
 }
