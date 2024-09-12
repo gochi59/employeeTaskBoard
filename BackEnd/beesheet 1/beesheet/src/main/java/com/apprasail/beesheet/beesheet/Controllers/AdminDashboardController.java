@@ -7,12 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apprasail.beesheet.beesheet.Services.AdminDashboardServices;
 import com.apprasail.beesheet.beesheet.Services.SignUpService;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
+import com.apprasail.beesheet.beesheet.model.Entities.Project;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
+
+
+
 
 @RestController
 @RequestMapping("/admin")
@@ -48,5 +55,21 @@ public class AdminDashboardController {
     public void deleteAllEmployees() {
         signUpService.deleteAllEmployees();
     }
+
+    @GetMapping("/project")
+    public List<Project> getAllProject() {
+        return adminDashboardServices.findAllProjects();
+    }
+    
+    @PostMapping("/project")
+    public void addProject(@RequestBody ProjectInput projectInput) {
+        adminDashboardServices.addProject(projectInput);
+    }
+    
+    @GetMapping("/project/{projectid}/{empid}")
+    public void getMethodName(@PathVariable int projectid,@PathVariable int empid) {
+        adminDashboardServices.addEmpToProject(projectid,empid);
+    }
+    
 
 }

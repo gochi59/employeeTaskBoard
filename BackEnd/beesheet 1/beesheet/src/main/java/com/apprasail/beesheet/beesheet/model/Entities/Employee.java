@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
@@ -58,5 +59,7 @@ public class Employee {
     List<Task>emp_Tasks;
     String attributeRating;
 
+    @ManyToMany
+    private List<Project>projects;
     
 }
