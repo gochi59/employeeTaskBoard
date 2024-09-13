@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import axios from "axios";
-import { Task, taskInput } from "../models/AllModels";
+import { Project, Task, taskInput } from "../models/AllModels";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,7 @@ const EmployeeDashBoard = () => {
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
   const locationEnum = ["office", "home"];
+  const [projectList,setProjectList]=useState<Project[]>();
   
 
   const schema = z.object({
@@ -62,7 +63,17 @@ const EmployeeDashBoard = () => {
         console.log(error);
       }
     }
+    async function getProjectList() {
+      try {
+        const res=await axios.get("http://localhost:8080/"+sub+"/project",config);
+        console.log(res.data);
+        setProjectList(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     getTaskList();
+    getProjectList();
   }, []);
 
 
@@ -152,7 +163,7 @@ const EmployeeDashBoard = () => {
       date: task.date,
     });
   };
-
+console.log(taskList);
   return (
     <div className="bg-dark-subtle vh-100 overflow-y-scroll">
       <Navbar></Navbar>
@@ -307,15 +318,11 @@ const EmployeeDashBoard = () => {
                         )}
                       </div>
                       <div className="form-outline mb-4">
-                        <label className="form-label" htmlFor="project">
-                          Project
-                        </label>
-                        <input
-                          type="text"
-                          id="project"
-                          {...register("project")}
-                          className="form-control"
-                        />
+                        <label htmlFor="project" className="form-label">Project: </label>
+                       <select {...register("project")} className="form-select">
+                        <option value=""></option>
+                        {projectList&&projectList.map((project:Project)=><option key={project.id} value={project.name}>{project.name}</option>)}
+                       </select>
                         {errors.project && (
                           <p className="text-danger">
                             {errors.project.message}

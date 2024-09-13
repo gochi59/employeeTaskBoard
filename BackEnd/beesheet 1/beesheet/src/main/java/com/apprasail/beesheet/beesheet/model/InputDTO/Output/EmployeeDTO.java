@@ -11,7 +11,6 @@ public class EmployeeDTO {
     private int empId;
     private String firstName;
     private String lastName;
-    private String username;
     private String email;
     private String doj;
     private String contactNumber;

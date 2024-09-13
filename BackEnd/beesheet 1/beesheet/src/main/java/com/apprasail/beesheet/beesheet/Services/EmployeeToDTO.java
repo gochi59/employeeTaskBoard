@@ -20,6 +20,8 @@ public class EmployeeToDTO {
         employeeDTO.setContactNumber(emp.getContactNumber());
         employeeDTO.setDesignationTitle(emp.getDesignation().getTitle());
         employeeDTO.setRole(emp.getRole());
+        employeeDTO.setEmail(emp.getEmail());
+        employeeDTO.setEmpTask(emp.getEmp_Tasks());
         employeeDTO.setProjectTitles((emp.getProjects()).stream().map(project->project.getName()).collect(Collectors.toList()));
         return employeeDTO;
     }

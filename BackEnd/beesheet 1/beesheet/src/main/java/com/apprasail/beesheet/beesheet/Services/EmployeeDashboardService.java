@@ -8,17 +8,19 @@ import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 @Service
 public class EmployeeDashboardService {
 
     private final EmployeeRepo employeeRepo;
-
+    private final EmployeeToDTO employeeToDTO;
     private final TaskInputToObject taskInputToObject;
 
-    public EmployeeDashboardService(EmployeeRepo employeeRepo, TaskInputToObject taskInputToObject) {
+    public EmployeeDashboardService(EmployeeRepo employeeRepo, TaskInputToObject taskInputToObject,EmployeeToDTO employeeToDTO) {
         this.employeeRepo = employeeRepo;
         this.taskInputToObject = taskInputToObject;
+        this.employeeToDTO=employeeToDTO;
     }
 
     public List<Task> getTaskofEmployee(int id) {
@@ -32,6 +34,17 @@ public class EmployeeDashboardService {
         taskList.add(taskInputToObject.convertToObject(input));
         emp.setEmp_Tasks(taskList);
         employeeRepo.save(emp);
+    }
+
+    public List<ProjectDTO> getProject(int id) {
+        Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Id"));
+        return (employee.getProjects().stream().map(project->{
+            ProjectDTO projectDTO=new ProjectDTO();
+            projectDTO.setEmp(project.getEmp().stream().map(emp->employeeToDTO.employeeDTO(emp)).toList());
+            projectDTO.setId(project.getId());
+            projectDTO.setName(project.getName());
+            return projectDTO;
+        }).toList());
     }
 
 }

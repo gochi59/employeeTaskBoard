@@ -40,7 +40,7 @@ public class AdminDashboardServices {
             ProjectDTO projectDTO=new ProjectDTO();
             projectDTO.setId(project.getId());
             projectDTO.setName(project.getName());
-            projectDTO.setEmp(project.getEmp().stream().map(emp->emp.getFirstName()+" "+emp.getLastName()).toList());
+            projectDTO.setEmp(project.getEmp().stream().map(emp->employeeToDTO.employeeDTO(emp)).toList());
             return projectDTO;
         }).toList();
         return dtoList;

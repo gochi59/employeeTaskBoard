@@ -9,5 +9,5 @@ public class ProjectDTO {
 
     private int id;
     private String name;
-    private List<String>emp;
+    private List<EmployeeDTO>emp;
 }

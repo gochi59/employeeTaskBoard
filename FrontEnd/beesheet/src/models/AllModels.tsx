@@ -67,3 +67,9 @@ export interface TemporaryEmployee{
   projectTitles:string[];
 
 }
+
+export interface Project{
+  id:number;
+  name:string;
+  emp:Employee[];
+}
