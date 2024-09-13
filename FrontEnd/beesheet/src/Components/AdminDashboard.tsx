@@ -63,8 +63,10 @@ const AdminDashboard = () => {
                     ))}
                   </ul>
                 </div>
-                <div className="card-footer bg-transparent border-0 text-end">
-                  <small className="text-muted">Employee ID: {emp.empId}</small>
+                <div className="card-footer d-flex bg-transparent justify-content-between">
+                  <button className="btn btn-primary">Tasks</button>
+                  <p className="text-muted h5">Employee ID: {emp.empId}</p>
+      
                 </div>
               </div>
             </div>
