@@ -16,9 +16,9 @@ public class ExceptionHandlerAll {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    
+
     // @ExceptionHandler(TransactionSystemException.class)
     // public ResponseEntity<Map<String, String>> handleTransactionSystemException(TransactionSystemException tse) {
     //     Throwable cause = tse.getRootCause();

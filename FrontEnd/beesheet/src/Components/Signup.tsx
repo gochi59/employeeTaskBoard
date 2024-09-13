@@ -30,6 +30,16 @@ const Signup = () => {
     getAllDesignation();
   }, []);
 
+  useEffect(()=>{
+    if(errorPresent)
+    {
+      const timer=setTimeout(()=>{
+        setErrorPresent("");
+
+      },900);
+      return ()=>clearTimeout(timer);
+    }
+    },[errorPresent])
   if (designationList) {
     useEffect(() => {
       const designationTitles =

@@ -25,6 +25,9 @@ public class DesignationService {
     }
 
     public void addDesignation(DesignationInput input) {
+        Designation designation=designationRepo.findByTitle(input.getName());
+        if(designation!=null)
+            throw new IllegalArgumentException("This designation already exists.");
         Designation des=new Designation();
         des.setAttributes(input.getAttributes());
         des.setTitle(input.getName());

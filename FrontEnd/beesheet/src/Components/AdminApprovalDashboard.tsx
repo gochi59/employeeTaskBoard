@@ -8,7 +8,6 @@ const AdminApprovalDashboard = () => {
   const [errorPresent, setErrorPresent] = useState("");
 
   useEffect(() => {
-    // Fetch pending users
     const jwt = localStorage.getItem("userToken") || "";
     const config = {
       headers: { Authorization: "Bearer " + jwt },

@@ -12,6 +12,7 @@ import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.TemporaryUserRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
+import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.Entities.TemporaryUser;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
@@ -76,6 +77,7 @@ public class SignUpService {
         emp.setPassword(input.getPassword());
         emp.setEmail(input.getEmail());
         emp.setRole(input.getRole());
+        emp.setProjects(Collections.<Project>emptyList());
         emp.setEmp_Tasks(Collections.<Task>emptyList());
         List<Employee> desEmpList = designation.getEmpList();
         desEmpList.add(emp);

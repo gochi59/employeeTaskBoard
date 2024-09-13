@@ -24,7 +24,7 @@ public class DesignationController {
     
     private final DesignationService designationService;
 
-
+    
     public DesignationController(DesignationService designationService) {
         this.designationService = designationService;
     }

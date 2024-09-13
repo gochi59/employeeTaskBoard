@@ -57,13 +57,15 @@ public class AdminDashboardServices {
         Project project=projectRepo.findById(projectid).orElseThrow(()->new IllegalArgumentException("Invalid Project Id"));
         Employee emp=employeeRepo.findById(empid).orElseThrow(()->new IllegalArgumentException("Invalid Employee Id"));
         List<Employee>employees=project.getEmp();
+        if(employees!=null&&!employees.stream().anyMatch(empl->empl.getEmpId()==empid))
+        {List<Project>projects=emp.getProjects();
         employees.add(emp);
         project.setEmp(employees);
         projectRepo.save(project);
-        List<Project>projects=emp.getProjects();
         projects.add(project);
         emp.setProjects(projects);
-        employeeRepo.save(emp);
+        employeeRepo.save(emp);}
+        else throw new IllegalArgumentException("Employee already exists in this project"); 
     }
     
 }

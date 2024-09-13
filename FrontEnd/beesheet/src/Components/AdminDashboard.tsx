@@ -29,13 +29,19 @@ const AdminDashboard = () => {
 
     getAllEmp();
   }, []);
-
+  console.log(empList);
   return (
     <div>
       <Navbar />
-      <div className="container-fluid bg-light p-4">
+      <div className="container-fluid bg-dark-subtle overflow-y-auto p-4 vh-100">
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {empList && empList.map((emp:Employee) => (
+          {empList && empList.filter((emp:Employee)=>{
+            const empDate=new Date(emp.doj).getFullYear();
+            const currDate=new Date().getFullYear();
+            // console.log(empDate,currDate);
+            return empDate<=currDate-1;
+            // return emp;
+          }).map((emp:Employee) => (
             <div className="col" key={emp.empId}>
               <div className="card h-100 shadow-sm border-0 rounded-4">
                 <div className="card-body">
