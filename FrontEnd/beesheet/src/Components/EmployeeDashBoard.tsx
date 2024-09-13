@@ -13,7 +13,7 @@ const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);
   const [jwt, setJwt] = useState("");
-  const [empEmail, setEmpEmail] = useState<String | undefined>("");
+  const [empId, setEmpId] = useState<String | undefined>("");
   const [headerConfig, setHeaderConfig] = useState({});
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
@@ -46,7 +46,7 @@ const EmployeeDashBoard = () => {
     const jwtToken = String(localStorage.getItem("userToken"));
     setJwt(jwtToken);
     const { sub } = jwtDecode<JwtPayload>(jwtToken);
-    setEmpEmail(sub);
+    setEmpId(sub);
     const config = {
       headers: { Authorization: "Bearer " + jwtToken },
     };
@@ -95,7 +95,7 @@ const EmployeeDashBoard = () => {
     if(modalText) {
       try {
         const res = await axios.post(
-          "http://localhost:8080/tasks/" + empEmail,
+          "http://localhost:8080/tasks/" + empId,
           task,
           headerConfig
         );
@@ -109,7 +109,7 @@ const EmployeeDashBoard = () => {
     else {
       try {
         const res = await axios.put(
-          "http://localhost:8080/task/" + empEmail + "/" + currTask?.taskId,
+          "http://localhost:8080/task/" + empId + "/" + currTask?.taskId,
           task,
           headerConfig
         );
@@ -128,7 +128,7 @@ const EmployeeDashBoard = () => {
     const id = task.taskId;
     try {
       const res = await axios.delete(
-        "http://localhost:8080/task/" + empEmail + "/" + id,
+        "http://localhost:8080/task/" + empId + "/" + id,
         headerConfig
       );
       console.log(res);

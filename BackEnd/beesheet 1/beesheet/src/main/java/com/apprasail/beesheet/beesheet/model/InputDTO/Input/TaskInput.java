@@ -1,7 +1,6 @@
 package com.apprasail.beesheet.beesheet.model.InputDTO.Input;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

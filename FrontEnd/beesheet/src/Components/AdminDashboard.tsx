@@ -7,12 +7,12 @@ import { Employee } from '../models/AllModels';
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
   const [headerConfig, setHeaderConfig] = useState({});
-  const [empEmail, setEmpEmail] = useState<String|undefined>("");
+  const [loginId, setLoginId] = useState<String|undefined>("");
 
   useEffect(() => {
     const jwt = localStorage.getItem("userToken")||"";
     const { sub } = jwtDecode<JwtPayload>(jwt);
-    setEmpEmail(sub);
+    setLoginId(sub);
     const config = {
       headers: { Authorization: "Bearer " + jwt }
     };

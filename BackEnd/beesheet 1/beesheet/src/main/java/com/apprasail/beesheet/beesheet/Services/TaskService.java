@@ -38,10 +38,8 @@ public class TaskService {
         }
     }
 
-    public void deleteTask(String empId, int taskId) {
-        Employee employee = employeeRepo.findByEmail(empId);
-        if (employee == null)
-            throw new IllegalArgumentException("Invalid email id");
+    public void deleteTask(int empId, int taskId) {
+        Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         List<Task> empTasks = employee.getEmp_Tasks();
         boolean exists = false;
         for (Task empTask : empTasks) {
@@ -62,13 +60,11 @@ public class TaskService {
         }
     }
 
-    public void updateTask(String empId, int taskId, TaskInput input) {
-        Employee employee = employeeRepo.findByEmail(empId);
-        if (employee == null)
-            throw new IllegalArgumentException("Invalid Email id");
+    public void updateTask(int empId, int taskId, TaskInput input) {
+        Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
-            Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException());
+            Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));
             task.setTitle(input.getTitle());
             task.setMarkedForAppraisal(input.isMarkedForAppraisal());
             task.setWorkLocation(input.getWorkLocation());
@@ -78,7 +74,7 @@ public class TaskService {
             task.setDate(input.getDate());
             taskRepo.save(task);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Task not found in this Employee's Task List");
         }
 
     }
@@ -91,7 +87,6 @@ public class TaskService {
             dto.setEmpId(emp.getEmpId());
             dto.setFirstName(emp.getFirstName());
             dto.setLastName(emp.getLastName());
-            // dto.setUsername(emp.getUsername());
             dto.setEmail(emp.getEmail());
             dto.setDoj(emp.getDOJ());
             dto.setContactNumber(emp.getContactNumber());

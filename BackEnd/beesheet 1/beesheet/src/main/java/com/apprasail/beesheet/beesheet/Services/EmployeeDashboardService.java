@@ -21,15 +21,13 @@ public class EmployeeDashboardService {
         this.taskInputToObject = taskInputToObject;
     }
 
-    public List<Task> getTaskofEmployee(String id) {
-        Employee emp = employeeRepo.findByEmail(id);
+    public List<Task> getTaskofEmployee(int id) {
+        Employee emp = employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         return emp.getEmp_Tasks();
     }
 
-    public void addTaskToEmp(String id, TaskInput input) {
-        Employee emp = employeeRepo.findByEmail(id);
-        if(emp==null)
-            throw new IllegalArgumentException("Invalid Email Id");
+    public void addTaskToEmp(int id, TaskInput input) {
+        Employee emp = employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         List<Task> taskList = emp.getEmp_Tasks();
         taskList.add(taskInputToObject.convertToObject(input));
         emp.setEmp_Tasks(taskList);

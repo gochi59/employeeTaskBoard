@@ -29,7 +29,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return employee.getEmail();
+        return String.valueOf(employee.getEmpId());
     }
 
 }

@@ -28,13 +28,13 @@ public class JWTService {
         // System.out.println(secretKey); 
     }
     
-    public String generateToken(String email,String Role) {
+    public String generateToken(int id,String Role) {
         Map<String,Object>claims=new HashMap<>();
         claims.put("Role", Role);
         return Jwts
                     .builder()
                     .claims(claims)
-                    .subject(email)
+                    .subject(String.valueOf(id))
                     .issuedAt(new Date(System.currentTimeMillis()))
                     .expiration(new Date(System.currentTimeMillis()+100000000))
                     .signWith(getKey())

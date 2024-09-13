@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
+import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.LoginInput;
 
 import jakarta.validation.Valid;
@@ -23,10 +24,11 @@ public class LoginService {
         this.employeeRepo = employeeRepo;
     }
     public String login(@Valid LoginInput loginInput) {
-        Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginInput.getEmail(), loginInput.getPassword()));
+        Employee employee=employeeRepo.findByEmail(loginInput.getEmail());
+        Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(employee.getEmpId(), loginInput.getPassword()));
         if(authentication.isAuthenticated())
-        {   String userEmail=loginInput.getEmail();
-            return jWTService.generateToken(userEmail,employeeRepo.findByEmail(userEmail).getRole());
+        {  
+            return jWTService.generateToken(employee.getEmpId(),employee.getRole());
         }
         return "failure";
     }

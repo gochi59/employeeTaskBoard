@@ -20,12 +20,18 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = employeeRepo.findByEmail(username);
-        if (employee == null) {
-            System.out.println("abcsd");
-            throw new UsernameNotFoundException("User not found with username: " + username);
+      
+        int userId;
+        try {
+            userId = Integer.parseInt(username); // Convert username to integer
+        } catch (NumberFormatException e) {
+            throw new UsernameNotFoundException("Invalid ID format: " + username);
         }
+        
+        Employee employee = employeeRepo.findById(userId).orElseThrow(() -> 
+            new UsernameNotFoundException("User not found with ID: " + userId)
+        );
+       
         return new UserPrincipal(employee);
     }
-
 }
