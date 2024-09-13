@@ -10,15 +10,18 @@ import com.apprasail.beesheet.beesheet.Repository.DesignationRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.DesignationInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.DesignationOutputDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeByDesignationDTO;
 
 @Service
 public class DesignationService {
 
     private final DesignationRepo designationRepo;
+    private final EmployeeToDTO employeeToDTO;
 
-    public DesignationService(DesignationRepo designationRepo) {
+    public DesignationService(DesignationRepo designationRepo,EmployeeToDTO  employeeToDTO) {
         this.designationRepo = designationRepo;
+        this.employeeToDTO=employeeToDTO;
     }
 
     public void addDesignation(DesignationInput input) {
@@ -29,8 +32,16 @@ public class DesignationService {
         designationRepo.save(des);
     }
 
-    public List<Designation> findAll() {
-        return designationRepo.findAll();
+    public List<DesignationOutputDTO> findAll() {
+        List<DesignationOutputDTO>designationOutputDTOs=designationRepo.findAll().stream().map(des->{
+            DesignationOutputDTO designationOutputDTO=new DesignationOutputDTO();
+            designationOutputDTO.setId(des.getId());
+            designationOutputDTO.setAttributes(des.getAttributes());
+            designationOutputDTO.setTitle(des.getTitle());
+            designationOutputDTO.setEmployees((des.getEmpList().stream()).map(emp->employeeToDTO.employeeDTO(emp)).toList());
+            return designationOutputDTO;
+        }).toList();
+        return designationOutputDTOs;
     }
 
   

@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export interface Designation {
   attributes: string[];
-  empList: string[];
   id: number;
   title: string;
 }
@@ -42,4 +41,29 @@ export interface taskInput{
     time:string;
     description:string;
     date:string;
+}
+
+export interface Employee{
+  email: string;
+  contactNumber: string;
+  empId:number;
+  firstName:string;
+  lastName:string;
+  designationTitle:string;
+  role:string;
+  doj:string;
+  projectTitles:string[];
+
+}
+export interface TemporaryEmployee{
+  email: string;
+  contactNumber: string;
+  tempId:number;
+  firstName:string;
+  lastName:string;
+  designation:string;
+  role:string;
+  dateOfJoin:string;
+  projectTitles:string[];
+
 }

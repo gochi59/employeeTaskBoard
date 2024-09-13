@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.apprasail.beesheet.beesheet.Services.DesignationService;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.DesignationInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.DesignationOutputDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeByDesignationDTO;
 
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class DesignationController {
     }
 
     @GetMapping("/alldes")
-    public List<Designation> getMethodName() {
+    public List<DesignationOutputDTO> getMethodName() {
         return designationService.findAll();
     }
     

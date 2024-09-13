@@ -42,7 +42,6 @@ public class Employee {
     String dOJ;
     
     @ManyToOne(fetch=FetchType.LAZY)
-    @JsonBackReference
     Designation designation;
     
     @NotBlank(message="Invalid contact number")

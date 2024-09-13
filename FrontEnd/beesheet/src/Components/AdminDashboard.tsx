@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import axios from 'axios';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { Employee } from '../models/AllModels';
 
 const AdminDashboard = () => {
-  const [empList, setEmpList] = useState();
-  const [headerConfig, setHeaderConfig] = useState();
-  const [empEmail, setEmpEmail] = useState("");
+  const [empList, setEmpList] = useState<Employee[]>();
+  const [headerConfig, setHeaderConfig] = useState({});
+  const [empEmail, setEmpEmail] = useState<String|undefined>("");
 
   useEffect(() => {
-    const jwt = localStorage.getItem("userToken");
+    const jwt = localStorage.getItem("userToken")||"";
     const { sub } = jwtDecode<JwtPayload>(jwt);
     setEmpEmail(sub);
     const config = {
@@ -34,7 +35,7 @@ const AdminDashboard = () => {
       <Navbar />
       <div className="container-fluid bg-light p-4">
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {empList && empList.map((emp) => (
+          {empList && empList.map((emp:Employee) => (
             <div className="col" key={emp.empId}>
               <div className="card h-100 shadow-sm border-0 rounded-4">
                 <div className="card-body">

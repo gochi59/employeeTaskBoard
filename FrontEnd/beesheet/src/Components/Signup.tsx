@@ -13,31 +13,10 @@ import "bootstrap/dist/js/bootstrap.bundle.min"; // Ensure Bootstrap JS is impor
 
 const Signup = () => {
   const [designationList, setDesignationList] = useState<Designation[]>([]);
+  const [designationsTitles, setDesignationsTitles] = useState<String[]>([]);
   const [errorPresent, setErrorPresent] = useState<string | null>(null);
   const [schema, setSchema] = useState<ZodSchema<any>>(z.object({}));
-  const [isSubmitting,setIsSubmitting]=useState(false);
-
-  useEffect(() => {
-    const designationTitles =
-      designationList.map((des: Designation) => des.title) || [];
-
-    const updatedSchema = z.object({
-      firstname: z.string().min(1, { message: "Invalid firstname" }),
-      lastname: z.string(),
-      password: z.string().min(1, { message: "Invalid password" }),
-      role: z.enum(["empl", "ADMIN"], { message: "Select a role" }),
-      designation: z.enum(designationTitles as [string, ...string[]], {
-        message: "Select a designation",
-      }),
-      number: z.string().min(1, { message: "Enter valid Contact Number" }),
-      doj: z.string().min(1, { message: "Select a date" }),
-      email: z
-        .string()
-        .min(1, { message: "This field has to be filled" })
-        .email({ message: "Invalid Email" }),
-    });
-    setSchema(updatedSchema);
-  }, [designationList]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function getAllDesignation() {
@@ -51,6 +30,31 @@ const Signup = () => {
     getAllDesignation();
   }, []);
 
+  if (designationList) {
+    useEffect(() => {
+      const designationTitles =
+        designationList.map((des: Designation) => des.title) || [];
+      setDesignationsTitles(designationsTitles);
+      const updatedSchema = z.object({
+        firstname: z.string().min(1, { message: "Invalid firstname" }),
+        lastname: z.string(),
+        password: z.string().min(1, { message: "Invalid password" }),
+        role: z.enum(["empl", "ADMIN"], { message: "Select a role" }),
+        designation: z.enum(designationTitles as [string, ...string[]], {
+          message: "Select a designation",
+        }),
+        number: z.string().min(1, { message: "Enter valid Contact Number" }),
+        doj: z.string().min(1, { message: "Select a date" }),
+        email: z
+          .string()
+          .min(1, { message: "This field has to be filled" })
+          .email({ message: "Invalid Email" }),
+      });
+      setSchema(updatedSchema);
+    }, [designationList]);
+  }
+
+  console.log(designationList);
   const {
     register,
     handleSubmit,
@@ -73,13 +77,12 @@ const Signup = () => {
     try {
       const res = await axios.post("http://localhost:8080/signup", employee);
       console.log(res);
-      setErrorPresent("Submitted Succesfully Wait for Approval ")
+      setErrorPresent("Submitted Succesfully Wait for Approval ");
       reset();
     } catch (error: any) {
-      const err=(error.response.data);
-      setErrorPresent("Error: "+err);
-    }
-    finally{
+      const err = error.response.data;
+      setErrorPresent("Error: " + err);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -190,11 +193,12 @@ const Signup = () => {
               className="form-select"
             >
               <option value=""></option>
-              {designationList.map((des) => (
-                <option value={des.title} key={des.id}>
-                  {des.title}
-                </option>
-              ))}
+              {designationList &&
+                designationList.map((des) => (
+                  <option value={des.title} key={des.id}>
+                    {des.title}
+                  </option>
+                ))}
             </select>
             {errors.designation && (
               <p className="text-danger">{errors.designation.message}</p>
@@ -213,7 +217,11 @@ const Signup = () => {
             {errors.number && (
               <p className="text-danger">{errors.number.message}</p>
             )}
-            <button type="submit" disabled={isSubmitting} className="btn btn-dark my-3">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn btn-dark my-3"
+            >
               Submit
             </button>
           </form>
