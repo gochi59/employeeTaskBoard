@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.ProjectRepo;
+import com.apprasail.beesheet.beesheet.Repository.TaskRepository;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
+import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
@@ -20,11 +23,14 @@ public class AdminDashboardServices {
     private final EmployeeRepo employeeRepo;
     private final ProjectRepo projectRepo;
     private final EmployeeToDTO employeeToDTO;
-
-    public AdminDashboardServices(EmployeeRepo employeeRepo,ProjectRepo projectRepo,EmployeeToDTO employeeToDTO) {
+    private final TaskRepository taskRepository;
+    private final TaskInputToObject taskInputToObject;
+    public AdminDashboardServices(TaskInputToObject taskInputToObject,TaskRepository taskRepository,EmployeeRepo employeeRepo,ProjectRepo projectRepo,EmployeeToDTO employeeToDTO) {
         this.employeeRepo = employeeRepo;
         this.projectRepo=projectRepo;
         this.employeeToDTO=employeeToDTO;
+        this.taskRepository=taskRepository;
+        this.taskInputToObject=taskInputToObject;
     }
 
     public List<EmployeeDTO> findAll() {
@@ -66,6 +72,14 @@ public class AdminDashboardServices {
         emp.setProjects(projects);
         employeeRepo.save(emp);}
         else throw new IllegalArgumentException("Employee already exists in this project"); 
+    }
+
+    public void changeTaskRating(int id, TaskInput input) {
+        Task task=taskRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Task Id"));
+        task.setTaskRating(input.getTaskRating());
+        System.out.println(input.getTaskRating());
+        System.out.println(task.getTaskId()+" "+task.getTaskRating());
+        taskRepository.save(task);
     }
     
 }

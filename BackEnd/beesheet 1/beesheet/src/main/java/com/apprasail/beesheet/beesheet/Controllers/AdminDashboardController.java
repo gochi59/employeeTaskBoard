@@ -17,8 +17,11 @@ import com.apprasail.beesheet.beesheet.Services.SignUpService;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -71,6 +74,11 @@ public class AdminDashboardController {
     @GetMapping("/project/{projectid}/{empid}")
     public void getMethodName(@PathVariable int projectid,@PathVariable int empid) {
         adminDashboardServices.addEmpToProject(projectid,empid);
+    }
+
+    @PutMapping("/task/{id}")
+    public void  changeTaskRating(@PathVariable int id,@RequestBody TaskInput input) {
+        adminDashboardServices.changeTaskRating(id,input);
     }
     
 

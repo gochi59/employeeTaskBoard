@@ -19,6 +19,7 @@ public class TaskInputToObject {
         task.setTime(input.getTime());
         task.setDescription(input.getDescription());
         task.setDate(input.getDate());
+        task.setTaskRating(input.getTaskRating());
         return task;
     }
 }

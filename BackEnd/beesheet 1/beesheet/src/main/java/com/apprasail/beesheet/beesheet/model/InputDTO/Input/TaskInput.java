@@ -25,4 +25,6 @@ public class TaskInput {
     @NotBlank(message = "Invalid date")
     String date;
 
+    String taskRating;
+
 }
