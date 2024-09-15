@@ -1,60 +1,49 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import java.util.List;
 
 @Data
 @Entity
-@Component
 public class Employee {
 
     @Id
-    @GeneratedValue
-    int empId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int empId;
 
-    @NotBlank(message="Invalid firstname")
-    String firstName;
+    @NotBlank(message = "Invalid firstname")
+    private String firstName;
 
-    String lastName;
-    
+    private String lastName;
+
     @NotBlank(message = "Invalid password")
-    String password;
-    
-    @Email(message="Invalid email")
-    String email;
-    
-    @NotBlank(message = "Invalid password")
-    String dOJ;
-    
-    @ManyToOne(fetch=FetchType.LAZY)
-    Designation designation;
-    
-    @NotBlank(message="Invalid contact number")
-    String contactNumber;
-    
+    private String password;
+
+    @Email(message = "Invalid email")
+    private String email;
+
+    @NotBlank(message = "Invalid date of joining")
+    private String dOJ;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Designation designation;
+
+    @NotBlank(message = "Invalid contact number")
+    private String contactNumber;
+
     @NotBlank(message = "Invalid Role")
-    String role;
-    
-    @OneToMany(cascade=CascadeType.ALL)
-    List<Task>emp_Tasks;
-    String attributeRating;
+    private String role;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Task> emp_Tasks;
 
     @ManyToMany
-    private List<Project>projects;
-    
+    private List<Project> projects;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "mapping_id", referencedColumnName = "id")
+    private EmployeeDesignationMapping employeeDesignationMapping;
 }

@@ -6,22 +6,28 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.apprasail.beesheet.beesheet.Repository.AttributeRepo;
 import com.apprasail.beesheet.beesheet.Repository.DesignationRepo;
+import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.DesignationInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.DesignationOutputDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeByDesignationDTO;
 
+import aj.org.objectweb.asm.Attribute;
+
 @Service
 public class DesignationService {
 
     private final DesignationRepo designationRepo;
     private final EmployeeToDTO employeeToDTO;
+    private final AttributeRepo attributeRepo;
 
-    public DesignationService(DesignationRepo designationRepo,EmployeeToDTO  employeeToDTO) {
+    public DesignationService(AttributeRepo attributeRepo,DesignationRepo designationRepo,EmployeeToDTO  employeeToDTO) {
         this.designationRepo = designationRepo;
         this.employeeToDTO=employeeToDTO;
+        this.attributeRepo=attributeRepo;
     }
 
     public void addDesignation(DesignationInput input) {
@@ -29,7 +35,7 @@ public class DesignationService {
         if(designation!=null)
             throw new IllegalArgumentException("This designation already exists.");
         Designation des=new Designation();
-        des.setAttributes(input.getAttributes());
+        // des.setAttributes(input.getAttributes());
         des.setTitle(input.getName());
         des.setEmpList(Collections.<Employee>emptyList());
         designationRepo.save(des);
@@ -59,6 +65,15 @@ public class DesignationService {
                         return dto;
                       }).collect(Collectors.toList());
         return allEmpByDesig;
+    }
+
+    public void addAttribute(int dId, int aId) {
+        Designation designation=designationRepo.findById(dId).orElseThrow(()->new IllegalArgumentException("Invalid Designation Id"));
+        List<Attributes>attributes=designation.getAttributes();
+        Attributes attribute=attributeRepo.findById(aId).orElseThrow(()->new IllegalArgumentException("Invalid Attribute Id"));
+        attributes.add(attribute);
+        designation.setAttributes(attributes);
+        designationRepo.save(designation);
     }
     
 

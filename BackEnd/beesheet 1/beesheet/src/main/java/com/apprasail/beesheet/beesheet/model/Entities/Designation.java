@@ -4,6 +4,7 @@
 
     import org.hibernate.validator.constraints.UniqueElements;
 
+import aj.org.objectweb.asm.Attribute;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
     import jakarta.persistence.FetchType;
@@ -27,8 +28,8 @@ import jakarta.persistence.Entity;
         @Column(unique = true,nullable=false)
         private String title;
 
-        @NotEmpty(message="invalid attributes list")
-        private List<String> attributes;
+        @OneToMany
+        private List<Attributes> attributes;
         
         @OneToMany(fetch = FetchType.LAZY,mappedBy="designation")
         private List<Employee> empList;

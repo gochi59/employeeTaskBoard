@@ -15,6 +15,8 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.DesignationOutputDT
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeByDesignationDTO;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -24,7 +26,7 @@ public class DesignationController {
     
     private final DesignationService designationService;
 
-    
+
     public DesignationController(DesignationService designationService) {
         this.designationService = designationService;
     }
@@ -44,5 +46,9 @@ public class DesignationController {
        return designationService.findemp(name);
     }
     
+    @PutMapping("/designation/{dId}/{aId}")
+    public void  addAttribute(@PathVariable int dId,@PathVariable int aId) {
+        designationService.addAttribute(dId,aId);
+    }
     
 }
