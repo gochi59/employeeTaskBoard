@@ -1,7 +1,9 @@
 package com.apprasail.beesheet.beesheet.Services;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +13,7 @@ import com.apprasail.beesheet.beesheet.Repository.DesignationRepo;
 import com.apprasail.beesheet.beesheet.Repository.EmployeeDesignationRatingRepo;
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.TemporaryUserRepo;
+import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
@@ -89,8 +92,13 @@ public class SignUpService {
         designationRepo.save(designation);
         employeeRepo.save(emp);
         EmployeeDesignationMapping employeeDesignationMapping=new EmployeeDesignationMapping();
+        Map<Attributes,String>mp=new HashMap<>();
+        designation.getAttributes().stream().forEach(att->mp.put(att, ""));
+        employeeDesignationMapping.setSkillRating(mp);
         employeeDesignationMapping.setEmployee(emp);
         employeeDesignationRatingRepo.save(employeeDesignationMapping);
+        emp.setEmployeeDesignationMapping(employeeDesignationMapping);
+        employeeRepo.save(emp);
         temporaryUserRepo.deleteById(id);
         emailService.sendNewMail(input.getEmail(), "Signup Status",
                 "Your request to sign up to beesheets has been approved");

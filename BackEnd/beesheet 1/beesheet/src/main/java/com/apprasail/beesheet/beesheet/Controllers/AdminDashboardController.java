@@ -22,6 +22,8 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -86,4 +88,10 @@ public class AdminDashboardController {
     public void changeAttributeRating(@PathVariable int eid, @RequestBody EmployeeRatingInput input) {
         adminDashboardServices.changeAttributeRating(eid,input);
     }
+
+    @GetMapping("/employee/attribute/{eid}")
+    public List<EmployeeRatingInput> getMethodName(@PathVariable int eid) {
+        return adminDashboardServices.getAttributeRating(eid);
+    }
+    
 }

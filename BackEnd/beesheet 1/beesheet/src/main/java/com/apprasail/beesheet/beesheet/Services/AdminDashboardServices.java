@@ -1,10 +1,12 @@
 package com.apprasail.beesheet.beesheet.Services;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.AttributeRepo;
@@ -119,6 +121,24 @@ public class AdminDashboardServices {
         employeeDesignationRatingRepo.save(employeeDesignationMapping);
         employee.setEmployeeDesignationMapping(employeeDesignationMapping);
         employeeRepo.save(employee);
+    }
+
+    public List<EmployeeRatingInput> getAttributeRating(int eid) {
+        Employee employee = employeeRepo.findById(eid)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
+        EmployeeDesignationMapping employeeDesignationMapping=employee.getEmployeeDesignationMapping();
+        if(employeeDesignationMapping==null)
+            throw new IllegalArgumentException("abcd");
+        Map<Attributes, String> attributeRating = employee.getEmployeeDesignationMapping().getSkillRating();
+        List<EmployeeRatingInput> employeeRatingInputs = new ArrayList<>();
+        attributeRating.forEach(((attributes, string) -> {
+            EmployeeRatingInput employeeRatingInput = new EmployeeRatingInput();
+            employeeRatingInput.setAttribute(attributes.getTitle());
+            employeeRatingInput.setRating(string);
+            System.out.println(employeeRatingInput);
+            employeeRatingInputs.add(employeeRatingInput);
+        }));
+        return employeeRatingInputs;
     }
 
 }

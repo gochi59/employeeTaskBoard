@@ -73,3 +73,8 @@ export interface Project{
   name:string;
   emp:Employee[];
 }
+
+export interface AttributeRating{
+  attribute:string;
+  rating:string;
+}

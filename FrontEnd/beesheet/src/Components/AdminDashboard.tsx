@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { Employee, Task } from "../models/AllModels";
+import { AttributeRating, Employee, Task } from "../models/AllModels";
 import { FieldValues, useForm } from "react-hook-form";
 
 const AdminDashboard = () => {
@@ -12,6 +12,10 @@ const AdminDashboard = () => {
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [empAttributeRating, setEmpAttributeRating] = useState<
+    AttributeRating[]
+  >([]);
+  const [currEmpId,setCurrEmpId]=useState();
 
   useEffect(() => {
     const jwt = localStorage.getItem("userToken") || "";
@@ -37,12 +41,18 @@ const AdminDashboard = () => {
   }, []);
 
   const openEmpTasks = (empId: number) => {
+    setCurrEmpId(empId);
     async function getTaskList() {
       try {
         const res = await axios.get(
           `http://localhost:8080/tasks/${empId}`,
           headerConfig
         );
+        const res2 = await axios.get(
+          "http://localhost:8080/admin/employee/attribute/" + empId,
+          headerConfig
+        );
+        setEmpAttributeRating(res2.data);
         setCurrEmpTaskList(res.data);
         setTaskTableToggle(true);
         setShowModal(true);
@@ -53,31 +63,48 @@ const AdminDashboard = () => {
     }
     getTaskList();
   };
-
+  console.log(empAttributeRating);
   const closeModal = () => {
     setShowModal(false);
     setTaskTableToggle(false);
     reset();
   };
-  const { register, handleSubmit,reset } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const ratingSubmit = (data: FieldValues) => {
     // console.log(data);
-    currEmpTaskList.map(task=>{
-      const str=task.taskId;
+    currEmpTaskList.map((task) => {
+      const str = task.taskId;
       async function changeRating() {
         try {
-          task.taskRating=data[str];
+          task.taskRating = data[str];
           // console.log(task);
-          const res=await axios.put(`http://localhost:8080/admin/task/${str}`,task,headerConfig);
+          const res = await axios.put(
+            `http://localhost:8080/admin/task/${str}`,
+            task,
+            headerConfig
+          );
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      changeRating();
+      closeModal();
+    });
+    empAttributeRating.map((attribute:AttributeRating)=>{
+      const attributeTitle=attribute.attribute;
+      async function changeAttributeRating() {
+        try {
+          attribute.rating=data[attributeTitle];
+          const res=await axios.put("http://localhost:8080/admin/employee/attribute/"+currEmpId,attribute,headerConfig);
           console.log(res);
         } catch (error) {
           console.log(error);
         }
         
       }
-      changeRating();
-      closeModal();
+      changeAttributeRating();
     })
   };
 
@@ -170,45 +197,81 @@ const AdminDashboard = () => {
               <form className="" onSubmit={handleSubmit(ratingSubmit)}>
                 <div className="modal-body">
                   {taskTableToggle && currEmpTaskList && (
-                    <table className="table table-hover table-success">
-                      <thead>
-                        <tr>
-                          <th scope="col">Title</th>
-                          <th scope="col">Project</th>
-                          <th scope="col">Work Location</th>
-                          <th scope="col">Descriptions</th>
-                          <th scope="col">Add/Change Rating</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currEmpTaskList
-                          .filter((task: Task) => task.markedForAppraisal)
-                          .map((task: Task) => (
-                            <tr key={task.taskId}>
-                              <td>{task.title}</td>
-                              <td>{task.project}</td>
-                              <td>{task.workLocation}</td>
-                              <td>{task.description}</td>
-                              <td>
-                                <select
-                                  id="rating"
-                                  {...register(""+task.taskId)}
-                                  className="form-select m-1"
-                                  required
-                                >
-                                  <option value=""></option>
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                  <option value="4">4</option>
-                                  <option value="5">5</option>
-                                </select>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                      <tfoot></tfoot>
-                    </table>
+                    <>
+                      <table className="table table-hover table-success">
+                        <thead>
+                          <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Work Location</th>
+                            <th scope="col">Descriptions</th>
+                            <th scope="col">Add/Change Rating</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {currEmpTaskList
+                            .filter((task: Task) => task.markedForAppraisal)
+                            .map((task: Task) => (
+                              <tr key={task.taskId}>
+                                <td>{task.title}</td>
+                                <td>{task.project}</td>
+                                <td>{task.workLocation}</td>
+                                <td>{task.description}</td>
+                                <td>
+                                  <select
+                                    id="rating"
+                                    {...register("" + task.taskId)}
+                                    className="form-select m-1"
+                                    required
+                                  >
+                                    <option value=""></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                  </select>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                        <tfoot></tfoot>
+                      </table>
+
+                      <table className="table table-hover table-success">
+                        <thead>
+                          <tr>
+                            <th scope="col">Attribute</th>
+                            <th scope="col">Rating</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {empAttributeRating.map(
+                            (attribute: AttributeRating) => (
+                              <tr>
+                                <td>{attribute.attribute}</td>
+                                <td>
+                                  <select
+                                    id="rating"
+                                    {...register(""+attribute.attribute)}
+                                    className="form-select m-1"
+                                    required
+                                  >
+                                    <option value=""></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                  </select>
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                        <tfoot></tfoot>
+                      </table>
+                    </>
                   )}
                 </div>
                 <div className="modal-footer d-flex justify-content-between">
