@@ -20,4 +20,5 @@ public class EmployeeDTO {
     private List<String>projectTitles;
     private List<Task> empTask;
     private Map<Attributes,String>attributeRating;
+    private List<String>notifications;
 }

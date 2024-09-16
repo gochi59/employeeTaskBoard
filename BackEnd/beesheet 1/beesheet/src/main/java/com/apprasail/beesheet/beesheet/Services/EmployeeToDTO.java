@@ -1,5 +1,6 @@
 package com.apprasail.beesheet.beesheet.Services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeDesignationRatingRepo;
+import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
@@ -16,9 +18,11 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 public class EmployeeToDTO {
 
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
+    private final EmployeeRepo employeeRepo;
 
-    public EmployeeToDTO(EmployeeDesignationRatingRepo employeeDesignationRatingRepo) {
+    public EmployeeToDTO(EmployeeRepo employeeRepo,EmployeeDesignationRatingRepo employeeDesignationRatingRepo) {
         this.employeeDesignationRatingRepo = employeeDesignationRatingRepo;
+        this.employeeRepo=employeeRepo;
     }
 
     public EmployeeDTO employeeDTO(Employee emp) {
@@ -48,7 +52,10 @@ public class EmployeeToDTO {
         }
         employeeDTO.setProjectTitles(
                 (emp.getProjects()).stream().map(project -> project.getName()).collect(Collectors.toList()));
-
+        if(emp.getNotification()==null)
+            emp.setNotification(new ArrayList<>());
+        employeeRepo.save(emp);
+        employeeDTO.setNotifications(emp.getNotification());
         return employeeDTO;
     }
 }

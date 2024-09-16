@@ -1,9 +1,12 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
+import java.util.ArrayList;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+
 import java.util.List;
 
 @Data
@@ -46,4 +49,6 @@ public class Employee {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "mapping_id", referencedColumnName = "id")
     private EmployeeDesignationMapping employeeDesignationMapping;
+
+    private List<String>notification=new ArrayList<>();
 }
