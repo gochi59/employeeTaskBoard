@@ -8,10 +8,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.DesignationRepo;
+import com.apprasail.beesheet.beesheet.Repository.EmployeeDesignationRatingRepo;
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.TemporaryUserRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
+import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.Entities.TemporaryUser;
@@ -24,14 +26,16 @@ public class SignUpService {
     private final TemporaryUserRepo temporaryUserRepo;
     private final DesignationRepo designationRepo;
     private final EmailService emailService;
+    private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
     private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
 
     public SignUpService(EmployeeRepo employeeRepo, DesignationRepo designationRepo,
-            TemporaryUserRepo temporaryUserRepo, EmailService emailService) {
+            TemporaryUserRepo temporaryUserRepo, EmailService emailService,EmployeeDesignationRatingRepo employeeDesignationRatingRepo) {
         this.employeeRepo = employeeRepo;
         this.temporaryUserRepo = temporaryUserRepo;
         this.designationRepo = designationRepo;
         this.emailService = emailService;
+        this.employeeDesignationRatingRepo=employeeDesignationRatingRepo;
     }
 
     public void addEmployee(TemporaryUser input) {
@@ -84,6 +88,9 @@ public class SignUpService {
         designation.setEmpList(desEmpList);
         designationRepo.save(designation);
         employeeRepo.save(emp);
+        EmployeeDesignationMapping employeeDesignationMapping=new EmployeeDesignationMapping();
+        employeeDesignationMapping.setEmployee(emp);
+        employeeDesignationRatingRepo.save(employeeDesignationMapping);
         temporaryUserRepo.deleteById(id);
         emailService.sendNewMail(input.getEmail(), "Signup Status",
                 "Your request to sign up to beesheets has been approved");

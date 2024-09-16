@@ -29,7 +29,7 @@ public class AttributeController {
         return attributeService.getAll();
     }
     
-                                            
+
     @PostMapping("/attribute")
     public void  addAttribute(@RequestBody Attributes attributeInput) {
         attributeService.addAttribute(attributeInput);

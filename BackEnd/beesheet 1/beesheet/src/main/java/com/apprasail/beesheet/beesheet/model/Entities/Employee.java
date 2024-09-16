@@ -11,7 +11,7 @@ import java.util.List;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int empId;
 
     @NotBlank(message = "Invalid firstname")

@@ -10,14 +10,14 @@ import java.util.Map;
 public class EmployeeDesignationMapping {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int id;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "employee_skill_ratings", joinColumns = @JoinColumn(name = "mapping_id"))
     @MapKeyJoinColumn(name = "attribute_id")
     @Column(name = "skill_rating")
-    private Map<Attributes, Integer> skillRating = new HashMap<>();
+    private Map<Attributes, String> skillRating;
 
     @OneToOne(mappedBy = "employeeDesignationMapping")
     private Employee employee;
