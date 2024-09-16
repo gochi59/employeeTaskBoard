@@ -8,4 +8,6 @@ import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 @Repository
 public interface AttributeRepo extends JpaRepository<Attributes, Integer> {
 
+    public Attributes findByTitle(String attribute);
+
 }

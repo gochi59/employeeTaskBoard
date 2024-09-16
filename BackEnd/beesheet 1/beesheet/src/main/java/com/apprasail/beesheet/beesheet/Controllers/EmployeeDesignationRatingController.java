@@ -5,14 +5,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.apprasail.beesheet.beesheet.model.Entities.Employee;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
+
 
 @RestController
 public class EmployeeDesignationRatingController {
 
-    @PutMapping("/employee/attribute/{eid}")
-    public String changeAttributeRating(@PathVariable int id, @RequestBody String entity) {
-        //TODO: process PUT request
-        
-        return entity;
-    }
+   
 }

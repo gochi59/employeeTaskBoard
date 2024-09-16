@@ -16,6 +16,7 @@ import com.apprasail.beesheet.beesheet.Services.AdminDashboardServices;
 import com.apprasail.beesheet.beesheet.Services.SignUpService;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
@@ -81,5 +82,8 @@ public class AdminDashboardController {
         adminDashboardServices.changeTaskRating(id,input);
     }
     
-
+    @PutMapping("/employee/attribute/{eid}")
+    public void changeAttributeRating(@PathVariable int eid, @RequestBody EmployeeRatingInput input) {
+        adminDashboardServices.changeAttributeRating(eid,input);
+    }
 }
