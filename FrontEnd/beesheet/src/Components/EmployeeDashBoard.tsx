@@ -66,7 +66,9 @@ const EmployeeDashBoard = () => {
     async function getProjectList() {
       try {
         const res=await axios.get("http://localhost:8080/"+sub+"/project",config);
-        console.log(res.data);
+        const res2=await axios.get("http://localhost:8080/notification/"+sub,config);
+        console.log(res.data)
+        console.log(res2);
         setProjectList(res.data);
       } catch (error) {
         console.log(error);
@@ -75,7 +77,7 @@ const EmployeeDashBoard = () => {
     getTaskList();
     getProjectList();
   }, []);
-
+console.log(headerConfig);
 
   const addTask = () => {
     reset({

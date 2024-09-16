@@ -12,6 +12,7 @@ const AdminDashboard = () => {
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [notification,setNotification]=useState<String[]>([]);
   const [empAttributeRating, setEmpAttributeRating] = useState<
     AttributeRating[]
   >([]);
@@ -32,6 +33,8 @@ const AdminDashboard = () => {
           "http://localhost:8080/admin/employees",
           config
         );
+        const res2=await axios.get("http://localhost:8080/notification/"+sub,config);
+        setNotification(res2.data);
         setEmpList(res.data);
       } catch (error) {
         console.log(error);
@@ -39,6 +42,7 @@ const AdminDashboard = () => {
     }
     getAllEmp();
   }, []);
+console.log(notification);
 
   const openEmpTasks = (empId: number) => {
     setCurrEmpId(empId);
