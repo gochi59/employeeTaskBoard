@@ -10,6 +10,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import AdminDashboard from './Components/AdminDashboard';
 import Signup from './Components/Signup';
 import AdminApprovalDashboard from './Components/AdminApprovalDashboard';
+import AdminProjectAllocation from './Components/AdminProjectAllocation';
 
 
 const router=createBrowserRouter([
@@ -32,6 +33,10 @@ const router=createBrowserRouter([
   {
     path:"/admin/approval",
     element:<AdminApprovalDashboard/>
+  },
+  {
+    path:"/admin/project",
+    element:<AdminProjectAllocation/>
   }
 ])
 

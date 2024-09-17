@@ -10,7 +10,8 @@ interface Props {
 const Navbar = ({ empId, config }: Props) => {
   const [notificationList, setNotificationList] = useState<string[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const internalRef=useRef<number|null>(null);
+  const notificationRef = useRef<HTMLDivElement | null>(null);
+  const internalRef = useRef<number | null>(null);
   const interval = 1000;
 
   async function getAllNotifications() {
@@ -19,39 +20,56 @@ const Navbar = ({ empId, config }: Props) => {
         "http://localhost:8080/notification/" + empId,
         config
       );
-      console.log("called")
+      console.log("called");
       setNotificationList(res.data);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const startPolling=()=>{
+  const startPolling = () => {
     getAllNotifications();
-    if(internalRef.current)
-    {
+    if (internalRef.current) {
       clearInterval(internalRef.current);
     }
-    internalRef.current=setInterval(getAllNotifications,interval);
-  }
-
-  const stopPolling=()=>{
-    if(internalRef.current)
-    {  clearInterval(internalRef.current);
-      internalRef.current=null;
-    }
-  }
-  const triggerNotifications = () => {
-    setShowNotifications(!showNotifications);
+    internalRef.current = setInterval(getAllNotifications, interval);
   };
-  useEffect(()=>{
-    if(showNotifications)
-    {
-      startPolling();
+
+  const stopPolling = () => {
+    if (internalRef.current) {
+      clearInterval(internalRef.current);
+      internalRef.current = null;
     }
-    else stopPolling();
-    return ()=>stopPolling();
-  },[showNotifications])
+  };
+
+  const triggerNotifications = () => {
+    setShowNotifications(prev => !prev);
+  };
+
+  useEffect(() => {
+    if (showNotifications) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+
+    return () => stopPolling();
+  }, [showNotifications]);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="navbar bg-dark text-bg-dark p-1 position-relative">
       <div className="navbar-brand text-light nav-link">
@@ -68,12 +86,14 @@ const Navbar = ({ empId, config }: Props) => {
           onClick={triggerNotifications}
         ></i>
         {showNotifications && (
-          <div className="notification-panel position-absolute end-0 bg-light shadow p-3 z-2" >
+          <div
+            ref={notificationRef}
+            className="notification-panel position-absolute end-0 bg-light shadow p-3 z-2"
+          >
             <h6>Notifications</h6>
             {notificationList.length > 0 ? (
               <ul className="list-group">
-                {notificationList.length===0&&<li><p className="text-dark-subtle">No notification</p></li>}
-                {notificationList&&notificationList.slice().reverse().map((notification, index) => (
+                {notificationList.slice().reverse().map((notification, index) => (
                   <li key={index} className="list-group-item">
                     {notification}
                   </li>

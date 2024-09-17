@@ -53,6 +53,7 @@ const AdminApprovalDashboard = () => {
       console.error(error);
     }
   };
+
   useEffect(() => {
     if (errorPresent) {
       const timer = setTimeout(() => {
@@ -64,11 +65,12 @@ const AdminApprovalDashboard = () => {
   const closeMessage = () => {
     setErrorPresent("");
   };
+
   return (
     <div className="container mt-4">
       <h2>Pending User Approvals</h2>
       <div className="row">
-        {users.map((user: TemporaryEmployee) => (
+        {users.slice().reverse().map((user: TemporaryEmployee) => (
           <div className="col-md-4" key={user.tempId}>
             <div className="card mb-4 shadow-sm">
               <div className="card-body">

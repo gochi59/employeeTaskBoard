@@ -14,8 +14,9 @@ const AdminDashboard = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [notification,setNotification]=useState<String[]>([]);
   const [empAttributeRating, setEmpAttributeRating] = useState<
-    AttributeRating[]
+  AttributeRating[]
   >([]);
+  const { register, handleSubmit, reset } = useForm();
   const [currEmpId,setCurrEmpId]=useState();
 
   useEffect(() => {
@@ -42,8 +43,8 @@ const AdminDashboard = () => {
     }
     getAllEmp();
   }, []);
-console.log(notification);
-
+// console.log(notification);
+  
   const openEmpTasks = (empId: number) => {
     setCurrEmpId(empId);
     async function getTaskList() {
@@ -60,20 +61,19 @@ console.log(notification);
         setCurrEmpTaskList(res.data);
         setTaskTableToggle(true);
         setShowModal(true);
-        console.log(res.data);
+        // console.log(res.data);
       } catch (error) {
         console.log(error);
       }
     }
     getTaskList();
   };
-  console.log(empAttributeRating);
+  // console.log(empAttributeRating);
   const closeModal = () => {
     setShowModal(false);
     setTaskTableToggle(false);
     reset();
   };
-  const { register, handleSubmit, reset } = useForm();
 
   const ratingSubmit = (data: FieldValues) => {
     // console.log(data);
@@ -227,8 +227,9 @@ console.log(notification);
                                     {...register("" + task.taskId)}
                                     className="form-select m-1"
                                     required
+                                    defaultValue={task.taskRating||""}
                                   >
-                                    <option value=""></option>
+                                    <option value="" ></option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -260,6 +261,7 @@ console.log(notification);
                                     {...register(""+attribute.attribute)}
                                     className="form-select m-1"
                                     required
+                                    defaultValue={attribute.rating||""}
                                   >
                                     <option value=""></option>
                                     <option value="1">1</option>
