@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { StyledText } from "../models/AllModels";
+import { useDispatch } from "react-redux";
+import { changeToken } from "../redux/HeaderSlice";
 
 
 const LoginPage = () => {
@@ -43,10 +45,12 @@ const LoginPage = () => {
       setSubmitting(false);
     }
   };
+  const dispatch=useDispatch();
   if(navigate)
   {
     const jwtToken=(String(localStorage.getItem("userToken")));
     const {Role}=jwtDecode<JwtPayload>(jwtToken);
+    dispatch(changeToken());
     if(Role==="empl")
         return <Navigate to="/user" replace={true}></Navigate>
     else if(Role==="ADMIN")

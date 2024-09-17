@@ -1,24 +1,20 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Employee, TemporaryEmployee } from "../models/AllModels";
+import { Employee, ReduxState, TemporaryEmployee } from "../models/AllModels";
+import { useSelector } from "react-redux";
 
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>([]);
-  const [headerConfig, setHeaderConfig] = useState({});
+  // const [headerConfig, setHeaderConfig] = useState({});
+  const headerConfig=useSelector((state:ReduxState)=>state.header);
   const [errorPresent, setErrorPresent] = useState("");
 
   useEffect(() => {
-    const jwt = localStorage.getItem("userToken") || "";
-    const config = {
-      headers: { Authorization: "Bearer " + jwt },
-    };
-
-    setHeaderConfig(config);
     async function fetchUsers() {
       try {
         const response = await axios.get(
           "http://localhost:8080/tempusers",
-          config
+          headerConfig
         );
         setUsers(response.data);
       } catch (error) {

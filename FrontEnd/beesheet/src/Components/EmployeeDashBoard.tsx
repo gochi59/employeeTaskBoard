@@ -44,6 +44,8 @@ const EmployeeDashBoard = () => {
     reset,
     formState: { errors },
   } = useForm<taskInput>({ resolver: zodResolver(schema) });
+
+
   useEffect(()=>{
     dispatch(changeToken());
   },[]);
@@ -74,7 +76,7 @@ const EmployeeDashBoard = () => {
     }
     getTaskList();
     getProjectList();
-  }, []);
+  }, [config]);
 // console.log(config);
 
   const addTask = () => {

@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { AttributeRating, Employee, Task } from "../models/AllModels";
+import { AttributeRating, Employee, ReduxState, Task } from "../models/AllModels";
 import { FieldValues, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { changeToken } from "../redux/HeaderSlice";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
-  const [headerConfig, setHeaderConfig] = useState({});
-  const [loginId, setLoginId] = useState<string>("");
+  // const [headerConfig, setHeaderConfig] = useState(use);
+  const headerConfig=useSelector((state:ReduxState)=>state.header);
+  // const [loginId, setLoginId] = useState<string>("");
+  const loginId=useSelector((state:ReduxState)=>state.ID);
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -18,23 +22,27 @@ const AdminDashboard = () => {
   >([]);
   const { register, handleSubmit, reset } = useForm();
   const [currEmpId,setCurrEmpId]=useState();
+  const dispatch=useDispatch();
+
+  useEffect(()=>{
+    dispatch(changeToken());
+  },[])
+
 
   useEffect(() => {
     const jwt = localStorage.getItem("userToken") || "";
     const { sub } = jwtDecode<JwtPayload>(jwt)||""; 
-    setLoginId(sub);
     const config = {
       headers: { Authorization: "Bearer " + jwt },
     };
-    setHeaderConfig(config);
 
     async function getAllEmp() {
       try {
         const res = await axios.get(
           "http://localhost:8080/admin/employees",
-          config
+          headerConfig
         );
-        const res2=await axios.get("http://localhost:8080/notification/"+sub,config);
+        const res2=await axios.get("http://localhost:8080/notification/"+loginId,headerConfig);
         setNotification(res2.data);
         setEmpList(res.data);
       } catch (error) {
