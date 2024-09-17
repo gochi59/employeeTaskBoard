@@ -78,3 +78,8 @@ export interface AttributeRating{
   attribute:string;
   rating:string;
 }
+
+export interface ReduxState{
+  header:{},
+  ID:string
+}

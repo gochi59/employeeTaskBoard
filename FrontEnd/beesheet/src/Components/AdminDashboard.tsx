@@ -21,7 +21,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const jwt = localStorage.getItem("userToken") || "";
-    const { sub } = jwtDecode<JwtPayload>(jwt)||"";
+    const { sub } = jwtDecode<JwtPayload>(jwt)||""; 
     setLoginId(sub);
     const config = {
       headers: { Authorization: "Bearer " + jwt },

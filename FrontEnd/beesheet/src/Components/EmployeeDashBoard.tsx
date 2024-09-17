@@ -1,26 +1,29 @@
 import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { jwtDecode, JwtPayload } from "jwt-decode";
 import axios from "axios";
-import { Project, Task, taskInput } from "../models/AllModels";
+import { Project, ReduxState, Task, taskInput } from "../models/AllModels";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { changeToken } from "../redux/HeaderSlice";
 
 const EmployeeDashBoard = () => {
-
+  
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);
-  const [jwt, setJwt] = useState("");
-  const [empId, setEmpId] = useState<String | undefined>("");
-  const [headerConfig, setHeaderConfig] = useState({});
+  const empId=useSelector((state:ReduxState)=>state.ID);
+  const config=useSelector((state:ReduxState)=>state.header);
+  // const [empId setEmpId] = useState<String>(useSelector((state:ReduxState)=>state.ID));
+  // const [config, setconfig] = useState<{}>(useSelector((state:ReduxState)=>state.ID));
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
   const locationEnum = ["office", "home"];
   const [projectList,setProjectList]=useState<Project[]>();
+  // console.log(empId,config);
   
-
+  const dispatch=useDispatch();
   const schema = z.object({
     title: z.string().min(1, { message: "This is a required field" }),
     description: z.string().min(1, { message: "This is a required field" }),
@@ -29,33 +32,28 @@ const EmployeeDashBoard = () => {
     }),
     project: z.string().min(1, { message: "This is a required field" }),
     time: z
-      .string()
-      .time({ message: "Enter time in valid format: 00:00:00 (hr:min:sec)" }),
+    .string()
+    .time({ message: "Enter time in valid format: 00:00:00 (hr:min:sec)" }),
     markedForAppraisal: z.boolean(),
     date: z.string().min(1, { message: "Select a date" }),
   });
-
+  
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<taskInput>({ resolver: zodResolver(schema) });
-
-
+  useEffect(()=>{
+    dispatch(changeToken());
+  },[]);
+  
   useEffect(() => {
-    const jwtToken = String(localStorage.getItem("userToken"));
-    setJwt(jwtToken);
-    const { sub } = jwtDecode<JwtPayload>(jwtToken);
-    setEmpId(sub);
-    const config = {
-      headers: { Authorization: "Bearer " + jwtToken },
-    };
-    setHeaderConfig(config);
+  
     async function getTaskList() {
       try {
         const res = await axios.get(
-          "http://localhost:8080/tasks/" + sub,
+          "http://localhost:8080/tasks/" + empId,
           config
         );
         setTaskList(res.data);
@@ -64,8 +62,10 @@ const EmployeeDashBoard = () => {
       }
     }
     async function getProjectList() {
+      console.log(empId,config);
+      
       try {
-        const res=await axios.get("http://localhost:8080/"+sub+"/project",config);
+        const res=await axios.get("http://localhost:8080/"+empId+"/project",config);
         console.log(res.data)
         setProjectList(res.data);
       } catch (error) {
@@ -75,7 +75,7 @@ const EmployeeDashBoard = () => {
     getTaskList();
     getProjectList();
   }, []);
-console.log(headerConfig);
+// console.log(config);
 
   const addTask = () => {
     reset({
@@ -108,7 +108,7 @@ console.log(headerConfig);
         const res = await axios.post(
           "http://localhost:8080/tasks/" + empId,
           task,
-          headerConfig
+          config
         );
         setTaskList([...taskList, task]);
         reset();
@@ -122,7 +122,7 @@ console.log(headerConfig);
         const res = await axios.put(
           "http://localhost:8080/task/" + empId + "/" + currTask?.taskId,
           task,
-          headerConfig
+          config
         );
         const editTaskList=taskList.map(t=>t.taskId===currTask?.taskId?task:t);
         setTaskList(editTaskList);
@@ -140,7 +140,7 @@ console.log(headerConfig);
     try {
       const res = await axios.delete(
         "http://localhost:8080/task/" + empId + "/" + id,
-        headerConfig
+        config
       );
       console.log(res);
       setTaskList(taskList.filter(t=>t.taskId!==id));
@@ -163,10 +163,10 @@ console.log(headerConfig);
       date: task.date,
     });
   };
-console.log(taskList);
+// console.log(taskList);
   return (
     <div className="bg-dark-subtle vh-100 overflow-y-scroll">
-      <Navbar empId={empId} config={headerConfig}></Navbar>
+      <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
           {!taskList && <h2>No Tasks Added</h2>}

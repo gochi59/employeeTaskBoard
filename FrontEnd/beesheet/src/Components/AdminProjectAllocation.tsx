@@ -1,7 +1,7 @@
 import React from "react";
 
 const AdminProjectAllocation = () => {
-  const [empList,getEmpList]=use
+//   const [empList,getEmpList];
   
     return <div></div>;
 };
