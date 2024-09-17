@@ -141,4 +141,9 @@ public class AdminDashboardServices {
         return employeeRatingInputs;
     }
 
+    public void deleteEmployee(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteEmployee'");
+    }
+
 }

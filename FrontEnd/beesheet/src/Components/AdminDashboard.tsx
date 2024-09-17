@@ -8,7 +8,7 @@ import { FieldValues, useForm } from "react-hook-form";
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
   const [headerConfig, setHeaderConfig] = useState({});
-  const [loginId, setLoginId] = useState<String | undefined>("");
+  const [loginId, setLoginId] = useState<string>("");
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const jwt = localStorage.getItem("userToken") || "";
-    const { sub } = jwtDecode<JwtPayload>(jwt);
+    const { sub } = jwtDecode<JwtPayload>(jwt)||"";
     setLoginId(sub);
     const config = {
       headers: { Authorization: "Bearer " + jwt },
@@ -114,7 +114,7 @@ console.log(notification);
 
   return (
     <div>
-      <Navbar />
+      <Navbar empId={loginId} config={headerConfig} />
       <div className="container-fluid bg-dark-subtle overflow-y-auto p-4 vh-100">
         <form className="d-flex">
           <input

@@ -66,9 +66,7 @@ const EmployeeDashBoard = () => {
     async function getProjectList() {
       try {
         const res=await axios.get("http://localhost:8080/"+sub+"/project",config);
-        const res2=await axios.get("http://localhost:8080/notification/"+sub,config);
         console.log(res.data)
-        console.log(res2);
         setProjectList(res.data);
       } catch (error) {
         console.log(error);
@@ -168,7 +166,7 @@ console.log(headerConfig);
 console.log(taskList);
   return (
     <div className="bg-dark-subtle vh-100 overflow-y-scroll">
-      <Navbar></Navbar>
+      <Navbar empId={empId} config={headerConfig}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
           {!taskList && <h2>No Tasks Added</h2>}

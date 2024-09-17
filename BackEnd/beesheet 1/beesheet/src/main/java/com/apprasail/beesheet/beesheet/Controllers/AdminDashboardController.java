@@ -94,4 +94,9 @@ public class AdminDashboardController {
         return adminDashboardServices.getAttributeRating(eid);
     }
     
+    @DeleteMapping("/employee/{id}")
+    public void deleteEmployee(@PathVariable int id)
+    {
+        adminDashboardServices.deleteEmployee(id);
+    }
 }
