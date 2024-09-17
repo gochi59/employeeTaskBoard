@@ -2,47 +2,49 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { AttributeRating, Employee, ReduxState, Task } from "../models/AllModels";
+import {
+  AttributeRating,
+  Employee,
+  ReduxState,
+  Task,
+} from "../models/AllModels";
 import { FieldValues, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
+import TaskAttributeRating from "./TaskAttributeRating";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
   // const [headerConfig, setHeaderConfig] = useState(use);
-  const headerConfig=useSelector((state:ReduxState)=>state.header);
+  const headerConfig = useSelector((state: ReduxState) => state.header);
   // const [loginId, setLoginId] = useState<string>("");
-  const loginId=useSelector((state:ReduxState)=>state.ID);
+  const loginId = useSelector((state: ReduxState) => state.ID);
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [notification,setNotification]=useState<String[]>([]);
+  const [notification, setNotification] = useState<String[]>([]);
   const [empAttributeRating, setEmpAttributeRating] = useState<
-  AttributeRating[]
+    AttributeRating[]
   >([]);
   const { register, handleSubmit, reset } = useForm();
-  const [currEmpId,setCurrEmpId]=useState();
-  const dispatch=useDispatch();
-
-  useEffect(()=>{
-    dispatch(changeToken());
-  },[])
-
+  const [currEmpId, setCurrEmpId] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const jwt = localStorage.getItem("userToken") || "";
-    const { sub } = jwtDecode<JwtPayload>(jwt)||""; 
-    const config = {
-      headers: { Authorization: "Bearer " + jwt },
-    };
+    dispatch(changeToken());
+  }, []);
 
+  useEffect(() => {
     async function getAllEmp() {
       try {
         const res = await axios.get(
           "http://localhost:8080/admin/employees",
           headerConfig
         );
-        const res2=await axios.get("http://localhost:8080/notification/"+loginId,headerConfig);
+        const res2 = await axios.get(
+          "http://localhost:8080/notification/" + loginId,
+          headerConfig
+        );
         setNotification(res2.data);
         setEmpList(res.data);
       } catch (error) {
@@ -51,8 +53,8 @@ const AdminDashboard = () => {
     }
     getAllEmp();
   }, []);
-// console.log(notification);
-  
+  // console.log(notification);
+
   const openEmpTasks = (empId: number) => {
     setCurrEmpId(empId);
     async function getTaskList() {
@@ -104,27 +106,31 @@ const AdminDashboard = () => {
       changeRating();
       closeModal();
     });
-    empAttributeRating.map((attribute:AttributeRating)=>{
-      const attributeTitle=attribute.attribute;
+    empAttributeRating.map((attribute: AttributeRating) => {
+      const attributeTitle = attribute.attribute;
       async function changeAttributeRating() {
         try {
-          attribute.rating=data[attributeTitle];
-          const res=await axios.put("http://localhost:8080/admin/employee/attribute/"+currEmpId,attribute,headerConfig);
+          attribute.rating = data[attributeTitle];
+          const res = await axios.put(
+            "http://localhost:8080/admin/employee/attribute/" + currEmpId,
+            attribute,
+            headerConfig
+          );
           console.log(res);
         } catch (error) {
           console.log(error);
         }
-        
       }
       changeAttributeRating();
-    })
+      closeModal();
+    });
   };
 
   return (
     <div>
       <Navbar empId={loginId} config={headerConfig} />
-      <div className="container-fluid bg-dark-subtle overflow-y-auto p-4 vh-100">
-        <form className="d-flex">
+      <div className="container-fluid bg-dark-subtle mt-4 p-4 vh-100">
+        <form className="d-flex ">
           <input
             type="search"
             name="search"
@@ -189,121 +195,12 @@ const AdminDashboard = () => {
       </div>
 
       {showModal && (
-        <div
-          className="modal show d-block"
-          tabIndex={-1}
-          role="dialog"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog modal-lg" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Employee Tasks</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  aria-label="Close"
-                  onClick={closeModal}
-                ></button>
-              </div>
-              <form className="" onSubmit={handleSubmit(ratingSubmit)}>
-                <div className="modal-body">
-                  {taskTableToggle && currEmpTaskList && (
-                    <>
-                      <table className="table table-hover table-success">
-                        <thead>
-                          <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">Project</th>
-                            <th scope="col">Work Location</th>
-                            <th scope="col">Descriptions</th>
-                            <th scope="col">Add/Change Rating</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {currEmpTaskList
-                            .filter((task: Task) => task.markedForAppraisal)
-                            .map((task: Task) => (
-                              <tr key={task.taskId}>
-                                <td>{task.title}</td>
-                                <td>{task.project}</td>
-                                <td>{task.workLocation}</td>
-                                <td>{task.description}</td>
-                                <td>
-                                  <select
-                                    id="rating"
-                                    {...register("" + task.taskId)}
-                                    className="form-select m-1"
-                                    required
-                                    defaultValue={task.taskRating||""}
-                                  >
-                                    <option value="" ></option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                  </select>
-                                </td>
-                              </tr>
-                            ))}
-                        </tbody>
-                        <tfoot></tfoot>
-                      </table>
-
-                      <table className="table table-hover table-success">
-                        <thead>
-                          <tr>
-                            <th scope="col">Attribute</th>
-                            <th scope="col">Rating</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {empAttributeRating.map(
-                            (attribute: AttributeRating) => (
-                              <tr>
-                                <td>{attribute.attribute}</td>
-                                <td>
-                                  <select
-                                    id="rating"
-                                    {...register(""+attribute.attribute)}
-                                    className="form-select m-1"
-                                    required
-                                    defaultValue={attribute.rating||""}
-                                  >
-                                    <option value=""></option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                  </select>
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </tbody>
-                        <tfoot></tfoot>
-                      </table>
-                    </>
-                  )}
-                </div>
-                <div className="modal-footer d-flex justify-content-between">
-                  <button type="submit" className="btn btn-success m-1">
-                    Submit Rating
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={closeModal}
-                  >
-                    Close
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        <TaskAttributeRating
+          closeModal={closeModal}
+          ratingSubmit={ratingSubmit}
+          currEmpTaskList={currEmpTaskList}
+          empAttributeRating={empAttributeRating}
+        ></TaskAttributeRating>
       )}
     </div>
   );

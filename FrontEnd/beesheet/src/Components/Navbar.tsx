@@ -71,7 +71,7 @@ const Navbar = ({ empId, config }: Props) => {
   }, []);
 
   return (
-    <div className="navbar bg-dark text-bg-dark p-1 position-relative">
+    <div className="navbar bg-dark text-bg-dark p-1 fixed-top">
       <div className="navbar-brand text-light nav-link">
         <Link
           to="https://www.beehyv.com/"

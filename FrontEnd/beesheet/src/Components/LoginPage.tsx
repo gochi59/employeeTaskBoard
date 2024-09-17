@@ -52,9 +52,9 @@ const LoginPage = () => {
     const {Role}=jwtDecode<JwtPayload>(jwtToken);
     dispatch(changeToken());
     if(Role==="empl")
-        return <Navigate to="/user" replace={true}></Navigate>
+        return <Navigate to="/user" ></Navigate>
     else if(Role==="ADMIN")
-        return <Navigate to="/admin" replace={true}></Navigate>
+        return <Navigate to="/admin" ></Navigate>
   }
   return (
     <div className="container-fluid">
