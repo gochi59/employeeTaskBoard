@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 interface Props {
@@ -10,7 +10,8 @@ interface Props {
 const Navbar = ({ empId, config }: Props) => {
   const [notificationList, setNotificationList] = useState<string[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const interval = 100000;
+  const internalRef=useRef<number|null>(null);
+  const interval = 1000;
 
   async function getAllNotifications() {
     try {
@@ -18,25 +19,39 @@ const Navbar = ({ empId, config }: Props) => {
         "http://localhost:8080/notification/" + empId,
         config
       );
+      console.log("called")
       setNotificationList(res.data);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const triggerNotifications = () => {
+  const startPolling=()=>{
     getAllNotifications();
-    const pollingInterval = setInterval(getAllNotifications, interval);
-    return () => clearInterval(pollingInterval);
-  };
-
-  const toggleNotificationPanel = () => {
-    setShowNotifications(!showNotifications);
-    if (!showNotifications) {
-      triggerNotifications();
+    if(internalRef.current)
+    {
+      clearInterval(internalRef.current);
     }
-  };
+    internalRef.current=setInterval(getAllNotifications,interval);
+  }
 
+  const stopPolling=()=>{
+    if(internalRef.current)
+    {  clearInterval(internalRef.current);
+      internalRef.current=null;
+    }
+  }
+  const triggerNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+  useEffect(()=>{
+    if(showNotifications)
+    {
+      startPolling();
+    }
+    else stopPolling();
+    return ()=>stopPolling();
+  },[showNotifications])
   return (
     <div className="navbar bg-dark text-bg-dark p-1 position-relative">
       <div className="navbar-brand text-light nav-link">
@@ -50,7 +65,7 @@ const Navbar = ({ empId, config }: Props) => {
       <div className="">
         <i
           className="fa fa-regular fa-bell btn btn-dark position-relative"
-          onClick={toggleNotificationPanel}
+          onClick={triggerNotifications}
         ></i>
         {showNotifications && (
           <div className="notification-panel position-absolute end-0 bg-light shadow p-3 z-2" >

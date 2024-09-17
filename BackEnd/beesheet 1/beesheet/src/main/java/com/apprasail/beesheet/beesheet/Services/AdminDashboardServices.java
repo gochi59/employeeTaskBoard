@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.AttributeRepo;
@@ -15,7 +14,6 @@ import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.ProjectRepo;
 import com.apprasail.beesheet.beesheet.Repository.TaskRepository;
 import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
-import com.apprasail.beesheet.beesheet.model.Entities.Designation;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
@@ -25,8 +23,6 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
-
-import aj.org.objectweb.asm.Attribute;
 
 @Service
 public class AdminDashboardServices {
@@ -142,8 +138,7 @@ public class AdminDashboardServices {
     }
 
     public void deleteEmployee(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteEmployee'");
+        employeeRepo.deleteById(id);
     }
 
 }
