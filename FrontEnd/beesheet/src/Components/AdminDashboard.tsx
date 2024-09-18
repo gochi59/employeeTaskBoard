@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
-import { jwtDecode, JwtPayload } from "jwt-decode";
 import {
   AttributeRating,
   Employee,
@@ -27,7 +26,7 @@ const AdminDashboard = () => {
   const [empAttributeRating, setEmpAttributeRating] = useState<
     AttributeRating[]
   >([]);
-  const { register, handleSubmit, reset } = useForm();
+  const { reset } = useForm();
   const [currEmpId, setCurrEmpId] = useState();
   const dispatch = useDispatch();
 
@@ -138,7 +137,7 @@ const AdminDashboard = () => {
   return (
     <div>
       <Navbar empId={loginId} config={headerConfig} />
-      <div className="container-fluid bg-dark-subtle mt-4 p-4 min-vh-100">
+      <div className="container-fluid bg-dark-subtle mt-5 p-4 min-vh-100">
         <form className="d-flex justify-content-end">
           <input
             type="search"
@@ -162,7 +161,7 @@ const AdminDashboard = () => {
               .filter((emp: Employee) => {
                 const empDate = new Date(emp.doj).getFullYear();
                 const currDate = new Date().getFullYear();
-                return empDate <= currDate - 1 && emp.role != "ADMIN";
+                return empDate <= currDate - 1 && emp.role != "ADMIN"&&emp.empTask.some((task:Task)=>task.markedForAppraisal);
               })
               .map((emp: Employee) => (
                 

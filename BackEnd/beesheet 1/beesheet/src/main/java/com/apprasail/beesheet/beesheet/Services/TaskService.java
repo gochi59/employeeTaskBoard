@@ -13,6 +13,8 @@ import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TaskService {
 
@@ -60,8 +62,13 @@ public class TaskService {
         }
     }
 
+    @Transactional
     public void updateTask(int empId, int taskId, TaskInput input) {
         Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
+        if(input.isMarkedForAppraisal())
+        {
+            employee.setApprasailDone(false);
+        }
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
             Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));

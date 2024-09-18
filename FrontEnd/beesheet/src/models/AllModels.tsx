@@ -30,7 +30,7 @@ export interface Task {
   taskRating: string;
   time: string;
   title: string;
-  workLocation: "office" | "home"; // Change this to a union of string literals
+  workLocation: "office" | "home"; 
 }
 
 export interface taskInput{
@@ -53,7 +53,7 @@ export interface Employee{
   role:string;
   doj:string;
   projectTitles:string[];
-
+  empTask:Task[];
 }
 export interface TemporaryEmployee{
   email: string;

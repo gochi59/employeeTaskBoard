@@ -2,8 +2,6 @@ package com.apprasail.beesheet.beesheet.Services;
 
 import java.util.List;
 
-import javax.management.Notification;
-
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
@@ -26,6 +24,8 @@ public class NotificationServices {
     public void addNotif(int id,NotificationInput input) {
         Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Id"));
         List<String>notifications=employee.getNotification();
+        // if(notifications.size()>10)
+        //     notifications.clear();
         notifications.add(input.getData());
         employee.setNotification(notifications);
         employeeRepo.save(employee);

@@ -64,11 +64,11 @@ const EmployeeDashBoard = () => {
       }
     }
     async function getProjectList() {
-      console.log(empId,config);
+      // console.log(empId,config);
       
       try {
         const res=await axios.get("http://localhost:8080/"+empId+"/project",config);
-        console.log(res.data)
+        // console.log(res.data)
         setProjectList(res.data);
       } catch (error) {
         console.log(error);
@@ -103,6 +103,7 @@ const EmployeeDashBoard = () => {
       time: e.time,
       description: e.description,
       date: e.date,
+      taskId:currTask?.taskId,
     };
      
     if(modalText) {
@@ -115,7 +116,7 @@ const EmployeeDashBoard = () => {
         if(task.markedForAppraisal)
         {
           const notification={
-            data:`User ${empId} added a task for appraisal`,
+            data:`${empId} added a task for appraisal`,
           }
           await axios.post(
             "http://localhost:8080/notification/702",
@@ -131,6 +132,8 @@ const EmployeeDashBoard = () => {
     }
     else {
       try {
+        console.log(currTask);
+        
         const res = await axios.put(
           "http://localhost:8080/task/" + empId + "/" + currTask?.taskId,
           task,
@@ -163,6 +166,8 @@ const EmployeeDashBoard = () => {
   const editTask = (task: Task) => {
     setModalText(false);
     setTogalModal(true);
+    console.log(task);
+    
     setCurrTask(task);
     reset({
       title: task.title,
@@ -177,7 +182,7 @@ const EmployeeDashBoard = () => {
   };
 // console.log(taskList);
   return (
-    <div className="bg-dark-subtle vh-100 overflow-y-scroll mt-5">
+    <div className="bg-dark-subtle min-vh-100 mt-5">
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">

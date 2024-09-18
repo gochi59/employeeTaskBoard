@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -58,6 +59,7 @@ public class Employee {
     @JoinColumn(name = "mapping_id", referencedColumnName = "id")
     private EmployeeDesignationMapping employeeDesignationMapping;
 
+    @ElementCollection
     private List<String>notification=new ArrayList<>();
 
     private boolean apprasailDone=false;

@@ -13,6 +13,8 @@ import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class EmployeeDashboardService {
 
@@ -31,9 +33,14 @@ public class EmployeeDashboardService {
         return emp.getEmp_Tasks();
     }
 
+    @Transactional
     public void addTaskToEmp(int id, TaskInput input) {
         Employee emp = employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         List<Task> taskList = emp.getEmp_Tasks();
+        if(input.isMarkedForAppraisal())
+        {
+            emp.setApprasailDone(false);
+        }
         taskList.add(taskInputToObject.convertToObject(input));
         emp.setEmp_Tasks(taskList);
         employeeRepo.save(emp);
