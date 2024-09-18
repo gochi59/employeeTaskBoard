@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBuilding, faHouse } from "@fortawesome/free-solid-svg-icons";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
@@ -182,7 +184,7 @@ const EmployeeDashBoard = () => {
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
-          {taskList.length==0 && <h2>No Tasks Added</h2>}
+          {taskList.length == 0 && <h2>No Tasks Added</h2>}
           {taskList &&
             taskList.map((tasks: Task) => (
               <div
@@ -206,6 +208,26 @@ const EmployeeDashBoard = () => {
                             className="fa fa-solid fa-check"
                             style={{ color: "green" }}
                           ></i>
+                        </OverlayTrigger>
+                      )}
+                      {tasks.workLocation === "office" && (
+                        <OverlayTrigger
+                          delay={{ hide: 450, show: 200 }}
+                          overlay={(props) => (
+                            <Tooltip {...props}>Office</Tooltip>
+                          )}
+                        >
+                          <FontAwesomeIcon icon={faBuilding} className="ps-1" />
+                        </OverlayTrigger>
+                      )}
+                      {tasks.workLocation === "home" && (
+                        <OverlayTrigger
+                          delay={{ hide: 450, show: 200 }}
+                          overlay={(props) => (
+                            <Tooltip {...props}>Office</Tooltip>
+                          )}
+                        >
+                          <FontAwesomeIcon icon={faHouse} className="ps-1" />
                         </OverlayTrigger>
                       )}
                     </span>{" "}

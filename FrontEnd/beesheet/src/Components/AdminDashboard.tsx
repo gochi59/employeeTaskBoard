@@ -14,20 +14,22 @@ import TaskAttributeRating from "./TaskAttributeRating";
 import EmployeeCard from "./EmployeeCard";
 
 const AdminDashboard = () => {
+  
   const [empList, setEmpList] = useState<Employee[]>();
-  // const [headerConfig, setHeaderConfig] = useState(use);
-  const headerConfig = useSelector((state: ReduxState) => state.header);
-  // const [loginId, setLoginId] = useState<string>("");
-  const loginId = useSelector((state: ReduxState) => state.ID);
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [notification, setNotification] = useState<String[]>([]);
+  const [currEmpId, setCurrEmpId] = useState();
   const [empAttributeRating, setEmpAttributeRating] = useState<
     AttributeRating[]
   >([]);
+
+  const headerConfig = useSelector((state: ReduxState) => state.header);
+  const loginId = useSelector((state: ReduxState) => state.ID);
+  
   const { reset } = useForm();
-  const [currEmpId, setCurrEmpId] = useState();
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -175,7 +177,7 @@ const AdminDashboard = () => {
                   allProjects={emp.projectTitles}
                 ></EmployeeCard>
               ))}
-              {empList &&
+          {empList &&
             empList
               .filter((emp: Employee) => {
                 const empDate = new Date(emp.doj).getFullYear();
