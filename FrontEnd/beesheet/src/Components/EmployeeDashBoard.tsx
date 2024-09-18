@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./NavbarComponent";
 import axios from "axios";
 import { Project, ReduxState, Task, taskInput } from "../models/AllModels";
 import { FieldValues, useForm } from "react-hook-form";
@@ -10,20 +10,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
 
 const EmployeeDashBoard = () => {
-  
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);
-  const empId=useSelector((state:ReduxState)=>state.ID);
-  const config=useSelector((state:ReduxState)=>state.header);
+  const empId = useSelector((state: ReduxState) => state.ID);
+  const config = useSelector((state: ReduxState) => state.header);
   // const [empId setEmpId] = useState<String>(useSelector((state:ReduxState)=>state.ID));
   // const [config, setconfig] = useState<{}>(useSelector((state:ReduxState)=>state.ID));
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
   const locationEnum = ["office", "home"];
-  const [projectList,setProjectList]=useState<Project[]>();
+  const [projectList, setProjectList] = useState<Project[]>();
   // console.log(empId,config);
-  
-  const dispatch=useDispatch();
+
+  const dispatch = useDispatch();
   const schema = z.object({
     title: z.string().min(1, { message: "This is a required field" }),
     description: z.string().min(1, { message: "This is a required field" }),
@@ -32,12 +31,12 @@ const EmployeeDashBoard = () => {
     }),
     project: z.string().min(1, { message: "This is a required field" }),
     time: z
-    .string()
-    .time({ message: "Enter time in valid format: 00:00:00 (hr:min:sec)" }),
+      .string()
+      .time({ message: "Enter time in valid format: 00:00:00 (hr:min:sec)" }),
     markedForAppraisal: z.boolean(),
     date: z.string().min(1, { message: "Select a date" }),
   });
-  
+
   const {
     register,
     handleSubmit,
@@ -45,13 +44,11 @@ const EmployeeDashBoard = () => {
     formState: { errors },
   } = useForm<taskInput>({ resolver: zodResolver(schema) });
 
-
-  useEffect(()=>{
-    dispatch(changeToken());
-  },[]);
-  
   useEffect(() => {
-  
+    dispatch(changeToken());
+  }, []);
+
+  useEffect(() => {
     async function getTaskList() {
       try {
         const res = await axios.get(
@@ -65,9 +62,12 @@ const EmployeeDashBoard = () => {
     }
     async function getProjectList() {
       // console.log(empId,config);
-      
+
       try {
-        const res=await axios.get("http://localhost:8080/"+empId+"/project",config);
+        const res = await axios.get(
+          "http://localhost:8080/" + empId + "/project",
+          config
+        );
         // console.log(res.data)
         setProjectList(res.data);
       } catch (error) {
@@ -77,7 +77,7 @@ const EmployeeDashBoard = () => {
     getTaskList();
     getProjectList();
   }, [config]);
-// console.log(config);
+  // console.log(config);
 
   const addTask = () => {
     reset({
@@ -97,27 +97,22 @@ const EmployeeDashBoard = () => {
     const task = {
       title: e.title,
       markedForAppraisal:
-      e.markedForAppraisal === undefined ? false : e.markedForAppraisal,
+        e.markedForAppraisal === undefined ? false : e.markedForAppraisal,
       workLocation: e.workLocation,
       project: e.project,
       time: e.time,
       description: e.description,
       date: e.date,
-      taskId:currTask?.taskId,
+      taskId: currTask?.taskId,
     };
-     
-    if(modalText) {
+
+    if (modalText) {
       try {
-        await axios.post(
-          "http://localhost:8080/tasks/" + empId,
-          task,
-          config
-        );
-        if(task.markedForAppraisal)
-        {
-          const notification={
-            data:`${empId} added a task for appraisal`,
-          }
+        await axios.post("http://localhost:8080/tasks/" + empId, task, config);
+        if (task.markedForAppraisal) {
+          const notification = {
+            data: `${empId} added a task for appraisal`,
+          };
           await axios.post(
             "http://localhost:8080/notification/702",
             notification
@@ -129,17 +124,18 @@ const EmployeeDashBoard = () => {
       } catch (error) {
         console.log(error);
       }
-    }
-    else {
+    } else {
       try {
         console.log(currTask);
-        
+
         const res = await axios.put(
           "http://localhost:8080/task/" + empId + "/" + currTask?.taskId,
           task,
           config
         );
-        const editTaskList=taskList.map(t=>t.taskId===currTask?.taskId?task:t);
+        const editTaskList = taskList.map((t) =>
+          t.taskId === currTask?.taskId ? task : t
+        );
         setTaskList(editTaskList);
         console.log(res);
         setTogalModal(false);
@@ -158,8 +154,8 @@ const EmployeeDashBoard = () => {
         config
       );
       console.log(res);
-      setTaskList(taskList.filter(t=>t.taskId!==id));
-    } catch (error) {                       
+      setTaskList(taskList.filter((t) => t.taskId !== id));
+    } catch (error) {
       console.log(error);
     }
   };
@@ -167,7 +163,7 @@ const EmployeeDashBoard = () => {
     setModalText(false);
     setTogalModal(true);
     console.log(task);
-    
+
     setCurrTask(task);
     reset({
       title: task.title,
@@ -180,7 +176,7 @@ const EmployeeDashBoard = () => {
       date: task.date,
     });
   };
-// console.log(taskList);
+  // console.log(taskList);
   return (
     <div className="bg-dark-subtle min-vh-100 mt-5">
       <Navbar empId={empId} config={config}></Navbar>
@@ -215,7 +211,7 @@ const EmployeeDashBoard = () => {
                     </span>{" "}
                     <button
                       className="btn btn-primary col-lg-1 col-auto"
-                      disabled={tasks.taskRating?true:false}
+                      disabled={tasks.taskRating ? true : false}
                       onClick={() => {
                         editTask(tasks);
                       }}
@@ -235,7 +231,7 @@ const EmployeeDashBoard = () => {
                     <button
                       className="btn btn-danger col-lg-1 col-auto"
                       onClick={() => deleteTask(tasks)}
-                      disabled={tasks.taskRating?true:false}
+                      disabled={tasks.taskRating ? true : false}
                     >
                       Delete
                     </button>
@@ -337,11 +333,21 @@ const EmployeeDashBoard = () => {
                         )}
                       </div>
                       <div className="form-outline mb-4">
-                        <label htmlFor="project" className="form-label">Project: </label>
-                       <select {...register("project")} className="form-select">
-                        <option value=""></option>
-                        {projectList&&projectList.map((project:Project)=><option key={project.id} value={project.name}>{project.name}</option>)}
-                       </select>
+                        <label htmlFor="project" className="form-label">
+                          Project:{" "}
+                        </label>
+                        <select
+                          {...register("project")}
+                          className="form-select"
+                        >
+                          <option value=""></option>
+                          {projectList &&
+                            projectList.map((project: Project) => (
+                              <option key={project.id} value={project.name}>
+                                {project.name}
+                              </option>
+                            ))}
+                        </select>
                         {errors.project && (
                           <p className="text-danger">
                             {errors.project.message}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./NavbarComponent";
 import axios from "axios";
 import {
   AttributeRating,
@@ -110,9 +110,9 @@ const AdminDashboard = () => {
       const attributeTitle = attribute.attribute;
       async function changeAttributeRating() {
         try {
-          const notification={
-            data:`Admin has rated your tasks marked for appraisal`
-          }
+          const notification = {
+            data: `Admin has rated your tasks marked for appraisal`,
+          };
           attribute.rating = data[attributeTitle];
           const res = await axios.put(
             "http://localhost:8080/admin/employee/attribute/" + currEmpId,
@@ -120,7 +120,7 @@ const AdminDashboard = () => {
             headerConfig
           );
           await axios.post(
-            "http://localhost:8080/notification/"+currEmpId,
+            "http://localhost:8080/notification/" + currEmpId,
             notification
           );
           console.log(res);
@@ -132,11 +132,10 @@ const AdminDashboard = () => {
       closeModal();
     });
   };
-  
+
   console.log(empList);
   return (
     <div>
-      <Navbar empId={loginId} config={headerConfig} />
       <div className="container-fluid bg-dark-subtle mt-5 p-4 min-vh-100">
         <form className="d-flex justify-content-end">
           <input
@@ -154,29 +153,38 @@ const AdminDashboard = () => {
             Search
           </button>
         </form>
-        
+
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
           {empList &&
             empList
               .filter((emp: Employee) => {
                 const empDate = new Date(emp.doj).getFullYear();
                 const currDate = new Date().getFullYear();
-                return empDate <= currDate - 1 && emp.role != "ADMIN"&&emp.empTask.some((task:Task)=>task.markedForAppraisal);
+                return (
+                  empDate <= currDate - 1 &&
+                  emp.role != "ADMIN" &&
+                  emp.empTask.some((task: Task) => task.markedForAppraisal)
+                );
               })
               .map((emp: Employee) => (
-                
-                <EmployeeCard emp={emp} openEmpTasks={() => openEmpTasks(emp.empId)} buttonText={"Tasks"} allProjects={emp.projectTitles}></EmployeeCard>))}
+                <EmployeeCard
+                  emp={emp}
+                  openEmpTasks={() => openEmpTasks(emp.empId)}
+                  buttonText={"Tasks"}
+                  allProjects={emp.projectTitles}
+                ></EmployeeCard>
+              ))}
         </div>
       </div>
 
-      {showModal && 
+      {showModal && (
         <TaskAttributeRating
           closeModal={closeModal}
           ratingSubmit={ratingSubmit}
           currEmpTaskList={currEmpTaskList}
           empAttributeRating={empAttributeRating}
         ></TaskAttributeRating>
-      }
+      )}
     </div>
   );
 };

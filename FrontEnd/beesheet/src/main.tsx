@@ -13,6 +13,7 @@ import AdminApprovalDashboard from "./Components/AdminApprovalDashboard";
 import AdminProjectAllocation from "./Components/AdminProjectAllocation";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import AdminMainPage from "./Components/AdminMainPage";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
     path: "/admin/project",
     element: <AdminProjectAllocation />,
   },
+  {
+    path:"/example",
+    element:<AdminMainPage/>
+  }
 ]);
 
 createRoot(document.getElementById("root")!).render(
