@@ -38,5 +38,4 @@ public class TemporaryUser {
     String password;
 
     boolean isApproved=false;
-    // boolean apprasailDone=false;
 }

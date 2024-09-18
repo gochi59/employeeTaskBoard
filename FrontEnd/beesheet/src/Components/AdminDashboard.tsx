@@ -136,7 +136,7 @@ const AdminDashboard = () => {
   console.log(empList);
   return (
     <div>
-      <div className="container-fluid bg-dark-subtle mt-5 p-4 min-vh-100">
+      <div className="container-fluid bg-dark-subtle p-2 pb-3 rounded-1">
         <form className="d-flex justify-content-end">
           <input
             type="search"
@@ -163,7 +163,28 @@ const AdminDashboard = () => {
                 return (
                   empDate <= currDate - 1 &&
                   emp.role != "ADMIN" &&
-                  emp.empTask.some((task: Task) => task.markedForAppraisal)
+                  emp.empTask.some((task: Task) => task.markedForAppraisal) &&
+                  !emp.apprasailDone
+                );
+              })
+              .map((emp: Employee) => (
+                <EmployeeCard
+                  emp={emp}
+                  openEmpTasks={() => openEmpTasks(emp.empId)}
+                  buttonText={"Tasks"}
+                  allProjects={emp.projectTitles}
+                ></EmployeeCard>
+              ))}
+              {empList &&
+            empList
+              .filter((emp: Employee) => {
+                const empDate = new Date(emp.doj).getFullYear();
+                const currDate = new Date().getFullYear();
+                return (
+                  empDate <= currDate - 1 &&
+                  emp.role != "ADMIN" &&
+                  emp.empTask.some((task: Task) => task.markedForAppraisal) &&
+                  emp.apprasailDone
                 );
               })
               .map((emp: Employee) => (

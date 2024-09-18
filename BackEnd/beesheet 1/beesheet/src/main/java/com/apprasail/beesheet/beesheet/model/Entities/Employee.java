@@ -63,5 +63,5 @@ public class Employee {
     private List<String>notification=new ArrayList<>();
 
     // @ColumnDefault(value=false)
-    // private boolean apprasailDone;
+    private boolean apprasailDone=false;
 }

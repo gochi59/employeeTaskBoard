@@ -1,5 +1,6 @@
 import React from 'react'
 import { Employee } from '../models/AllModels'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 interface props{
     emp:Employee;
     openEmpTasks:()=>void;
@@ -14,6 +15,19 @@ const EmployeeCard = ({emp,openEmpTasks,buttonText,allProjects}:props) => {
                     <div className="card-body">
                       <h5 className="card-title mb-3 text-primary">
                         {emp.firstName} {emp.lastName}
+                        {emp.apprasailDone&&<OverlayTrigger
+                          delay={{ hide: 450, show: 200 }}
+                          overlay={(props) => (
+                            <Tooltip {...props}>
+                              Employee Rated
+                            </Tooltip>
+                          )}
+                        >
+                          <i
+                            className="fa fa-solid fa-check"
+                            style={{ color: "green" }}
+                          ></i>
+                        </OverlayTrigger>}
                       </h5>
                       <p className="card-text">
                         <strong>Designation:</strong> {emp.designationTitle}

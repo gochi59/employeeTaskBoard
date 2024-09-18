@@ -15,12 +15,12 @@ const AdminMainPage = () => {
       <div>
       <NavbarComponent empId={loginId} config={headerConfig} />
 
-      <div className="container-fluid mt-4">
+      <div className="container-fluid mt-4 bg-dark-subtle min-vh-100">
         <h2>Admin Dashboard</h2>
 
-        <div className="accordion" id="adminAccordion">
+        <div className="accordion row-cols-auto" id="adminAccordion">
           
-          <div className="accordion-item">
+          <div className="accordion-item col">
             <h2 className="accordion-header" id="headingOne">
               <button className="accordion-button collapsed h6" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                 Employee Task Management
@@ -35,7 +35,7 @@ const AdminMainPage = () => {
             </div>
           </div>
 
-          <div className="accordion-item">
+          <div className="accordion-item col">
             <h2 className="accordion-header" id="headingTwo">
               <button className="accordion-button collapsed h5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 Project Allocation
@@ -50,7 +50,7 @@ const AdminMainPage = () => {
             </div>
           </div>
 
-          <div className="accordion-item">
+          <div className="accordion-item col">
             <h2 className="accordion-header" id="headingThree">
               <button className="accordion-button collapsed h5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                 Admin Approval Dashboard

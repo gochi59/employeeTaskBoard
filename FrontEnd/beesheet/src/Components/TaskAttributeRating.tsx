@@ -2,20 +2,18 @@ import React from 'react'
 import { FieldValues, useForm } from 'react-hook-form';
 import { AttributeRating, Task } from '../models/AllModels';
 
- interface props{
-  closeModal: (()=>void),
-  ratingSubmit:(data:FieldValues)=>void,
-  currEmpTaskList:Task[],
-  empAttributeRating:AttributeRating[],
-  
+interface props {
+  closeModal: (() => void),
+  ratingSubmit: (data: FieldValues) => void,
+  currEmpTaskList: Task[],
+  empAttributeRating: AttributeRating[],
 }
 
-const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttributeRating}:props) => {
+const TaskAttributeRating = ({ closeModal, ratingSubmit, currEmpTaskList, empAttributeRating }: props) => {
   const { register, handleSubmit, reset } = useForm();
   return (
     <div>
-      
-        <div
+      <div
         className="modal show d-block"
         tabIndex={-1}
         role="dialog"
@@ -32,18 +30,18 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
                 onClick={closeModal}
               ></button>
             </div>
-            <form className="" onSubmit={handleSubmit(ratingSubmit)}>
+            <form onSubmit={handleSubmit(ratingSubmit)}>
               <div className="modal-body">
                 {currEmpTaskList && (
                   <>
-                    <table className="table table-hover table-success">
+                    <table className="table table-hover table-success ">
                       <thead>
                         <tr>
                           <th scope="col">Title</th>
                           <th scope="col">Project</th>
-                          <th scope="col">Work Location</th>
-                          <th scope="col">Descriptions</th>
-                          <th scope="col">Add/Change Rating</th>
+                          <th scope="col" className='d-none d-sm-table-cell'>Work Location</th>
+                          <th scope="col" className='d-none d-sm-table-cell'>Descriptions</th>
+                          <th scope="col" >Add/Change Rating</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -53,17 +51,16 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
                             <tr key={task.taskId}>
                               <td>{task.title}</td>
                               <td>{task.project}</td>
-                              <td>{task.workLocation}</td>
-                              <td>{task.description}</td>
+                              <td className='d-none d-sm-table-cell'>{task.workLocation}</td>
+                              <td className='d-none d-sm-table-cell'>{task.description}</td>
                               <td>
                                 <select
-                                  id="rating"
                                   {...register("" + task.taskId)}
-                                  className="form-select m-1"
+                                  className="form-select m-sm-1"
                                   required
-                                  defaultValue={task.taskRating||""}
+                                  defaultValue={task.taskRating || ""}
                                 >
-                                  <option value="" ></option>
+                                  <option value=""></option>
                                   <option value="1">1</option>
                                   <option value="2">2</option>
                                   <option value="3">3</option>
@@ -74,7 +71,6 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
                             </tr>
                           ))}
                       </tbody>
-                      <tfoot></tfoot>
                     </table>
 
                     <table className="table table-hover table-success">
@@ -87,15 +83,14 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
                       <tbody>
                         {empAttributeRating.map(
                           (attribute: AttributeRating) => (
-                            <tr>
+                            <tr key={attribute.attribute}>
                               <td>{attribute.attribute}</td>
                               <td>
                                 <select
-                                  id="rating"
-                                  {...register(""+attribute.attribute)}
+                                  {...register("" + attribute.attribute)}
                                   className="form-select m-1"
                                   required
-                                  defaultValue={attribute.rating||""}
+                                  defaultValue={attribute.rating || ""}
                                 >
                                   <option value=""></option>
                                   <option value="1">1</option>
@@ -109,7 +104,6 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
                           )
                         )}
                       </tbody>
-                      <tfoot></tfoot>
                     </table>
                   </>
                 )}
@@ -134,4 +128,4 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
   )
 }
 
-export default TaskAttributeRating
+export default TaskAttributeRating;

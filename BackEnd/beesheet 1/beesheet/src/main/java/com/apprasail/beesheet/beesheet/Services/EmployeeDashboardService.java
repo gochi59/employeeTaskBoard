@@ -37,10 +37,10 @@ public class EmployeeDashboardService {
     public void addTaskToEmp(int id, TaskInput input) {
         Employee emp = employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         List<Task> taskList = emp.getEmp_Tasks();
-        // if(input.isMarkedForAppraisal())
-        // {
-        //     emp.setApprasailDone(false);
-        // }
+        if(input.isMarkedForAppraisal())
+        {
+            emp.setApprasailDone(false);
+        }
         taskList.add(taskInputToObject.convertToObject(input));
         emp.setEmp_Tasks(taskList);
         employeeRepo.save(emp);

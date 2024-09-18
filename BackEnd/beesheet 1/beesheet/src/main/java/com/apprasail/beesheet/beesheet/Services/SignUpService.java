@@ -78,7 +78,7 @@ public class SignUpService {
     public void approveUser(int id) {
         TemporaryUser input = temporaryUserRepo.findById(id).orElseThrow(() -> new IllegalArgumentException());
         Employee emp = new Employee();
-        // emp.setApprasailDone(false);
+        emp.setApprasailDone(false);
         emp.setFirstName(input.getFirstName());
         emp.setLastName(input.getLastName());
         emp.setDOJ(input.getDateOfJoin());

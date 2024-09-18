@@ -105,7 +105,7 @@ public class AdminDashboardServices {
 
         Employee employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
-        // employee.setApprasailDone(true);
+        employee.setApprasailDone(true);
         List<Attributes> attributes = employee.getDesignation().getAttributes();
         EmployeeDesignationMapping employeeDesignationMapping = employee.getEmployeeDesignationMapping();
 
@@ -142,6 +142,7 @@ public class AdminDashboardServices {
     }
 
     public void deleteEmployee(int id) {
+        Employee employee=employeeRepo.findById(id).orElseThrow((()->new IllegalArgumentException("Invalid User id")));
         employeeRepo.deleteById(id);
     }
 

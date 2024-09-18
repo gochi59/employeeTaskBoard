@@ -54,6 +54,7 @@ export interface Employee{
   doj:string;
   projectTitles:string[];
   empTask:Task[];
+  apprasailDone:boolean;
 }
 export interface TemporaryEmployee{
   email: string;
