@@ -1,11 +1,14 @@
 package com.apprasail.beesheet.beesheet.Services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
+import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
@@ -36,15 +39,24 @@ public class EmployeeDashboardService {
         employeeRepo.save(emp);
     }
 
-    public List<ProjectDTO> getProject(int id) {
-        Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Id"));
-        return (employee.getProjects().stream().map(project->{
-            ProjectDTO projectDTO=new ProjectDTO();
-            projectDTO.setEmp(project.getEmp().stream().map(emp->employeeToDTO.employeeDTO(emp)).toList());
-            projectDTO.setId(project.getId());
-            projectDTO.setName(project.getName());
-            return projectDTO;
-        }).toList());
-    }
+   public List<ProjectDTO> getProject(int id) {
+    Employee employee = employeeRepo.findById(id)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid Id"));
+
+    List<Project> projectsCopy = new ArrayList<>(employee.getProjects());
+
+    return projectsCopy.stream()
+            .map(project -> {
+                ProjectDTO projectDTO = new ProjectDTO();
+                projectDTO.setEmp(project.getEmp().stream()
+                                    .map(emp -> employeeToDTO.employeeDTO(emp))
+                                    .collect(Collectors.toList()));
+                projectDTO.setId(project.getId());
+                projectDTO.setName(project.getName());
+                return projectDTO;
+            })
+            .collect(Collectors.toList());
+}
+
 
 }

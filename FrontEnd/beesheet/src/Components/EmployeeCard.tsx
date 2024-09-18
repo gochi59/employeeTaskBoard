@@ -4,8 +4,9 @@ interface props{
     emp:Employee;
     openEmpTasks:()=>void;
     buttonText:string;
+    allProjects:string[];
 }
-const EmployeeCard = ({emp,openEmpTasks,buttonText}:props) => {
+const EmployeeCard = ({emp,openEmpTasks,buttonText,allProjects}:props) => {
   return (
     <div>
       <div className="col h-100 mt-2 p-1" key={emp.empId}>
@@ -27,7 +28,7 @@ const EmployeeCard = ({emp,openEmpTasks,buttonText}:props) => {
                         <strong>Projects:</strong>
                       </p>
                       <ul className="list-unstyled">
-                        {emp.projectTitles.map((project) => (
+                        {allProjects.map((project) => (
                           <li className="badge bg-secondary me-2">{project}</li>
                         ))}
                       </ul>

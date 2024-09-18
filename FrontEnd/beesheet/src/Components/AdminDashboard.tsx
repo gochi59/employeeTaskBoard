@@ -166,7 +166,7 @@ const AdminDashboard = () => {
               })
               .map((emp: Employee) => (
                 
-                <EmployeeCard emp={emp} openEmpTasks={() => openEmpTasks(emp.empId)} buttonText={"Tasks"}></EmployeeCard>))}
+                <EmployeeCard emp={emp} openEmpTasks={() => openEmpTasks(emp.empId)} buttonText={"Tasks"} allProjects={emp.projectTitles}></EmployeeCard>))}
         </div>
       </div>
 

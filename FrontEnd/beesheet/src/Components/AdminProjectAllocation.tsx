@@ -8,56 +8,78 @@ import { FieldValues, useForm } from "react-hook-form";
 const AdminProjectAllocation = () => {
   const config = useSelector((state: ReduxState) => state.header);
   const [empList, setEmpList] = useState<Employee[]>([]);
-  const [currEmpId, setCurrEmpId] = useState<number | null>(null); 
+  const [currEmp, setCurrEmp] = useState<Employee>();
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [projectModalToggle, setProjectModalToggle] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
-  
-  useEffect(() => {
-    async function getAllEmp() {
-      try {
-        const res = await axios.get("http://localhost:8080/admin/employees", config);
-        setEmpList(res.data);
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-      }
+  async function getAllEmp() {
+    try {
+      const res = await axios.get(
+        "http://localhost:8080/admin/employees",
+        config
+      );
+      setEmpList(res.data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
     }
+  }
+  useEffect(() => { 
     getAllEmp();
-  }, [config]);
+  }, [config,currEmp]);
 
-  
-  const openProjects = (empId: number) => {
-    setCurrEmpId(empId); 
+  const sampleEmployee = {
+    email: "string",
+    contactNumber: "string",
+    empId: -1,
+    firstName: "string",
+    lastName: "string",
+    designationTitle: "string",
+    role: "string",
+    doj: "string",
+    projectTitles: [],
+  };
+
+  const openProjects = (empId: Employee) => {
+    setCurrEmp(empId);
     async function getAllProjects() {
       try {
-        const res = await axios.get(`http://localhost:8080/${empId}/project`, config);
+        const res = await axios.get(`http://localhost:8080/project`, config);
         setProjectList(res.data);
-        setProjectModalToggle(true); 
+        setProjectModalToggle(true);
+        // setCurrEmp(empId);
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
     }
     getAllProjects();
+    // console.log(empList);
+    // console.log(projectList,currEmp)
   };
-
 
   const closeModal = () => {
     setProjectModalToggle(false);
-    reset(); 
+    reset();
   };
 
   const assignProjects = async (data: FieldValues) => {
-    if (currEmpId) {
-      try {
-        console.log(`Assigning project ${data.project} to employee ${currEmpId}`);
-
-       
-        setProjectModalToggle(false);
-        reset();
-      } catch (error) {
-        console.error("Error assigning project:", error);
+    // console.log(projectList);
+    if (currEmp) {
+      async function addEmpToProject() {
+        try {
+          await axios.get(
+            `http://localhost:8080/admin/project/${data.project}/${currEmp?.empId}`,
+            config
+          );
+          setProjectModalToggle(false);
+          getAllEmp();  
+          reset();
+        } catch (error) {
+          console.error("Error assigning project:", error);
+        }
       }
+      addEmpToProject();
+      
     }
   };
 
@@ -68,11 +90,10 @@ const AdminProjectAllocation = () => {
           .filter((emp: Employee) => emp.role === "empl")
           .map((emp: Employee) => (
             <EmployeeCard
-              key={emp.empId}
-              emp={emp}
-              openEmpTasks={() => openProjects(emp.empId)} 
-              buttonText="Projects" 
-            />
+                  key={emp.empId}
+                  emp={emp}
+                  openEmpTasks={() => openProjects(emp)}
+                  buttonText="Projects" allProjects={emp.projectTitles}            />
           ))}
       </div>
 
@@ -97,14 +118,26 @@ const AdminProjectAllocation = () => {
               <form className="" onSubmit={handleSubmit(assignProjects)}>
                 <div className="modal-body">
                   <label htmlFor="project">Select a project:</label>
-                  <select id="project" required {...register("project")} className="form-select">
+                  <select
+                    id="project"
+                    required
+                    {...register("project")}
+                    className="form-select"
+                  >
                     <option value="">--Select Project--</option>
                     {projectList &&
-                      projectList.map((project: Project) => (
-                        <option key={project.id} value={project.name}>
-                          {project.name}
-                        </option>
-                      ))}
+                      projectList
+                        .filter(
+                          (project: Project) =>
+                            !project.emp.some(
+                              (emp: Employee) => emp.empId === currEmp?.empId
+                            )
+                        )
+                        .map((project: Project) => (
+                          <option key={project.id} value={project.id}>
+                            {project.name}
+                          </option>
+                        ))}
                   </select>
                 </div>
                 <div className="modal-footer d-flex justify-content-between">

@@ -70,6 +70,7 @@ const Signup = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<FormDataForSignup>({ resolver: zodResolver(schema) });
 
   const formSubmit = async (data: FieldValues) => {
@@ -135,6 +136,7 @@ const Signup = () => {
               name="firstname"
               id="firstname"
               className="form-control mb-2"
+              
             />
             {errors.firstname && (
               <p className="text-danger">{errors.firstname.message}</p>
