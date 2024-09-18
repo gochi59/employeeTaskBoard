@@ -22,6 +22,6 @@ public class EmployeeDTO {
     private List<Task> empTask;
     private Map<Attributes,String>attributeRating;
     private List<String>notifications;
-    private boolean apprasailDone=false;
+    // private boolean apprasailDone=false;
     
 }

@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -39,4 +38,5 @@ public class TemporaryUser {
     String password;
 
     boolean isApproved=false;
+    // boolean apprasailDone=false;
 }

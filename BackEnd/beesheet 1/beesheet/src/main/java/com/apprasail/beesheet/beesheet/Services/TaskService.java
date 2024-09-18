@@ -65,10 +65,10 @@ public class TaskService {
     @Transactional
     public void updateTask(int empId, int taskId, TaskInput input) {
         Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
-        if(input.isMarkedForAppraisal())
-        {
-            employee.setApprasailDone(false);
-        }
+        // if(input.isMarkedForAppraisal())
+        // {
+        //     employee.setApprasailDone(false);
+        // }
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
             Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));

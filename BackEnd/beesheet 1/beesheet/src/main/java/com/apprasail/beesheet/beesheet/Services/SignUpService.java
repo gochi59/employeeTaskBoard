@@ -22,6 +22,8 @@ import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.Entities.TemporaryUser;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class SignUpService {
 
@@ -41,6 +43,7 @@ public class SignUpService {
         this.employeeDesignationRatingRepo=employeeDesignationRatingRepo;
     }
 
+    @Transactional
     public void addEmployee(TemporaryUser input) {
         String inputEmail = input.getEmail();
         List<Employee> employees = employeeRepo.findAll();
@@ -75,6 +78,7 @@ public class SignUpService {
     public void approveUser(int id) {
         TemporaryUser input = temporaryUserRepo.findById(id).orElseThrow(() -> new IllegalArgumentException());
         Employee emp = new Employee();
+        // emp.setApprasailDone(false);
         emp.setFirstName(input.getFirstName());
         emp.setLastName(input.getLastName());
         emp.setDOJ(input.getDateOfJoin());

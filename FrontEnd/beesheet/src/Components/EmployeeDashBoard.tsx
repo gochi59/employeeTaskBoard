@@ -182,7 +182,7 @@ const EmployeeDashBoard = () => {
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
-          {!taskList && <h2>No Tasks Added</h2>}
+          {taskList.length==0 && <h2>No Tasks Added</h2>}
           {taskList &&
             taskList.map((tasks: Task) => (
               <div

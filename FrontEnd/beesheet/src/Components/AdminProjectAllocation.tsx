@@ -84,7 +84,7 @@ const AdminProjectAllocation = () => {
   };
 
   return (
-    <div className="container-fluid min-vh-100 bg-dark-subtle">
+    <div className="container-fluid min-vh-100 bg-dark-subtle p-2" >
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
         {empList
           .filter((emp: Employee) => emp.role === "empl")

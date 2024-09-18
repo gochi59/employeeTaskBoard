@@ -9,8 +9,8 @@ interface props{
 const EmployeeCard = ({emp,openEmpTasks,buttonText,allProjects}:props) => {
   return (
     <div>
-      <div className="col h-100 mt-2 p-1" key={emp.empId}>
-                  <div className="card h-100 shadow-sm border-0 rounded-4">
+      <div className="col h-100 mt-2 p-2" key={emp.empId}>
+                  <div className="card h-100 shadow-sm border-0 rounded-4 ">
                     <div className="card-body">
                       <h5 className="card-title mb-3 text-primary">
                         {emp.firstName} {emp.lastName}
