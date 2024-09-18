@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
+import { clearToken } from "../redux/HeaderSlice";
 
 interface Props {
   empId: string;
@@ -12,6 +14,8 @@ const Navbar = ({ empId, config }: Props) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement | null>(null);
   const internalRef = useRef<number | null>(null);
+  const dispatch=useDispatch();
+  const [logoutTogal,setLogOutTogal]=useState(false);
   const interval = 10000; 
 
   async function getAllNotifications() {
@@ -60,6 +64,16 @@ const Navbar = ({ empId, config }: Props) => {
     };
   }, []);
 
+  const logout=()=> {
+    localStorage.removeItem("userToken");
+    dispatch(clearToken());
+    setLogOutTogal(true);
+  }
+  if(logoutTogal)
+  {
+    return <Navigate to="/"></Navigate>
+  }
+
   return (
     <div className="navbar bg-dark text-bg-dark px-2 fixed-top d-flex justify-content-between align-items-center">
       <div className="navbar-brand text-light">
@@ -100,7 +114,7 @@ const Navbar = ({ empId, config }: Props) => {
             )}
           </div>
         )}
-        <button className="btn btn-dark ms-3">Logout</button>
+        <button className="btn btn-dark ms-3" onClick={logout}>Logout</button>
       </div>
     </div>
   );

@@ -23,8 +23,15 @@ export const Slice = createSlice({
     //   console.log(state.header,state.ID);
       
     },
+    clearToken:(state)=>{
+      state.header={
+        headers:{Authorization:""}
+      };
+      state.ID=""
+
+    }
   },
 });
 
-export const { changeToken } = Slice.actions;
+export const { changeToken,clearToken } = Slice.actions;
 export default Slice.reducer;

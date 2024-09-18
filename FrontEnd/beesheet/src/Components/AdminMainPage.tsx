@@ -12,10 +12,10 @@ const AdminMainPage = () => {
     const headerConfig=useSelector((state:ReduxState)=>state.header);
   return (
     <div>
-      <div>
+      <div className='container-fluid'>
       <NavbarComponent empId={loginId} config={headerConfig} />
 
-      <div className="container-fluid mt-4 bg-dark-subtle min-vh-100">
+      <div className="container-fluid pt-3 mt-5 bg-dark-subtle min-vh-100">
         <h2>Admin Dashboard</h2>
 
         <div className="accordion row-cols-auto" id="adminAccordion">
