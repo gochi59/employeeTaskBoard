@@ -25,8 +25,10 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class AdminDashboardServices {
 
     private final EmployeeRepo employeeRepo;
@@ -36,16 +38,16 @@ public class AdminDashboardServices {
     private final AttributeRepo attributeRepo;
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
 
-    public AdminDashboardServices(EmployeeDesignationRatingRepo employeeDesignationRatingRepo,
-            AttributeRepo attributeRepo, TaskInputToObject taskInputToObject, TaskRepository taskRepository,
-            EmployeeRepo employeeRepo, ProjectRepo projectRepo, EmployeeToDTO employeeToDTO) {
-        this.employeeRepo = employeeRepo;
-        this.projectRepo = projectRepo;
-        this.employeeToDTO = employeeToDTO;
-        this.taskRepository = taskRepository;
-        this.attributeRepo = attributeRepo;
-        this.employeeDesignationRatingRepo = employeeDesignationRatingRepo;
-    }
+    // public AdminDashboardServices(EmployeeDesignationRatingRepo employeeDesignationRatingRepo,
+    //         AttributeRepo attributeRepo, TaskInputToObject taskInputToObject, TaskRepository taskRepository,
+    //         EmployeeRepo employeeRepo, ProjectRepo projectRepo, EmployeeToDTO employeeToDTO) {
+    //     this.employeeRepo = employeeRepo;
+    //     this.projectRepo = projectRepo;
+    //     this.employeeToDTO = employeeToDTO;
+    //     this.taskRepository = taskRepository;
+    //     this.attributeRepo = attributeRepo;
+    //     this.employeeDesignationRatingRepo = employeeDesignationRatingRepo;
+    // }
 
     public List<EmployeeDTO> findAll() {
         List<Employee> list = employeeRepo.findAll();

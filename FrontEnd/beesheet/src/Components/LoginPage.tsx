@@ -37,7 +37,7 @@ const LoginPage = () => {
       setNavigate(true);
     } catch (error: any) {
         console.log(error);
-      if (error.response.status === 401) {
+      if (error) {
         alert("Invalid Username or password");
       }
     }
@@ -45,7 +45,7 @@ const LoginPage = () => {
       setSubmitting(false);
     }
   };
-  
+
   const dispatch=useDispatch();
 
   if(navigate)

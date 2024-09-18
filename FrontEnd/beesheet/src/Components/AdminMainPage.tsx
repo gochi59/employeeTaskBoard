@@ -12,7 +12,7 @@ const AdminMainPage = () => {
     const headerConfig=useSelector((state:ReduxState)=>state.header);
   return (
     <div>
-      <div className='container-fluid'>
+      <div className=''>
       <NavbarComponent empId={loginId} config={headerConfig} />
 
       <div className="container-fluid pt-3 mt-5 bg-dark-subtle min-vh-100">

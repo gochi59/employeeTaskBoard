@@ -224,7 +224,7 @@ const EmployeeDashBoard = () => {
                         <OverlayTrigger
                           delay={{ hide: 450, show: 200 }}
                           overlay={(props) => (
-                            <Tooltip {...props}>Office</Tooltip>
+                            <Tooltip {...props}>Home</Tooltip>
                           )}
                         >
                           <FontAwesomeIcon icon={faHouse} className="ps-1" />
