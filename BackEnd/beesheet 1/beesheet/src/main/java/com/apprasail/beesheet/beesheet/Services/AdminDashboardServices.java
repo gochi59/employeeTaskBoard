@@ -24,6 +24,8 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class AdminDashboardServices {
 
@@ -98,10 +100,12 @@ public class AdminDashboardServices {
         taskRepository.save(task);
     }
 
+    @Transactional
     public void changeAttributeRating(int id, EmployeeRatingInput input) {
 
         Employee employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
+        employee.setApprasailDone(true);
         List<Attributes> attributes = employee.getDesignation().getAttributes();
         EmployeeDesignationMapping employeeDesignationMapping = employee.getEmployeeDesignationMapping();
 

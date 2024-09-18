@@ -14,7 +14,7 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
   const { register, handleSubmit, reset } = useForm();
   return (
     <div>
-      (
+      
         <div
         className="modal show d-block"
         tabIndex={-1}
@@ -130,7 +130,6 @@ const TaskAttributeRating = ({closeModal,ratingSubmit,currEmpTaskList,empAttribu
           </div>
         </div>
       </div>
-    )
     </div>
   )
 }

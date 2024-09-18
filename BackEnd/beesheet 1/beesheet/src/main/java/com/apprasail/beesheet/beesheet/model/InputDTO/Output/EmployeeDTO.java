@@ -2,6 +2,7 @@ package com.apprasail.beesheet.beesheet.model.InputDTO.Output;
 
 import java.util.List;
 import java.util.Map;
+
 import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 
@@ -21,4 +22,6 @@ public class EmployeeDTO {
     private List<Task> empTask;
     private Map<Attributes,String>attributeRating;
     private List<String>notifications;
+    private boolean apprasailDone=false;
+    
 }

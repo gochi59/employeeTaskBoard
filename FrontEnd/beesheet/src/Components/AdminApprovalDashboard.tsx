@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Employee, ReduxState, TemporaryEmployee } from "../models/AllModels";
 import { useSelector } from "react-redux";
+import ToastComponent from "./ToastComponent";
 
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>([]);
@@ -107,23 +108,7 @@ const AdminApprovalDashboard = () => {
         ))}
       </div>
       {errorPresent && (
-        <div
-          className="toast show position-fixed bottom-0 end-0 m-3"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="toast-header">
-            <strong className="me-auto">Message</strong>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={closeMessage}
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{errorPresent}</div>
-        </div>
+     <ToastComponent closeMessage={closeMessage} errorPresent={errorPresent}/>
       )}
     </div>
   );

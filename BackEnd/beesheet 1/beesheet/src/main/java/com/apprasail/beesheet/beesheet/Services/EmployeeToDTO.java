@@ -56,6 +56,7 @@ public class EmployeeToDTO {
             emp.setNotification(new ArrayList<>());
         employeeRepo.save(emp);
         employeeDTO.setNotifications(emp.getNotification());
+        employeeDTO.setApprasailDone(emp.isApprasailDone());
         return employeeDTO;
     }
 }

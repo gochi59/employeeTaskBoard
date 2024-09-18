@@ -12,6 +12,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
 import TaskAttributeRating from "./TaskAttributeRating";
+import EmployeeCard from "./EmployeeCard";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
@@ -110,11 +111,18 @@ const AdminDashboard = () => {
       const attributeTitle = attribute.attribute;
       async function changeAttributeRating() {
         try {
+          const notification={
+            data:`Admin has rated your tasks marked for appraisal`
+          }
           attribute.rating = data[attributeTitle];
           const res = await axios.put(
             "http://localhost:8080/admin/employee/attribute/" + currEmpId,
             attribute,
             headerConfig
+          );
+          await axios.post(
+            "http://localhost:8080/notification/"+currEmpId,
+            notification
           );
           console.log(res);
         } catch (error) {
@@ -125,12 +133,13 @@ const AdminDashboard = () => {
       closeModal();
     });
   };
-
+  
+  console.log(empList);
   return (
     <div>
       <Navbar empId={loginId} config={headerConfig} />
-      <div className="container-fluid bg-dark-subtle mt-4 p-4 vh-100">
-        <form className="d-flex ">
+      <div className="container-fluid bg-dark-subtle mt-4 p-4 min-vh-100">
+        <form className="d-flex justify-content-end">
           <input
             type="search"
             name="search"
@@ -146,7 +155,8 @@ const AdminDashboard = () => {
             Search
           </button>
         </form>
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
           {empList &&
             empList
               .filter((emp: Employee) => {
@@ -155,53 +165,19 @@ const AdminDashboard = () => {
                 return empDate <= currDate - 1 && emp.role != "ADMIN";
               })
               .map((emp: Employee) => (
-                <div className="col" key={emp.empId}>
-                  <div className="card h-100 shadow-sm border-0 rounded-4">
-                    <div className="card-body">
-                      <h5 className="card-title mb-3 text-primary">
-                        {emp.firstName} {emp.lastName}
-                      </h5>
-                      <p className="card-text">
-                        <strong>Designation:</strong> {emp.designationTitle}
-                      </p>
-                      <p className="card-text">
-                        <strong>Email:</strong> {emp.email}
-                      </p>
-                      <p className="card-text">
-                        <strong>Date of Joining:</strong> {emp.doj}
-                      </p>
-                      <p className="card-text">
-                        <strong>Projects:</strong>
-                      </p>
-                      <ul className="list-unstyled">
-                        {emp.projectTitles.map((project) => (
-                          <li className="badge bg-secondary me-2">{project}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="card-footer d-flex bg-transparent justify-content-between">
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => openEmpTasks(emp.empId)}
-                      >
-                        Tasks
-                      </button>
-                      <p className="text-muted h5">Employee ID: {emp.empId}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                
+                <EmployeeCard emp={emp} openEmpTasks={() => openEmpTasks(emp.empId)} buttonText={"Tasks"}></EmployeeCard>))}
         </div>
       </div>
 
-      {showModal && (
+      {showModal && 
         <TaskAttributeRating
           closeModal={closeModal}
           ratingSubmit={ratingSubmit}
           currEmpTaskList={currEmpTaskList}
           empAttributeRating={empAttributeRating}
         ></TaskAttributeRating>
-      )}
+      }
     </div>
   );
 };

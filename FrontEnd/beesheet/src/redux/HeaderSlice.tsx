@@ -4,8 +4,8 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 const initialState = {
   header: {
     headers:{Authorization:"Bearer "+localStorage.getItem("userToken"),}
-  },
-  ID: jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub,
+  }||{},
+  ID: localStorage.getItem("userToken")?jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub:"",
 };
 
 export const Slice = createSlice({

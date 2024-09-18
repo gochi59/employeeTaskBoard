@@ -97,7 +97,7 @@ const EmployeeDashBoard = () => {
     const task = {
       title: e.title,
       markedForAppraisal:
-        e.markedForAppraisal === undefined ? false : e.markedForAppraisal,
+      e.markedForAppraisal === undefined ? false : e.markedForAppraisal,
       workLocation: e.workLocation,
       project: e.project,
       time: e.time,
@@ -107,11 +107,21 @@ const EmployeeDashBoard = () => {
      
     if(modalText) {
       try {
-        const res = await axios.post(
+        await axios.post(
           "http://localhost:8080/tasks/" + empId,
           task,
           config
         );
+        if(task.markedForAppraisal)
+        {
+          const notification={
+            data:`User ${empId} added a task for appraisal`,
+          }
+          await axios.post(
+            "http://localhost:8080/notification/702",
+            notification
+          );
+        }
         setTaskList([...taskList, task]);
         reset();
         setTogalModal(false);
@@ -167,7 +177,7 @@ const EmployeeDashBoard = () => {
   };
 // console.log(taskList);
   return (
-    <div className="bg-dark-subtle vh-100 overflow-y-scroll">
+    <div className="bg-dark-subtle vh-100 overflow-y-scroll mt-5">
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
@@ -199,7 +209,8 @@ const EmployeeDashBoard = () => {
                       )}
                     </span>{" "}
                     <button
-                      className="btn btn-primary col-1"
+                      className="btn btn-primary col-lg-1 col-auto"
+                      disabled={tasks.taskRating?true:false}
                       onClick={() => {
                         editTask(tasks);
                       }}
@@ -217,8 +228,9 @@ const EmployeeDashBoard = () => {
                       Date Added: {tasks.date} Time Spent: {tasks.time}
                     </span>
                     <button
-                      className="btn btn-danger col-1"
+                      className="btn btn-danger col-lg-1 col-auto"
                       onClick={() => deleteTask(tasks)}
+                      disabled={tasks.taskRating?true:false}
                     >
                       Delete
                     </button>

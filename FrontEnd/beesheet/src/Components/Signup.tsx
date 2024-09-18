@@ -10,6 +10,8 @@ import { z, ZodSchema } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is imported
 import "bootstrap/dist/js/bootstrap.bundle.min"; // Ensure Bootstrap JS is imported
+import { Toast } from "react-bootstrap";
+import ToastComponent from "./ToastComponent";
 
 const Signup = () => {
   const [designationList, setDesignationList] = useState<Designation[]>([]);
@@ -30,16 +32,14 @@ const Signup = () => {
     getAllDesignation();
   }, []);
 
-  useEffect(()=>{
-    if(errorPresent)
-    {
-      const timer=setTimeout(()=>{
+  useEffect(() => {
+    if (errorPresent) {
+      const timer = setTimeout(() => {
         setErrorPresent("");
-
-      },900);
-      return ()=>clearTimeout(timer);
+      }, 900);
+      return () => clearTimeout(timer);
     }
-    },[errorPresent])
+  }, [errorPresent]);
   if (designationList) {
     useEffect(() => {
       const designationTitles =
@@ -88,10 +88,13 @@ const Signup = () => {
       const res = await axios.post("http://localhost:8080/signup", employee);
       console.log(res);
       setErrorPresent("Submitted Succesfully Wait for Approval ");
-      const notificationInput={
-        data:"New User Added"
-      }
-      await axios.post("http://localhost:8080/notification/702", notificationInput);
+      const notificationInput = {
+        data: `User ${employee.firstName} ${employee.lastName} just signed up`,
+      };
+      await axios.post(
+        "http://localhost:8080/notification/702",
+        notificationInput
+      );
       reset();
     } catch (error: any) {
       const err = error.response.data;
@@ -240,23 +243,10 @@ const Signup = () => {
             </button>
           </form>
           {errorPresent && (
-            <div
-              className="toast show position-fixed bottom-0 end-0 m-3"
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-            >
-              <div className="toast-header">
-                <strong className="me-auto">Message</strong>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleToastClose}
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="toast-body">{errorPresent}</div>
-            </div>
+            <ToastComponent
+              closeMessage={handleToastClose}
+              errorPresent={errorPresent}
+            />
           )}
         </div>
       </div>
