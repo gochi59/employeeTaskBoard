@@ -14,8 +14,8 @@ const Navbar = ({ empId, config }: Props) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement | null>(null);
   const internalRef = useRef<number | null>(null);
-  const dispatch=useDispatch();
-  const [logoutTogal,setLogOutTogal]=useState(false);
+  const dispatch = useDispatch();
+  const [logoutToggle, setLogoutToggle] = useState(false);
   const interval = 10000; 
 
   async function getAllNotifications() {
@@ -25,7 +25,6 @@ const Navbar = ({ empId, config }: Props) => {
         config
       );
       console.log("called");
-      
       setNotificationList(res.data);
     } catch (error) {
       console.log(error);
@@ -42,6 +41,19 @@ const Navbar = ({ empId, config }: Props) => {
 
   const toggleNotifications = () => {
     setShowNotifications(prev => !prev);
+  };
+
+  const clearAllNotifications = () => {
+    async function deleteNotification()
+    {
+      try {
+        await axios.delete("http://localhost:8080/notification/" + empId,config);
+        setNotificationList([]);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    deleteNotification();
   };
 
   useEffect(() => {
@@ -64,14 +76,14 @@ const Navbar = ({ empId, config }: Props) => {
     };
   }, []);
 
-  const logout=()=> {
+  const logout = () => {
     localStorage.removeItem("userToken");
     dispatch(clearToken());
-    setLogOutTogal(true);
+    setLogoutToggle(true);
   }
-  if(logoutTogal)
-  {
-    return <Navigate to="/"></Navigate>
+
+  if (logoutToggle) {
+    return <Navigate to="/" />;
   }
 
   return (
@@ -99,8 +111,14 @@ const Navbar = ({ empId, config }: Props) => {
           <div
             ref={notificationRef}
             className="position-absolute end-0 top-100 mt-2 bg-light shadow rounded border"
-            style={{ width: '300px', maxHeight: '400px', overflowY: 'auto' }}
+            style={{ width: '320px', maxHeight: '400px', overflowY: 'auto' }}
           >
+            <div className="p-2 d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">Notifications</h5>
+              <button className="btn btn-sm btn-outline-danger" onClick={clearAllNotifications} disabled={notificationList.length==0}>
+                Clear All
+              </button>
+            </div>
             {notificationList.length > 0 ? (
               <ul className="list-group">
                 {notificationList.slice().reverse().map((notification, index) => (

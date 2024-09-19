@@ -1,5 +1,6 @@
 package com.apprasail.beesheet.beesheet.Services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -33,5 +34,16 @@ public class NotificationService {
         emp.setNotification(notifications);
         employeeRepo.save(emp);
 
+    }
+
+    public void deleteAll(int id) {
+        Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Argument"));
+        employee.setNotification(new ArrayList<>());
+        employeeRepo.save(employee);
+    }
+
+    public List<String> getNotif(int id) {
+        Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Argument"));
+        return employee.getNotification();
     }
 }
