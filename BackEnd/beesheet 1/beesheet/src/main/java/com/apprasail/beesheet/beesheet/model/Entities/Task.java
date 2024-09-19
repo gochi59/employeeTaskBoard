@@ -1,5 +1,9 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -31,8 +35,8 @@ public class Task {
     @NotBlank(message = "Enter valid description")
     String description;
 
-    @NotBlank(message = "Invalid date")
-    String date;
+    @DateTimeFormat(pattern="yyyy-mm-dd")
+    Date date;
 
     String taskRating;
 }

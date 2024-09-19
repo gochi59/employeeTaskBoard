@@ -19,6 +19,10 @@ public class AttributeService {
     }
 
     public void addAttribute(Attributes attributeInput) {
+        Attributes attribute=attributeRepo.findByTitle(attributeInput.getTitle());
+        // System.out.println(attribute);
+        if(attribute!=null)
+            throw new IllegalArgumentException("Attribute with this name already exists");
         attributeRepo.save(attributeInput);
     }
 

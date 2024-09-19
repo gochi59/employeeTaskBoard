@@ -1,5 +1,6 @@
 package com.apprasail.beesheet.beesheet.model.InputDTO.Output;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private String doj;
+    private Date doj;
     private String contactNumber;
     private String role;
     private String designationTitle; 

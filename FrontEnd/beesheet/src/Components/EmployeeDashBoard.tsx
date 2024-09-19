@@ -78,7 +78,7 @@ const EmployeeDashBoard = () => {
     }
     getTaskList();
     getProjectList();
-  }, [config]);
+  }, []);
   // console.log(config);
 
   const addTask = () => {
@@ -107,19 +107,11 @@ const EmployeeDashBoard = () => {
       date: e.date,
       taskId: currTask?.taskId,
     };
+    console.log(task);
 
     if (modalText) {
       try {
         await axios.post("http://localhost:8080/tasks/" + empId, task, config);
-        if (task.markedForAppraisal) {
-          const notification = {
-            data: `${empId} added a task for appraisal`,
-          };
-          await axios.post(
-            "http://localhost:8080/notification/702",
-            notification
-          );
-        }
         setTaskList([...taskList, task]);
         reset();
         setTogalModal(false);

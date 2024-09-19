@@ -25,6 +25,7 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class SignUpService {
 
     private final EmployeeRepo employeeRepo;

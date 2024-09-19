@@ -1,5 +1,9 @@
 package com.apprasail.beesheet.beesheet.model.InputDTO.Input;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -22,8 +26,8 @@ public class TaskInput {
     @NotBlank(message = "Enter valid description")
     String description;
 
-    @NotBlank(message = "Invalid date")
-    String date;
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    Date date;
 
     String taskRating;
 

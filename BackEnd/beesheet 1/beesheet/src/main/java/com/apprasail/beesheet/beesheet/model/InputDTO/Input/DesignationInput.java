@@ -12,8 +12,6 @@ public class DesignationInput {
 
     @NotBlank(message="Invalid designation name")
     String name;
-    
-    @NotEmpty(message="Invalid attribute list")
-    List<String> attributes;
+
     
 }

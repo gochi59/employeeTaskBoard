@@ -1,7 +1,10 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -37,8 +40,8 @@ public class Employee {
     @Email(message = "Invalid email")
     private String email;
 
-    @NotBlank(message = "Invalid date of joining")
-    private String dOJ;
+    @DateTimeFormat(pattern="yyyy-mm-dd")
+    private Date dOJ;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Designation designation;

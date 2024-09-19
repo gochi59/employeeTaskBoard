@@ -1,5 +1,9 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -21,9 +25,9 @@ public class TemporaryUser {
         
     @Email(message = "Invalid email")
     String email;
-    
-    @NotBlank(message="Invalid date of joining")
-    String dateOfJoin;
+
+    @DateTimeFormat(pattern="yyyy-mm-dd")
+    Date dateOfJoin;
     
     @NotBlank(message = "Invalid contact number")
     String contactNumber;

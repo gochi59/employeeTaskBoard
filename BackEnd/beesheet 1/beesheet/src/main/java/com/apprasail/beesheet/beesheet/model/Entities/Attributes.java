@@ -1,7 +1,6 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
-import org.hibernate.annotations.DialectOverride.GeneratedColumns;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,6 +16,7 @@ public class Attributes {
     private int id;
     
     @NotBlank
+    @Column(unique=true)
     private String title;
 
 }
