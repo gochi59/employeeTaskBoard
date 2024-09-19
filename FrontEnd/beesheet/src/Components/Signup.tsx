@@ -89,13 +89,6 @@ const Signup = () => {
       const res = await axios.post("http://localhost:8080/signup", employee);
       console.log(res);
       setErrorPresent("Submitted Succesfully Wait for Approval ");
-      const notificationInput = {
-        data: `User ${employee.firstName} ${employee.lastName} just signed up`,
-      };
-      await axios.post(
-        "http://localhost:8080/notification/702",
-        notificationInput
-      );
       reset();
     } catch (error: any) {
       const err = error.response.data;

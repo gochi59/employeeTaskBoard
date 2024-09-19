@@ -26,7 +26,7 @@ const AdminProjectAllocation = () => {
   }
   useEffect(() => { 
     getAllEmp();
-  }, [config,currEmp]);
+  }, [currEmp]);
 
   const sampleEmployee = {
     email: "string",
