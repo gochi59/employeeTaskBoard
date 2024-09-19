@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.management.Notification;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,11 @@ import com.apprasail.beesheet.beesheet.model.Entities.TemporaryUser;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class SignUpService {
 
     private final EmployeeRepo employeeRepo;
@@ -34,15 +38,7 @@ public class SignUpService {
     private final EmailService emailService;
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
     private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
-
-    public SignUpService(EmployeeRepo employeeRepo, DesignationRepo designationRepo,
-            TemporaryUserRepo temporaryUserRepo, EmailService emailService,EmployeeDesignationRatingRepo employeeDesignationRatingRepo) {
-        this.employeeRepo = employeeRepo;
-        this.temporaryUserRepo = temporaryUserRepo;
-        this.designationRepo = designationRepo;
-        this.emailService = emailService;
-        this.employeeDesignationRatingRepo=employeeDesignationRatingRepo;
-    }
+    private final NotificationService notificationService;
 
     @Transactional
     public void addEmployee(TemporaryUser input) {
@@ -56,6 +52,7 @@ public class SignUpService {
         }
         input.setPassword(encoder.encode(input.getPassword()));
         temporaryUserRepo.save(input);
+        notificationService.sendNotifToAdmin(input.getFirstName()+" "+input.getLastName()+" just signed up");
     }
 
     public List<EmployeeDTO> findAll() {

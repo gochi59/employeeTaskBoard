@@ -1,7 +1,10 @@
 package com.apprasail.beesheet.beesheet.Services;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.management.Notification;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
@@ -14,19 +17,16 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepo;
     private final EmployeeRepo employeeRepo;
     private final TaskInputToObject taskInputToObject;
-
-    public TaskService(TaskRepository taskRepo, EmployeeRepo employeeRepo, TaskInputToObject taskInputToObject) {
-        this.taskRepo = taskRepo;
-        this.employeeRepo = employeeRepo;
-        this.taskInputToObject = taskInputToObject;
-    }
+    private final NotificationService notificationService;
 
     public List<Task> getAll() {
         return taskRepo.findAll();
@@ -67,6 +67,13 @@ public class TaskService {
         Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         if(input.isMarkedForAppraisal())
         {
+            Calendar dojCalendar = Calendar.getInstance();
+            dojCalendar.setTime(employee.getDOJ());
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+            if (dojCalendar.get(Calendar.YEAR) < currentYear) {
+                notificationService.sendNotifToAdmin(employee.getFirstName() + " added task for approval.");
+            }
             employee.setApprasailDone(false);
         }
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
