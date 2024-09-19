@@ -14,6 +14,7 @@ import AdminProjectAllocation from "./Components/AdminProjectAllocation";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import AdminMainPage from "./Components/AdminMainPage";
+import LandingPage from "./Components/LandingPage";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path:"/example",
     element:<AdminMainPage/>
+  },
+  {
+    path:"/home",
+    element:<LandingPage/>
   }
 ]);
 

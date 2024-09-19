@@ -13,6 +13,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 import jakarta.transaction.Transactional;
@@ -68,6 +69,11 @@ public class EmployeeDashboardService {
                     return projectDTO;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public EmployeeDTO getEmpInfo(int id) {
+        Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Id"));
+        return employeeToDTO.employeeDTO(employee);
     }
 
 }

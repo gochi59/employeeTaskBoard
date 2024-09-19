@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { clearToken } from "../redux/HeaderSlice";
 
 interface Props {
@@ -16,9 +16,14 @@ const Navbar = ({ empId, config }: Props) => {
   const internalRef = useRef<number | null>(null);
   const dispatch = useDispatch();
   const [logoutToggle, setLogoutToggle] = useState(false);
+  const [loader,setLoader]=useState(false);
+  const [homeTogal,setHomeTogal]=useState<boolean>(false);
+  const location=useLocation();
+
   const interval = 10000; 
 
   async function getAllNotifications() {
+    setLoader(true);
     try {
       const res = await axios.get(
         "http://localhost:8080/notification/" + empId,
@@ -28,6 +33,9 @@ const Navbar = ({ empId, config }: Props) => {
       setNotificationList(res.data);
     } catch (error) {
       console.log(error);
+    }
+    finally{
+      setLoader(false);
     }
   }
 
@@ -44,6 +52,7 @@ const Navbar = ({ empId, config }: Props) => {
   };
 
   const clearAllNotifications = () => {
+    setLoader(true);
     async function deleteNotification()
     {
       try {
@@ -51,6 +60,9 @@ const Navbar = ({ empId, config }: Props) => {
         setNotificationList([]);
       } catch (error) {
         console.log(error);
+      }
+      finally{
+        setLoader(false);
       }
     }
     deleteNotification();
@@ -86,6 +98,19 @@ const Navbar = ({ empId, config }: Props) => {
     return <Navigate to="/" />;
   }
 
+  const home=()=> {
+    setHomeTogal(true);
+  }
+
+  if(homeTogal)
+  {
+    if(location.pathname!=="/home")
+    {
+      return <Navigate to="/home"/>
+    }
+    else setHomeTogal(false);
+  }
+
   return (
     <div className="navbar bg-dark text-bg-dark px-2 fixed-top d-flex justify-content-between align-items-center">
       <div className="navbar-brand text-light">
@@ -115,7 +140,7 @@ const Navbar = ({ empId, config }: Props) => {
           >
             <div className="p-2 d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Notifications</h5>
-              <button className="btn btn-sm btn-outline-danger" onClick={clearAllNotifications} disabled={notificationList.length==0}>
+              <button className="btn btn-sm btn-danger" onClick={clearAllNotifications} disabled={notificationList.length==0||loader}>
                 Clear All
               </button>
             </div>
@@ -132,6 +157,7 @@ const Navbar = ({ empId, config }: Props) => {
             )}
           </div>
         )}
+        <button className="btn btn-dark ms-3" onClick={home}>Home</button>
         <button className="btn btn-dark ms-3" onClick={logout}>Logout</button>
       </div>
     </div>

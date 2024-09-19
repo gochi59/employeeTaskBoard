@@ -53,10 +53,7 @@ const LoginPage = () => {
     const jwtToken=(String(localStorage.getItem("userToken")));
     const {Role}=jwtDecode<JwtPayload>(jwtToken);
     dispatch(changeToken());
-    if(Role==="empl")
-        return <Navigate to="/user" ></Navigate>
-    else if(Role==="ADMIN")
-        return <Navigate to="/admin" ></Navigate>
+   return <Navigate to="/home"></Navigate>
   }
   return (
     <div className="container-fluid">

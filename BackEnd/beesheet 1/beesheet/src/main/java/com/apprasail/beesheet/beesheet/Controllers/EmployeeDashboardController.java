@@ -12,8 +12,10 @@ import com.apprasail.beesheet.beesheet.Services.EmployeeDashboardService;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import jakarta.validation.Valid;
 
-
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -42,6 +44,11 @@ public class EmployeeDashboardController {
     @GetMapping("/{id}/project")
     public List<ProjectDTO> getAssignedProjects(@PathVariable int id) {
         return service.getProject(id);
+    }
+    
+    @GetMapping("/employee/{id}")
+    public EmployeeDTO getEmpInfo(@PathVariable int id) {
+        return service.getEmpInfo(id);
     }
     
 

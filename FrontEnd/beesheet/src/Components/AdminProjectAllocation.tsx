@@ -4,9 +4,11 @@ import { useSelector } from "react-redux";
 import axios, { AxiosRequestConfig } from "axios";
 import EmployeeCard from "./EmployeeCard";
 import { FieldValues, useForm } from "react-hook-form";
+import Navbar from "./NavbarComponent";
 
 const AdminProjectAllocation = () => {
   const config = useSelector((state: ReduxState) => state.header);
+  const empId=useSelector((state:ReduxState)=>state.ID);
   const [empList, setEmpList] = useState<Employee[]>([]);
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [projectList, setProjectList] = useState<Project[]>([]);
@@ -90,6 +92,8 @@ const AdminProjectAllocation = () => {
   };
 
   return (
+    <>
+    (empList&&<Navbar empId={empId} config={config}/>)
     <div className="container-fluid min-vh-100 bg-dark-subtle p-2" >
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
         {empList
@@ -164,6 +168,7 @@ const AdminProjectAllocation = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

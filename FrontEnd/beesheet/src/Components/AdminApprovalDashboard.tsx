@@ -3,12 +3,15 @@ import axios from "axios";
 import { Employee, ReduxState, TemporaryEmployee } from "../models/AllModels";
 import { useSelector } from "react-redux";
 import ToastComponent from "./ToastComponent";
+import Navbar from "./NavbarComponent";
 
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>([]);
   // const [headerConfig, setHeaderConfig] = useState({});
   const headerConfig=useSelector((state:ReduxState)=>state.header);
   const [errorPresent, setErrorPresent] = useState("");
+  const empId=useSelector((state:ReduxState)=>state.ID);
+  // const config=useSelector((state:ReduxState)=>state.header);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -64,10 +67,13 @@ const AdminApprovalDashboard = () => {
   };
 
   return (
+  <>
+    <Navbar empId={empId} config={headerConfig}/>
     <div className="container mt-4">
       <h2>Pending User Approvals</h2>
       <div className="row">
-        {users.slice().reverse().map((user: TemporaryEmployee) => (
+        {users&&
+        users.slice().reverse().map((user: TemporaryEmployee) => (
           <div className="col-md-4" key={user.tempId}>
             <div className="card mb-4 shadow-sm">
               <div className="card-body">
@@ -111,6 +117,7 @@ const AdminApprovalDashboard = () => {
      <ToastComponent closeMessage={closeMessage} errorPresent={errorPresent}/>
       )}
     </div>
+    </>
   );
 };
 

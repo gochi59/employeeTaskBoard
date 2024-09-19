@@ -137,6 +137,8 @@ const AdminDashboard = () => {
 
   console.log(empList);
   return (
+    <>
+    <Navbar empId={loginId} config={headerConfig}/>
     <div>
       <div className="container-fluid bg-dark-subtle p-2 pb-3 rounded-1">
         <form className="d-flex justify-content-end">
@@ -209,6 +211,7 @@ const AdminDashboard = () => {
         ></TaskAttributeRating>
       )}
     </div>
+    </>
   );
 };
 
