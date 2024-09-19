@@ -3,6 +3,8 @@ package com.apprasail.beesheet.beesheet.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,11 +13,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 @RestControllerAdvice
 public class ExceptionHandlerAll {
 
+    private static final Logger log=LoggerFactory.getLogger(ExceptionHandlerAll.class);
+
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.info("Error Message: "+e.getMessage()+" Error:"+e.getClass());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -48,18 +56,30 @@ public class ExceptionHandlerAll {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
+        log.info("Error Message: "+ex.getMessage()+" Error:"+ex.getClass());
+
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?>handleGeneralException(Exception exception)
     {
+        log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());
+
         return new ResponseEntity<>(exception.getClass().getName(),HttpStatus.I_AM_A_TEAPOT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String>handleBadCredentialsException(BadCredentialsException exception)
     {
+        log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<String>handleExpiredToken(ExpiredJwtException exception)
+    {
+        log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());     
+        return new ResponseEntity<>(HttpStatus.GONE);
     }
 }
