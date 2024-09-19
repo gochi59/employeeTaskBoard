@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apprasail.beesheet.beesheet.Services.AdminDashboardServices;
 import com.apprasail.beesheet.beesheet.Services.SignUpService;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmpToProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
@@ -71,9 +72,9 @@ public class AdminDashboardController {
         adminDashboardServices.addProject(projectInput);
     }
     
-    @GetMapping("/project/{projectid}/{empid}")
-    public void addEmpToProject(@PathVariable int projectid,@PathVariable int empid) {
-        adminDashboardServices.addEmpToProject(projectid,empid);
+    @PostMapping("/project/{empid}")
+    public void addEmpToProject(@RequestBody EmpToProjectInput input,@PathVariable int empid) {
+        adminDashboardServices.addEmpToProject(input,empid);
     }
 
     @PutMapping("/task/{id}")

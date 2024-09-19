@@ -18,6 +18,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
 import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmpToProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
@@ -76,22 +77,23 @@ public class AdminDashboardServices {
         projectRepo.save(project);
     }
 
-    public void addEmpToProject(int projectid, int empid) {
-        Project project = projectRepo.findById(projectid)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Project Id"));
+    public void addEmpToProject(EmpToProjectInput input, int empid) {
+        List<Project>projects=new ArrayList<>();
+        projects=(input.getProjects().stream().map(x->projectRepo.findById(x).orElseThrow(()->new IllegalArgumentException("Invaid Project Id"))).toList());
         Employee emp = employeeRepo.findById(empid)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
-        List<Employee> employees = project.getEmp();
+        projects.stream().forEach((project)->{List<Employee> employees = project.getEmp();
         if (employees != null && !employees.stream().anyMatch(empl -> empl.getEmpId() == empid)) {
-            List<Project> projects = emp.getProjects();
+            List<Project> projectsEmp = emp.getProjects();
             employees.add(emp);
             project.setEmp(employees);
             projectRepo.save(project);
-            projects.add(project);
-            emp.setProjects(projects);
+            projectsEmp.add(project);
+            emp.setProjects(projectsEmp);
             employeeRepo.save(emp);
         } else
-            throw new IllegalArgumentException("Employee already exists in this project");
+            throw new IllegalArgumentException("Employee already exists in this project");}
+        );
     }
 
     public void changeTaskRating(int id, TaskInput input) {

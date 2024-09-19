@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Employee, Project, ReduxState } from "../models/AllModels";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import EmployeeCard from "./EmployeeCard";
 import { FieldValues, useForm } from "react-hook-form";
 
@@ -63,12 +63,18 @@ const AdminProjectAllocation = () => {
   };
 
   const assignProjects = async (data: FieldValues) => {
-    // console.log(projectList);
+    let responseBody={
+        projects:[]
+    };
+    responseBody.projects=(data.project.map((str:string)=>parseInt(str)))
+    console.log(responseBody);
+    console.log(projectList);
     if (currEmp) {
       async function addEmpToProject() {
         try {
-          await axios.get(
-            `http://localhost:8080/admin/project/${data.project}/${currEmp?.empId}`,
+          await axios.post(
+            `http://localhost:8080/admin/project/${currEmp?.empId}`,
+            responseBody,
             config
           );
           setProjectModalToggle(false);
@@ -123,8 +129,8 @@ const AdminProjectAllocation = () => {
                     required
                     {...register("project")}
                     className="form-select"
+                    multiple
                   >
-                    <option value="">--Select Project--</option>
                     {projectList &&
                       projectList
                         .filter(
