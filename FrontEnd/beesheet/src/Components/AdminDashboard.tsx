@@ -46,7 +46,7 @@ const AdminDashboard = () => {
       }
     }
     getAllEmp();
-  }, [headerConfig, loginId]);
+  }, []);
 
   const openEmpTasks = (empId: number) => {
     setCurrEmpId(empId);
