@@ -5,6 +5,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import EmployeeCard from "./EmployeeCard";
 import { FieldValues, useForm } from "react-hook-form";
 import Navbar from "./NavbarComponent";
+import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 
 const AdminProjectAllocation = () => {
   const config = useSelector((state: ReduxState) => state.header);
@@ -13,9 +14,11 @@ const AdminProjectAllocation = () => {
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [projectModalToggle, setProjectModalToggle] = useState(false);
+  const [loading,setLoading]=useState(false);
   const { register, handleSubmit, reset } = useForm();
 
   async function getAllEmp() {
+    setLoading(true);
     try {
       const res = await axios.get(
         "http://localhost:8080/admin/employees",
@@ -24,6 +27,9 @@ const AdminProjectAllocation = () => {
       setEmpList(res.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
+    }
+    finally{
+        setLoading(false);
     }
   }
   useEffect(() => { 
@@ -77,10 +83,12 @@ const AdminProjectAllocation = () => {
 
   return (
     <>
-    (empList&&<Navbar empId={empId} config={config}/>)
-    <div className="container-fluid min-vh-100 bg-dark-subtle p-2" >
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-        {empList
+    
+    <div className="container-fluid min-vh-100 bg-dark-subtle p-2 overflow-x-hidden" >
+    <Navbar empId={empId} config={config}/>
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-5">
+      {loading&&<EmployeeCardSkeleton/>}
+        {!loading&&empList
           .filter((emp: Employee) => emp.role === "empl")
           .map((emp: Employee) => (
             <EmployeeCard
