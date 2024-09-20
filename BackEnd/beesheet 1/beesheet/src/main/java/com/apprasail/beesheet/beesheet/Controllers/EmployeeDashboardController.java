@@ -1,19 +1,26 @@
 package com.apprasail.beesheet.beesheet.Controllers;
 
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.apprasail.beesheet.beesheet.Services.EmployeeDashboardService;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
+
 import jakarta.validation.Valid;
 
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -30,8 +37,12 @@ public class EmployeeDashboardController {
 
     @GetMapping("/tasks/{id}")
     public ResponseEntity<?> findTaskListOfEmployee(@PathVariable int id) {
-        
-        return new ResponseEntity<>(service.getTaskofEmployee(id),HttpStatus.ACCEPTED);
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        String sub=authentication.getName();
+        System.out.println(sub);
+        if(sub.equals(String.valueOf(id)))
+        {return new ResponseEntity<>(service.getTaskofEmployee(id),HttpStatus.ACCEPTED);}
+        return new ResponseEntity<>("Token and id in url dont match",HttpStatus.FORBIDDEN);
     }
 
 
