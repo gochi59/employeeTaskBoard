@@ -4,16 +4,19 @@ import { TemporaryEmployee, ReduxState } from "../models/AllModels";
 import { useSelector } from "react-redux";
 import ToastComponent from "./ToastComponent";
 import Navbar from "./NavbarComponent";
+import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 
 const AdminApprovalDashboard = () => {
-  const [users, setUsers] = useState<TemporaryEmployee[]>([]);
+  const [users, setUsers] = useState<TemporaryEmployee[]>();
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [errorPresent, setErrorPresent] = useState("");
   const empId = useSelector((state: ReduxState) => state.ID);
   const [loader,setLoader]=useState(false);
 
+
   useEffect(() => {
     async function fetchUsers() {
+  
       try {
         const response = await axios.get(
           "http://localhost:8080/tempusers",
@@ -23,6 +26,7 @@ const AdminApprovalDashboard = () => {
       } catch (error) {
         console.error(error);
       }
+  
     }
     fetchUsers();
   }, [headerConfig]);
@@ -79,6 +83,7 @@ const AdminApprovalDashboard = () => {
       <Navbar empId={empId} config={headerConfig} />
       <div className="container-fluid min-vh-100 bg-dark-subtle pt-md-0 pt-5">
         <div className="row pt-5 mt-4">
+          {!users&&<EmployeeCardSkeleton/>}
           {users &&
             users.slice().reverse().map((user: TemporaryEmployee) => (
               <div className="col-md-4 pb-3" key={user.tempId}>
