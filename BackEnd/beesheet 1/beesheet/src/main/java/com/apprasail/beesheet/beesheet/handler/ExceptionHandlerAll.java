@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -89,5 +90,11 @@ public class ExceptionHandlerAll {
         log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());     
         return new ResponseEntity<String>(exception.getMessage(),HttpStatus.UNAUTHORIZED);
         
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<String>handleAuthorizationDeniedException(AuthorizationDeniedException exception)
+    {
+        return new ResponseEntity<>(exception.getMessage()+"JwtToken and User url being accessed do not match",HttpStatus.UNAUTHORIZED);
     }
 }

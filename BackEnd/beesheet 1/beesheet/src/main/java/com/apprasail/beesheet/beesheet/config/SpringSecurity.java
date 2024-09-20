@@ -10,9 +10,11 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +28,7 @@ import com.apprasail.beesheet.beesheet.filter.JWTFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled=true)
 public class SpringSecurity {
 
     private final UserDetailsService userDetailsService;
@@ -47,7 +50,7 @@ public class SpringSecurity {
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement((SessionManagementConfigurer<HttpSecurity> session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jWTFilter, UsernamePasswordAuthenticationFilter.class);
         return https.build();
     }
@@ -76,21 +79,4 @@ public class SpringSecurity {
         return source;
     }
 
-    // @Bean
-    // public CorsConfigurationSource corsConfigurationSource() {
-    // CorsConfiguration configuration = new CorsConfiguration();
-    // configuration.addAllowedOrigin("http://localhost:5174"); // Add your frontend
-    // URL
-    // configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST,
-    // PUT, etc.)
-    // configuration.addAllowedHeader("*"); // Allow all headers
-    // configuration.setAllowCredentials(true); // Allow credentials (e.g., cookies,
-    // authorization headers)
-
-    // UrlBasedCorsConfigurationSource source = new
-    // UrlBasedCorsConfigurationSource();
-    // source.registerCorsConfiguration("/**", configuration); // Apply CORS
-    // settings globally
-    // return source;
-    // }
 }
