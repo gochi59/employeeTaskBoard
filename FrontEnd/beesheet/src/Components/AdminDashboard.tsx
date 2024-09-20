@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
 import TaskAttributeRating from "./TaskAttributeRating";
 import EmployeeCard from "./EmployeeCard";
+import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 
 const AdminDashboard = () => {
   
@@ -90,6 +91,7 @@ const AdminDashboard = () => {
           </form>
 
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {!empList&&<EmployeeCardSkeleton/>}
             {empList &&
               empList.filter((emp: Employee) => {
                 const empDate = new Date(emp.doj).getFullYear();
