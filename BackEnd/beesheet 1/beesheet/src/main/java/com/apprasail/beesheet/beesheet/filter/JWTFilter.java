@@ -78,6 +78,12 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write("Invalid JWT token.");
             log.info("Error: "+e.getClass()+" Error Message: "+e.getMessage());
         }
+        catch(Exception e)
+        {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("Invalid JWT token.");
+            log.info("Error: "+e.getClass()+" Error Message: "+e.getMessage());
+        }
     }
 
 }

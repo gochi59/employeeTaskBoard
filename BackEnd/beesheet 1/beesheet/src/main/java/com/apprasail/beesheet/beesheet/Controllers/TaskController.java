@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,17 +43,18 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/task/{empId}/{taskId}")
-    public ResponseEntity<Object> updateTask(@PathVariable int empId, @PathVariable int taskId,
+    @PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
+    @PutMapping("/task/{id}/{taskId}")
+    public ResponseEntity<Object> updateTask(@PathVariable int id, @PathVariable int taskId,
             @RequestBody @Valid TaskInput input) throws IllegalAccessException {
         System.out.println(input);
-        service.updateTask(empId, taskId, input);
+        service.updateTask(id, taskId, input);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("task/{empId}/{taskId}")
-    public ResponseEntity<Object> deleteTask(@PathVariable int  empId, @PathVariable int taskId) throws IllegalAccessException {
-            service.deleteTask(empId, taskId);
+    @DeleteMapping("task/{id}/{taskId}")
+    public ResponseEntity<Object> deleteTask(@PathVariable int  id, @PathVariable int taskId) throws IllegalAccessException {
+            service.deleteTask(id, taskId);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

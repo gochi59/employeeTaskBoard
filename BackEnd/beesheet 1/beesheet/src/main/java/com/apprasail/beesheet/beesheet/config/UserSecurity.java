@@ -1,7 +1,5 @@
 package com.apprasail.beesheet.beesheet.config;
 
-import static java.lang.Integer.parseInt;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,7 +16,7 @@ public class UserSecurity
     private final EmployeeRepo employeeRepo;
 
     public boolean checkUserId(Authentication authentication, String id) {
-        Employee employee=employeeRepo.findById(parseInt(id)).orElseThrow(()->new IllegalArgumentException("Invalid user Id"));
+        Employee employee=employeeRepo.findById(Integer.valueOf(id)).orElseThrow(()->new IllegalArgumentException("Invalid user Id"));
         Authentication JwtAuthenticationToken = SecurityContextHolder.getContext().getAuthentication();
         String sub = JwtAuthenticationToken.getName();
         return sub.equals(String.valueOf(id));

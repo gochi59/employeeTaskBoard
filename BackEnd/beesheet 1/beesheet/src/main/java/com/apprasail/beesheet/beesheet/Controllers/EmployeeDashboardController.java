@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
+@PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
 public class EmployeeDashboardController {
 
     private final EmployeeDashboardService service;
@@ -31,7 +32,6 @@ public class EmployeeDashboardController {
     }
 
 
-    @PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
     @GetMapping("/tasks/{id}")
     public ResponseEntity<?> findTaskListOfEmployee(@PathVariable int id) {
         return new ResponseEntity<>(service.getTaskofEmployee(id),HttpStatus.ACCEPTED);

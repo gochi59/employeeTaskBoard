@@ -22,11 +22,6 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
-
-
-
-
-
 @RestController
 @RequestMapping("/admin")
 public class AdminDashboardController {
@@ -66,35 +61,34 @@ public class AdminDashboardController {
     public List<ProjectDTO> getAllProject() {
         return adminDashboardServices.findAllProjects();
     }
-    
+
     @PostMapping("/project")
     public void addProject(@RequestBody ProjectInput projectInput) {
         adminDashboardServices.addProject(projectInput);
     }
-    
-    @PostMapping("/project/{empid}")
-    public void addEmpToProject(@RequestBody EmpToProjectInput input,@PathVariable int empid) {
-        adminDashboardServices.addEmpToProject(input,empid);
+
+    @PostMapping("/project/{id}")
+    public void addEmpToProject(@RequestBody EmpToProjectInput input, @PathVariable int id) {
+        adminDashboardServices.addEmpToProject(input, id);
     }
 
     @PutMapping("/task/{id}")
-    public void  changeTaskRating(@PathVariable int id,@RequestBody TaskInput input) {
-        adminDashboardServices.changeTaskRating(id,input);
+    public void changeTaskRating(@PathVariable int id, @RequestBody TaskInput input) {
+        adminDashboardServices.changeTaskRating(id, input);
     }
-    
+
     @PutMapping("/employee/attribute/{eid}")
     public void changeAttributeRating(@PathVariable int eid, @RequestBody EmployeeRatingInput input) {
-        adminDashboardServices.changeAttributeRating(eid,input);
+        adminDashboardServices.changeAttributeRating(eid, input);
     }
 
     @GetMapping("/employee/attribute/{eid}")
     public List<EmployeeRatingInput> getMethodName(@PathVariable int eid) {
         return adminDashboardServices.getAttributeRating(eid);
     }
-    
+
     @DeleteMapping("/employee/{id}")
-    public void deleteEmployee(@PathVariable int id)
-    {
+    public void deleteEmployee(@PathVariable int id) {
         adminDashboardServices.deleteEmployee(id);
     }
 }

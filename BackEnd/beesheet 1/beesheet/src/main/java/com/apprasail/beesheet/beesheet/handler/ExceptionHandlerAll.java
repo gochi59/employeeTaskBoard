@@ -95,6 +95,7 @@ public class ExceptionHandlerAll {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<String>handleAuthorizationDeniedException(AuthorizationDeniedException exception)
     {
-        return new ResponseEntity<>(exception.getMessage()+"JwtToken and User url being accessed do not match",HttpStatus.UNAUTHORIZED);
+        log.info(exception.getMessage(),exception.getClass());
+        return new ResponseEntity<>(exception.getMessage()+" JwtToken and User url being accessed do not match",HttpStatus.UNAUTHORIZED);
     }
 }
