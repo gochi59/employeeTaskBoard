@@ -6,6 +6,7 @@ import TaskAttributeRating from './TaskAttributeRating';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import TaskAttributeRatingSkeleton from './Skeletons/TaskAttributeRatingSkeleton';
+import ProjectModal from './ProjectModal';
 
 interface props {
   emp: Employee;
@@ -19,12 +20,22 @@ const EmployeeCard = ({ emp, buttonText, allProjects, loading }: props) => {
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [empAttributeRating, setEmpAttributeRating] = useState<AttributeRating[]>([]);
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
+  const [currEmp,setCurrEmp]=useState<Employee>();
   const [showModal, setShowModal] = useState(false);
   const { reset } = useForm();
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [projectModalToggle, setProjectModalToggle] = useState(false);
 
-
+const decideEmpOrProj=(emp:Employee)=>{
+    if(loading)
+    {
+        openEmpTasks(emp.empId);
+    }
+    else
+    {
+        openProjects(emp);   
+    }
+}
 
   const openEmpTasks = (empId: number) => {
     setLoader(true);
@@ -45,6 +56,7 @@ const EmployeeCard = ({ emp, buttonText, allProjects, loading }: props) => {
   };
 
   const openProjects = (empId: Employee) => {
+    setCurrEmp(empId);
     async function getAllProjects() {
       try {
         const res = await axios.get(`http://localhost:8080/project`, headerConfig);
@@ -63,8 +75,10 @@ const EmployeeCard = ({ emp, buttonText, allProjects, loading }: props) => {
 
   const closeModal = () => {
     setShowModal(false);
+    setProjectModalToggle(false);
     reset();
   };
+  
 console.log(loader);
   return (
     <div>
@@ -93,9 +107,7 @@ console.log(loader);
             </ul>
           </div>
           <div className="card-footer d-flex bg-transparent justify-content-between">
-            <button className="btn btn-primary" onClick={() => {loader&&openEmpTasks(emp.empId);
-                !loader&&openProjects(emp);
-            }}>
+            <button className="btn btn-primary" onClick={() => decideEmpOrProj(emp)}>
               {buttonText}
             </button>
             <p className="text-muted h5">Employee ID: {emp.empId}</p>
@@ -111,6 +123,7 @@ console.log(loader);
           currEmpId={emp.empId}
         />
       )}
+      {projectModalToggle&&<ProjectModal closeModal={closeModal}  projectList={projectList} currEmp={currEmp}/>}
     </div>
   );
 };
