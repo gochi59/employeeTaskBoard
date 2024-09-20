@@ -1,15 +1,56 @@
-import React from 'react'
-import { FieldValues, useForm } from 'react-hook-form';
-import { AttributeRating, Task } from '../models/AllModels';
+import React, { useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
+import { AttributeRating, ReduxState, Task } from "../models/AllModels";
+import axios from "axios";
+import { boolean } from "zod";
+import { useSelector } from "react-redux";
 
 interface props {
-  closeModal: (() => void),
-  ratingSubmit: (data: FieldValues) => void,
-  currEmpTaskList: Task[],
-  empAttributeRating: AttributeRating[],
+  closeModal: () => void;
+  currEmpTaskList: Task[];
+  empAttributeRating: AttributeRating[];
+  currEmpId: number;
 }
 
-const TaskAttributeRating = ({ closeModal, ratingSubmit, currEmpTaskList, empAttributeRating }: props) => {
+const TaskAttributeRating = ({
+  closeModal,
+  currEmpTaskList,
+  empAttributeRating,
+  currEmpId,
+}: props) => {
+  const headerConfig = useSelector((state: ReduxState) => state.header);
+  const [loading, setLoading] = useState<boolean>(false);
+  const ratingSubmit = async (data: FieldValues) => {
+    setLoading(true);
+    const taskPromises = currEmpTaskList.map((task) => {
+      const str = task.taskId;
+      const updatedTask = { ...task, taskRating: data[str] };
+      return axios.put(
+        `http://localhost:8080/admin/task/${str}`,
+        updatedTask,
+        headerConfig
+      );
+    });
+
+    const attributePromises = empAttributeRating.map((attribute) => {
+      const attributeTitle = attribute.attribute;
+      const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
+      return axios.put(
+        `http://localhost:8080/admin/employee/attribute/${currEmpId}`,
+        updatedAttribute,
+        headerConfig
+      );
+    });
+
+    try {
+      await Promise.all([...taskPromises, ...attributePromises]);
+      closeModal();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(true);
+    }
+  };
   const { register, handleSubmit, reset } = useForm();
   return (
     <div>
@@ -39,9 +80,13 @@ const TaskAttributeRating = ({ closeModal, ratingSubmit, currEmpTaskList, empAtt
                         <tr>
                           <th scope="col">Title</th>
                           <th scope="col">Project</th>
-                          <th scope="col" className='d-none d-sm-table-cell'>Work Location</th>
-                          <th scope="col" className='d-none d-sm-table-cell'>Descriptions</th>
-                          <th scope="col" >Add/Change Rating</th>
+                          <th scope="col" className="d-none d-sm-table-cell">
+                            Work Location
+                          </th>
+                          <th scope="col" className="d-none d-sm-table-cell">
+                            Descriptions
+                          </th>
+                          <th scope="col">Add/Change Rating</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -51,8 +96,12 @@ const TaskAttributeRating = ({ closeModal, ratingSubmit, currEmpTaskList, empAtt
                             <tr key={task.taskId}>
                               <td>{task.title}</td>
                               <td>{task.project}</td>
-                              <td className='d-none d-sm-table-cell'>{task.workLocation}</td>
-                              <td className='d-none d-sm-table-cell'>{task.description}</td>
+                              <td className="d-none d-sm-table-cell">
+                                {task.workLocation}
+                              </td>
+                              <td className="d-none d-sm-table-cell">
+                                {task.description}
+                              </td>
                               <td>
                                 <select
                                   {...register("" + task.taskId)}
@@ -109,13 +158,15 @@ const TaskAttributeRating = ({ closeModal, ratingSubmit, currEmpTaskList, empAtt
                 )}
               </div>
               <div className="modal-footer d-flex justify-content-between">
-                <button type="submit" className="btn btn-success m-1">
-                  Submit Rating
+                <button type="submit" className="btn btn-success m-1" disabled={loading}>
+                {loading&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                 <span> Submit Rating</span>
                 </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={closeModal}
+                  disabled={loading}
                 >
                   Close
                 </button>
@@ -125,7 +176,7 @@ const TaskAttributeRating = ({ closeModal, ratingSubmit, currEmpTaskList, empAtt
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default TaskAttributeRating;

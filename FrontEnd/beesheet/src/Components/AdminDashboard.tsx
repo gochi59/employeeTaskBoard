@@ -17,10 +17,8 @@ const AdminDashboard = () => {
   
   const [empList, setEmpList] = useState<Employee[]>();
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
-  const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [notification, setNotification] = useState<string[]>([]);
-  const [currEmpId, setCurrEmpId] = useState<number | undefined>();
+  const [currEmpId, setCurrEmpId] = useState<number>(-1);
   const [empAttributeRating, setEmpAttributeRating] = useState<AttributeRating[]>([]);
 
   const headerConfig = useSelector((state: ReduxState) => state.header);
@@ -38,8 +36,6 @@ const AdminDashboard = () => {
     async function getAllEmp() {
       try {
         const res = await axios.get("http://localhost:8080/admin/employees", headerConfig);
-        const res2 = await axios.get("http://localhost:8080/notification/" + loginId, headerConfig);
-        setNotification(res2.data);
         setEmpList(res.data);
       } catch (error) {
         console.log(error);
@@ -56,7 +52,6 @@ const AdminDashboard = () => {
         const res2 = await axios.get("http://localhost:8080/admin/employee/attribute/" + empId, headerConfig);
         setEmpAttributeRating(res2.data);
         setCurrEmpTaskList(res.data);
-        setTaskTableToggle(true);
         setShowModal(true);
       } catch (error) {
         console.log(error);
@@ -67,36 +62,16 @@ const AdminDashboard = () => {
 
   const closeModal = () => {
     setShowModal(false);
-    setTaskTableToggle(false);
     reset();
   };
 
-  const ratingSubmit = async (data: FieldValues) => {
-    const taskPromises = currEmpTaskList.map((task) => {
-      const str = task.taskId;
-      const updatedTask = { ...task, taskRating: data[str] };
-      return axios.put(`http://localhost:8080/admin/task/${str}`, updatedTask, headerConfig);
-    });
-
-    const attributePromises = empAttributeRating.map((attribute) => {
-      const attributeTitle = attribute.attribute;
-      const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
-      return axios.put(`http://localhost:8080/admin/employee/attribute/${currEmpId}`, updatedAttribute, headerConfig);
-    });
-
-    try {
-      await Promise.all([...taskPromises, ...attributePromises]);
-      closeModal();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   return (
     <>
       <Navbar empId={loginId} config={headerConfig} />
       <div>
-        <div className="container-fluid bg-dark-subtle p-2 pb-3 rounded-1">
+        <div className="container-fluid bg-dark-subtle p-2 pb-3 vh-100 overflow-x-hidden rounded-1">
           <form className="d-flex justify-content-end">
             <input
               type="search"
@@ -159,10 +134,8 @@ const AdminDashboard = () => {
         {showModal && (
           <TaskAttributeRating
             closeModal={closeModal}
-            ratingSubmit={ratingSubmit}
             currEmpTaskList={currEmpTaskList}
-            empAttributeRating={empAttributeRating}
-          />
+            empAttributeRating={empAttributeRating} currEmpId={currEmpId}          />
         )}
       </div>
     </>
