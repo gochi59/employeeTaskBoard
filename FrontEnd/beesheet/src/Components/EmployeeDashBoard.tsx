@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faHouse } from "@fortawesome/free-solid-svg-icons";
+import ToastComponent from "./ToastComponent";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
@@ -22,9 +23,20 @@ const EmployeeDashBoard = () => {
   const [currTask, setCurrTask] = useState<Task>();
   const locationEnum = ["office", "home"];
   const [projectList, setProjectList] = useState<Project[]>();
+  const [errorPresent,setErrorPresent]=useState<string>("");
   // console.log(empId,config);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (errorPresent) {
+      const timer = setTimeout(() => {
+        setErrorPresent("");
+      }, 900);
+      return () => clearTimeout(timer);
+    }
+  }, [errorPresent]);
+
   const schema = z.object({
     title: z.string().min(1, { message: "This is a required field" }),
     description: z.string().min(1, { message: "This is a required field" }),
@@ -36,7 +48,7 @@ const EmployeeDashBoard = () => {
       .string()
       .time({ message: "Enter time in valid format: 00:00:00 (hr:min:sec)" }),
     markedForAppraisal: z.boolean(),
-    date: z.string().min(1, { message: "Select a date" }),
+    date: z.string().min(1,{message:"This is a required field"}).transform((str)=>new Date(str)),
   });
 
   const {
@@ -49,19 +61,19 @@ const EmployeeDashBoard = () => {
   useEffect(() => {
     dispatch(changeToken());
   }, []);
-
-  useEffect(() => {
-    async function getTaskList() {
-      try {
-        const res = await axios.get(
-          "http://localhost:8080/tasks/" + empId,
-          config
-        );
-        setTaskList(res.data);
-      } catch (error) {
-        console.log(error);
-      }
+  async function getTaskList() {
+    try {
+      const res = await axios.get(
+        "http://localhost:8080/tasks/" + empId,
+        config
+      );
+      setTaskList(res.data);
+    } catch (error) {
+      console.log(error);
     }
+  }
+  useEffect(() => {
+   
     async function getProjectList() {
       // console.log(empId,config);
 
@@ -96,6 +108,7 @@ const EmployeeDashBoard = () => {
   };
 
   const handleSub = async (e: FieldValues) => {
+    console.log(currTask);
     const task = {
       title: e.title,
       markedForAppraisal:
@@ -115,6 +128,7 @@ const EmployeeDashBoard = () => {
         setTaskList([...taskList, task]);
         reset();
         setTogalModal(false);
+        getTaskList();
       } catch (error) {
         console.log(error);
       }
@@ -134,31 +148,44 @@ const EmployeeDashBoard = () => {
         console.log(res);
         setTogalModal(false);
       } catch (error) {
+        if(error.response.data==="java.lang.IllegalAccessException")
+          {
+            setErrorPresent("Cannot edit rated task");
+            setTogalModal(false);
+          }
         console.log(error);
       }
     }
   };
 
-  const deleteTask = async (task: Task) => {
-    console.log(task);
-    const id = task.taskId;
-    try {
-      const res = await axios.delete(
-        "http://localhost:8080/task/" + empId + "/" + id,
-        config
-      );
-      console.log(res);
-      setTaskList(taskList.filter((t) => t.taskId !== id));
-    } catch (error) {
-      console.log(error);
+  const deleteTask = (id: number) => {
+    console.log(id);
+    // const id = task.taskId;
+    async function deleteTaskFunc() {
+      try {
+        const res = await axios.delete(
+          "http://localhost:8080/task/" + empId + "/" + id,
+          config
+        );
+        console.log(res);
+        setTaskList(taskList.filter((t) => t.taskId !== id));
+      } catch (error) {
+        if(error.response.data==="java.lang.IllegalAccessException")
+        {
+          setErrorPresent("Cannot delete rated task");
+        }
+        console.log(error);
+      }
     }
+    deleteTaskFunc();
   };
   const editTask = (task: Task) => {
     setModalText(false);
     setTogalModal(true);
     console.log(task);
-
     setCurrTask(task);
+    const taskDate = new Date(task.date).toISOString().split('T')[0];;
+  
     reset({
       title: task.title,
       markedForAppraisal:
@@ -167,10 +194,10 @@ const EmployeeDashBoard = () => {
       project: task.project,
       time: task.time,
       description: task.description,
-      date: task.date,
+      date: taskDate
     });
   };
-  // console.log(taskList);
+  console.log(taskList);
   return (
     <div className="bg-dark-subtle min-vh-100 mt-5">
       <Navbar empId={empId} config={config}></Navbar>
@@ -240,11 +267,11 @@ const EmployeeDashBoard = () => {
                 <div className="card-footer">
                   <div className="row justify-content-between">
                     <span className="col-7">
-                      Date Added: {tasks.date} Time Spent: {tasks.time}
+                      Date Added: {String(tasks.date)} Time Spent: {tasks.time}
                     </span>
                     <button
                       className="btn btn-danger col-lg-1 col-auto"
-                      onClick={() => deleteTask(tasks)}
+                      onClick={() => deleteTask(tasks.taskId)}
                       disabled={tasks.taskRating ? true : false}
                     >
                       Delete
@@ -428,6 +455,7 @@ const EmployeeDashBoard = () => {
             </div>
           </>
         )}
+        {errorPresent&&<ToastComponent closeMessage={()=>setErrorPresent("")} errorPresent={errorPresent}></ToastComponent>}
       </div>
     </div>
   );

@@ -19,11 +19,9 @@ const AdminDashboard = () => {
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [taskTableToggle, setTaskTableToggle] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [notification, setNotification] = useState<String[]>([]);
-  const [currEmpId, setCurrEmpId] = useState();
-  const [empAttributeRating, setEmpAttributeRating] = useState<
-    AttributeRating[]
-  >([]);
+  const [notification, setNotification] = useState<string[]>([]);
+  const [currEmpId, setCurrEmpId] = useState<number | undefined>();
+  const [empAttributeRating, setEmpAttributeRating] = useState<AttributeRating[]>([]);
 
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const loginId = useSelector((state: ReduxState) => state.ID);
@@ -34,19 +32,13 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     dispatch(changeToken());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     async function getAllEmp() {
       try {
-        const res = await axios.get(
-          "http://localhost:8080/admin/employees",
-          headerConfig
-        );
-        const res2 = await axios.get(
-          "http://localhost:8080/notification/" + loginId,
-          headerConfig
-        );
+        const res = await axios.get("http://localhost:8080/admin/employees", headerConfig);
+        const res2 = await axios.get("http://localhost:8080/notification/" + loginId, headerConfig);
         setNotification(res2.data);
         setEmpList(res.data);
       } catch (error) {
@@ -54,163 +46,125 @@ const AdminDashboard = () => {
       }
     }
     getAllEmp();
-  }, []);
-  // console.log(notification);
+  }, [headerConfig, loginId]);
 
   const openEmpTasks = (empId: number) => {
     setCurrEmpId(empId);
     async function getTaskList() {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/tasks/${empId}`,
-          headerConfig
-        );
-        const res2 = await axios.get(
-          "http://localhost:8080/admin/employee/attribute/" + empId,
-          headerConfig
-        );
+        const res = await axios.get(`http://localhost:8080/tasks/${empId}`, headerConfig);
+        const res2 = await axios.get("http://localhost:8080/admin/employee/attribute/" + empId, headerConfig);
         setEmpAttributeRating(res2.data);
         setCurrEmpTaskList(res.data);
         setTaskTableToggle(true);
         setShowModal(true);
-        // console.log(res.data);
       } catch (error) {
         console.log(error);
       }
     }
     getTaskList();
   };
-  // console.log(empAttributeRating);
+
   const closeModal = () => {
     setShowModal(false);
     setTaskTableToggle(false);
     reset();
   };
 
-  const ratingSubmit = (data: FieldValues) => {
-    // console.log(data);
-    currEmpTaskList.map((task) => {
+  const ratingSubmit = async (data: FieldValues) => {
+    const taskPromises = currEmpTaskList.map((task) => {
       const str = task.taskId;
-      async function changeRating() {
-        try {
-          task.taskRating = data[str];
-          // console.log(task);
-          const res = await axios.put(
-            `http://localhost:8080/admin/task/${str}`,
-            task,
-            headerConfig
-          );
-          console.log(res);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      changeRating();
-      closeModal();
+      const updatedTask = { ...task, taskRating: data[str] };
+      return axios.put(`http://localhost:8080/admin/task/${str}`, updatedTask, headerConfig);
     });
-    empAttributeRating.map((attribute: AttributeRating) => {
+
+    const attributePromises = empAttributeRating.map((attribute) => {
       const attributeTitle = attribute.attribute;
-      async function changeAttributeRating() {
-        try {
-          const notification = {
-            data: `Admin has rated your tasks marked for appraisal`,
-          };
-          attribute.rating = data[attributeTitle];
-          const res = await axios.put(
-            "http://localhost:8080/admin/employee/attribute/" + currEmpId,
-            attribute,
-            headerConfig
-          );
-          await axios.post(
-            "http://localhost:8080/notification/" + currEmpId,
-            notification
-          );
-          console.log(res);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      changeAttributeRating();
-      closeModal();
+      const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
+      return axios.put(`http://localhost:8080/admin/employee/attribute/${currEmpId}`, updatedAttribute, headerConfig);
     });
+
+    try {
+      await Promise.all([...taskPromises, ...attributePromises]);
+      closeModal();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  console.log(empList);
   return (
     <>
-    <Navbar empId={loginId} config={headerConfig}/>
-    <div>
-      <div className="container-fluid bg-dark-subtle p-2 pb-3 rounded-1">
-        <form className="d-flex justify-content-end">
-          <input
-            type="search"
-            name="search"
-            id="search"
-            placeholder="Search Name"
-            className="p-1 rounded-3 border-0 m-2"
-          />
-          <button
-            type="submit"
-            className="btn btn-dark p-1 m-2"
-            style={{ height: "2rem", width: "4.3rem" }}
-          >
-            Search
-          </button>
-        </form>
+      <Navbar empId={loginId} config={headerConfig} />
+      <div>
+        <div className="container-fluid bg-dark-subtle p-2 pb-3 rounded-1">
+          <form className="d-flex justify-content-end">
+            <input
+              type="search"
+              name="search"
+              id="search"
+              placeholder="Search Name"
+              className="p-1 rounded-3 border-0 m-2"
+            />
+            <button
+              type="submit"
+              className="btn btn-dark p-1 m-2"
+              style={{ height: "2rem", width: "4.3rem" }}
+            >
+              Search
+            </button>
+          </form>
 
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-          {empList &&
-            empList
-              .filter((emp: Employee) => {
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {empList &&
+              empList.filter((emp: Employee) => {
                 const empDate = new Date(emp.doj).getFullYear();
                 const currDate = new Date().getFullYear();
                 return (
                   empDate <= currDate - 1 &&
-                  emp.role != "ADMIN" &&
+                  emp.role !== "ADMIN" &&
                   emp.empTask.some((task: Task) => task.markedForAppraisal) &&
                   !emp.apprasailDone
                 );
-              })
-              .map((emp: Employee) => (
+              }).map((emp: Employee) => (
                 <EmployeeCard
+                  key={emp.empId}
                   emp={emp}
                   openEmpTasks={() => openEmpTasks(emp.empId)}
                   buttonText={"Tasks"}
                   allProjects={emp.projectTitles}
-                ></EmployeeCard>
+                />
               ))}
-          {empList &&
-            empList
-              .filter((emp: Employee) => {
+            {empList &&
+              empList.filter((emp: Employee) => {
                 const empDate = new Date(emp.doj).getFullYear();
                 const currDate = new Date().getFullYear();
                 return (
                   empDate <= currDate - 1 &&
-                  emp.role != "ADMIN" &&
+                  emp.role !== "ADMIN" &&
                   emp.empTask.some((task: Task) => task.markedForAppraisal) &&
                   emp.apprasailDone
                 );
-              })
-              .map((emp: Employee) => (
+              }).map((emp: Employee) => (
                 <EmployeeCard
+                  key={emp.empId}
                   emp={emp}
                   openEmpTasks={() => openEmpTasks(emp.empId)}
                   buttonText={"Tasks"}
                   allProjects={emp.projectTitles}
-                ></EmployeeCard>
+                />
               ))}
+          </div>
         </div>
-      </div>
 
-      {showModal && (
-        <TaskAttributeRating
-          closeModal={closeModal}
-          ratingSubmit={ratingSubmit}
-          currEmpTaskList={currEmpTaskList}
-          empAttributeRating={empAttributeRating}
-        ></TaskAttributeRating>
-      )}
-    </div>
+        {showModal && (
+          <TaskAttributeRating
+            closeModal={closeModal}
+            ratingSubmit={ratingSubmit}
+            currEmpTaskList={currEmpTaskList}
+            empAttributeRating={empAttributeRating}
+          />
+        )}
+      </div>
     </>
   );
 };

@@ -22,7 +22,7 @@ export interface FormDataForSignup {
 }
 
 export interface Task {
-  date: string;
+  date: Date;
   description: string;
   markedForAppraisal: boolean;
   project: string;
@@ -40,7 +40,7 @@ export interface taskInput{
     project:string;
     time:string;
     description:string;
-    date:string;
+    date:Date;
 }
 
 export interface Employee{

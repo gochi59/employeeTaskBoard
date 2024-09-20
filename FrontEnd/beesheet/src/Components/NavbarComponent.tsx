@@ -18,8 +18,7 @@ const Navbar = ({ empId, config }: Props) => {
   const [logoutToggle, setLogoutToggle] = useState(false);
   const [loader,setLoader]=useState(false);
   const [homeTogal,setHomeTogal]=useState<boolean>(false);
-  const location=useLocation();
-
+  
   const interval = 10000; 
 
   async function getAllNotifications() {
@@ -36,6 +35,13 @@ const Navbar = ({ empId, config }: Props) => {
     }
     finally{
       setLoader(false);
+    }
+  }
+
+  const stopPolling=()=>{
+    if (internalRef.current) {
+      clearInterval(internalRef.current);
+      internalRef.current=null;
     }
   }
 
@@ -72,7 +78,7 @@ const Navbar = ({ empId, config }: Props) => {
     if (showNotifications) {
       startPolling();
     } 
-    return () => startPolling();
+    return () => stopPolling();
   }, [showNotifications]);
 
   useEffect(() => {

@@ -38,17 +38,8 @@ public class AdminDashboardServices {
     private final TaskRepository taskRepository;
     private final AttributeRepo attributeRepo;
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
+    private NotificationService notificationService;
 
-    // public AdminDashboardServices(EmployeeDesignationRatingRepo employeeDesignationRatingRepo,
-    //         AttributeRepo attributeRepo, TaskInputToObject taskInputToObject, TaskRepository taskRepository,
-    //         EmployeeRepo employeeRepo, ProjectRepo projectRepo, EmployeeToDTO employeeToDTO) {
-    //     this.employeeRepo = employeeRepo;
-    //     this.projectRepo = projectRepo;
-    //     this.employeeToDTO = employeeToDTO;
-    //     this.taskRepository = taskRepository;
-    //     this.attributeRepo = attributeRepo;
-    //     this.employeeDesignationRatingRepo = employeeDesignationRatingRepo;
-    // }
 
     public List<EmployeeDTO> findAll() {
         List<Employee> list = employeeRepo.findAll();
@@ -125,6 +116,7 @@ public class AdminDashboardServices {
         employeeDesignationRatingRepo.save(employeeDesignationMapping);
         employee.setEmployeeDesignationMapping(employeeDesignationMapping);
         employeeRepo.save(employee);
+        notificationService.sendNotifToEmp(employee, "Admin has rated you");
     }
 
     public List<EmployeeRatingInput> getAttributeRating(int eid) {

@@ -82,4 +82,12 @@ public class ExceptionHandlerAll {
         log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());     
         return new ResponseEntity<>(HttpStatus.GONE);
     }
+
+    @ExceptionHandler(IllegalAccessError.class)
+    public ResponseEntity<String>handleIllegalAccessException(IllegalAccessException exception)
+    {
+        log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());     
+        return new ResponseEntity<String>(exception.getMessage(),HttpStatus.UNAUTHORIZED);
+        
+    }
 }

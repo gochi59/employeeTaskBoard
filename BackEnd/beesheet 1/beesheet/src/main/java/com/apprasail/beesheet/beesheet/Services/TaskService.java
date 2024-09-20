@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class TaskService {
 
     private final TaskRepository taskRepo;
@@ -40,12 +41,17 @@ public class TaskService {
         }
     }
 
-    public void deleteTask(int empId, int taskId) {
+    public void deleteTask(int empId, int taskId) throws IllegalAccessException {
+
         Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         List<Task> empTasks = employee.getEmp_Tasks();
         boolean exists = false;
         for (Task empTask : empTasks) {
             if (empTask.getTaskId() == taskId) {
+                if(empTask.getTaskRating()!=null)
+                {
+                    throw new IllegalAccessException("Cannot delete rated tasks");
+                }
                 empTasks.remove(empTask);
                 exists = true;
                 break;
@@ -62,8 +68,9 @@ public class TaskService {
         }
     }
 
-    @Transactional
-    public void updateTask(int empId, int taskId, TaskInput input) {
+    public void updateTask(int empId, int taskId, TaskInput input) throws IllegalAccessException {
+        System.out.println(input);
+       
         Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
         if(input.isMarkedForAppraisal())
         {
@@ -79,6 +86,10 @@ public class TaskService {
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
             Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));
+            if(task.getTaskRating()!=null)
+        {
+            throw new IllegalAccessException("Cannot edit rated tasks");
+        } 
             task.setTitle(input.getTitle());
             task.setMarkedForAppraisal(input.isMarkedForAppraisal());
             task.setWorkLocation(input.getWorkLocation());
