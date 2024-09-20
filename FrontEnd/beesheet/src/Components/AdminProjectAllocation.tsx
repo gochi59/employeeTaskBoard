@@ -42,23 +42,7 @@ const AdminProjectAllocation = () => {
     projectTitles: [],
   };
 
-  const openProjects = (empId: Employee) => {
-    setCurrEmp(empId);
-    async function getAllProjects() {
-      try {
-        const res = await axios.get(`http://localhost:8080/project`, config);
-        setProjectList(res.data);
-        setProjectModalToggle(true);
-        // setCurrEmp(empId);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    }
-    getAllProjects();
-    // console.log(empList);
-    // console.log(projectList,currEmp)
-  };
-
+  
   const closeModal = () => {
     setProjectModalToggle(false);
     reset();
@@ -102,8 +86,8 @@ const AdminProjectAllocation = () => {
             <EmployeeCard
                   key={emp.empId}
                   emp={emp}
-                  openEmpTasks={() => openProjects(emp)}
-                  buttonText="Projects" allProjects={emp.projectTitles}            />
+                  buttonText="Projects" allProjects={emp.projectTitles}
+                  loading={false}            />
           ))}
       </div>
 

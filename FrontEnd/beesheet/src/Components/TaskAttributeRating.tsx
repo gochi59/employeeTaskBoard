@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { AttributeRating, ReduxState, Task } from "../models/AllModels";
 import axios from "axios";
-import { boolean } from "zod";
 import { useSelector } from "react-redux";
 
 interface props {
@@ -48,10 +47,12 @@ const TaskAttributeRating = ({
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
-  const { register, handleSubmit, reset } = useForm();
+
+  const { register, handleSubmit } = useForm();
+
   return (
     <div>
       <div
@@ -61,7 +62,10 @@ const TaskAttributeRating = ({
         style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
       >
         <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
+          <div
+            className="modal-content d-flex flex-column"
+            style={{ height: "80vh" }}
+          >
             <div className="modal-header">
               <h5 className="modal-title">Employee Tasks</h5>
               <button
@@ -71,11 +75,17 @@ const TaskAttributeRating = ({
                 onClick={closeModal}
               ></button>
             </div>
-            <form onSubmit={handleSubmit(ratingSubmit)}>
-              <div className="modal-body">
+            <form
+              onSubmit={handleSubmit(ratingSubmit)}
+              className="flex-grow-1 d-flex flex-column"
+            >
+              <div
+                className="modal-body overflow-auto"
+                style={{ maxHeight: "60vh" }}
+              >
                 {currEmpTaskList && (
                   <>
-                    <table className="table table-hover table-success ">
+                    <table className="table table-hover table-success">
                       <thead>
                         <tr>
                           <th scope="col">Title</th>
@@ -158,9 +168,19 @@ const TaskAttributeRating = ({
                 )}
               </div>
               <div className="modal-footer d-flex justify-content-between">
-                <button type="submit" className="btn btn-success m-1" disabled={loading}>
-                {loading&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
-                 <span> Submit Rating</span>
+                <button
+                  type="submit"
+                  className="btn btn-success m-1"
+                  disabled={loading}
+                >
+                  {loading && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  <span> Submit Rating</span>
                 </button>
                 <button
                   type="button"
