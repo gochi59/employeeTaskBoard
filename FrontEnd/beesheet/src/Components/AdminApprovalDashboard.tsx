@@ -10,6 +10,7 @@ const AdminApprovalDashboard = () => {
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [errorPresent, setErrorPresent] = useState("");
   const empId = useSelector((state: ReduxState) => state.ID);
+  const [loader,setLoader]=useState(false);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -27,6 +28,7 @@ const AdminApprovalDashboard = () => {
   }, [headerConfig]);
 
   const handleApprove = async (tempId: number) => {
+    setLoader(true);
     try {
       await axios.get(
         `http://localhost:8080/admin/employee/approve/${tempId}`,
@@ -37,9 +39,13 @@ const AdminApprovalDashboard = () => {
     } catch (error) {
       console.error(error);
     }
+    finally{
+      setLoader(false);
+    }
   };
 
   const handleReject = async (tempId: number) => {
+    setLoader(true);
     try {
       await axios.delete(
         `http://localhost:8080/admin/employee/reject/${tempId}`,
@@ -49,6 +55,9 @@ const AdminApprovalDashboard = () => {
       setErrorPresent(`User Rejected`);
     } catch (error) {
       console.error(error);
+    }
+    finally{
+      setLoader(false);
     }
   };
 
@@ -68,12 +77,12 @@ const AdminApprovalDashboard = () => {
   return (
     <>
       <Navbar empId={empId} config={headerConfig} />
-      <div className="container-fluid vh-100 bg-dark-subtle mt-4">
-        <div className="row mt-4 pt-5">
+      <div className="container-fluid min-vh-100 bg-dark-subtle pt-md-0 pt-5">
+        <div className="row pt-5 mt-4">
           {users &&
             users.slice().reverse().map((user: TemporaryEmployee) => (
-              <div className="col-md-4" key={user.tempId}>
-                <div className="card mb-4 shadow-sm border-0 rounded-4">
+              <div className="col-md-4 pb-3" key={user.tempId}>
+                <div className="card mb-4 shadow-sm border-0 rounded-4 h-100 p-2">
                   <div className="card-body">
                     <h5 className="card-title">
                       {user.firstName} {user.lastName}
@@ -93,21 +102,26 @@ const AdminApprovalDashboard = () => {
                     <p className="card-text">
                       <strong>Role:</strong> {user.role === "empl" ? "Employee" : user.role}
                     </p>
-                    <div className="d-flex justify-content-between">
+                      </div>
+                    <div className="card-footer d-flex justify-content-between">
                       <button
                         className="btn btn-success me-2"
                         onClick={() => handleApprove(user.tempId)}
-                      >
+                        disabled={loader}
+                      >  
+                      {loader&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                         Approve
                       </button>
                       <button
                         className="btn btn-danger"
                         onClick={() => handleReject(user.tempId)}
+                        disabled={loader}
                       >
+                      {loader&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+
                         Reject
                       </button>
                     </div>
-                  </div>
                 </div>
               </div>
             ))}
