@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { clearToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCancel, faCross, faX } from "@fortawesome/free-solid-svg-icons";
@@ -20,7 +20,7 @@ const Navbar = ({ empId, config }: Props) => {
   const [logoutToggle, setLogoutToggle] = useState(false);
   const [loader, setLoader] = useState(false);
   const [homeToggle, setHomeToggle] = useState<boolean>(false);
-
+const location=useLocation();
   const interval = 10000;
 
   async function getAllNotifications() {
@@ -102,7 +102,8 @@ const Navbar = ({ empId, config }: Props) => {
   };
 
   if (homeToggle) {
-    return <Navigate to="/home" />;
+    if(location.pathname!="/home")
+    {return <Navigate to="/home" />;}
   }
 
   return (
@@ -116,7 +117,7 @@ const Navbar = ({ empId, config }: Props) => {
         </Link>
       </div>
       <div className="d-flex align-items-center">
-        {!loader && (
+        { (
           <>
             <i
               className="fa fa-regular fa-bell btn btn-dark position-relative me-3"

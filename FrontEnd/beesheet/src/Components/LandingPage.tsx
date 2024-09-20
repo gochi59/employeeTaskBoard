@@ -4,6 +4,7 @@ import { Employee, ReduxState } from "../models/AllModels";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import Navbar from "./NavbarComponent";
+import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 
 const LandingPage = () => {
   const config = useSelector((state: ReduxState) => state.header);
@@ -13,9 +14,11 @@ const LandingPage = () => {
   const [navigateToAdminProject,setNavigateToAdminProject]=useState<boolean>(false);
   const [navigateToAdminAppraisal,setNavigateToAdminAppraisal]=useState<boolean>(false);
   const [empApproval,setEmpApproval]=useState<boolean>(false);
+  const [loader,setLoader]=useState(false);
 
   useEffect(() => {
-    async function fetchEmployeeInfo() {
+      async function fetchEmployeeInfo() {
+          setLoader(true);
       try {
         const res = await axios.get(
           `http://localhost:8080/employee/${empId}`,
@@ -24,6 +27,9 @@ const LandingPage = () => {
         setCurrEmp(res.data);
       } catch (error) {
         console.error(error);
+      }
+      finally{
+        setLoader(false);
       }
     }
     fetchEmployeeInfo();
@@ -65,93 +71,95 @@ const LandingPage = () => {
   }
 
   return (
-    currEmp && (
-        <>
-        <Navbar empId={empId} config={config}/>
-      <section className="container-fluid vh-100 bg-dark-subtle py-5 mt-4">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-4 ">
-              <div className="card text-center h-100">
-                <div className="card-body">
-                  <img
-                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                    alt="avatar"
-                    className="rounded-circle img-fluid mb-3"
-                    style={{ width: "150px" }}
-                  />
-                  <h5 className="card-title mb-2">
-                    {currEmp.firstName} {currEmp.lastName}
-                  </h5>
-                  <p className="card-text text-muted mb-4">
-                    {currEmp.role === "empl" ? "Employee" : "Admin"}
-                  </p>
-                  <p className="card-text mb-4">
-                    EmpId: {currEmp.empId}
-                  </p>
+    <>
+    <Navbar empId={empId} config={config}/>
+    {loader && <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-5"><EmployeeCardSkeleton /></div>}
+    {!loader && currEmp && (
+        <section className="container-fluid bg-dark-subtle min-vh-100 py-5 mt-5 ">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-4 ">
+                <div className="card text-center h-100">
+                  <div className="card-body">
+                    <img
+                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                      alt="avatar"
+                      className="rounded-circle img-fluid mb-3"
+                      style={{ width: "150px" }}
+                    />
+                    <h5 className="card-title mb-2">
+                      {currEmp.firstName} {currEmp.lastName}
+                    </h5>
+                    <p className="card-text text-muted mb-4">
+                      {currEmp.role === "empl" ? "Employee" : "Admin"}
+                    </p>
+                    <p className="card-text mb-4">
+                      EmpId: {currEmp.empId}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-md-8">
-              <div className="card mb-4 h-100 shadow-sm border-light">
-                <div className="card-body">
-                  <h5 className="card-title mb-4">Details</h5>
-                  <ul className="list-unstyled">
-                    <li className="d-flex justify-content-between mb-3">
-                      <strong className="text-muted">Full Name:</strong>
-                      <span>
-                        {currEmp.firstName} {currEmp.lastName}
-                      </span>
-                    </li>
-                    <li className="d-flex justify-content-between mb-3">
-                      <strong className="text-muted">Email:</strong>
-                      <span>{currEmp.email}</span>
-                    </li>
-                    <li className="d-flex justify-content-between mb-3">
-                      <strong className="text-muted">Phone:</strong>
-                      <span>{currEmp.contactNumber}</span>
-                    </li>
-                    <li className="d-flex justify-content-between">
-                      <button
-                        className="btn btn-primary"
-                        onClick={handleNavigateEmployee}
-                        hidden={currEmp.role !== "empl"}
-                      >
-                        View Tasks
-                      </button>
-                      <button
-                        className="btn  btn-primary"
-                        onClick={handleProjectAllocation}
-                        hidden={currEmp.role !== "ADMIN"}
-                      >
-                        Project Allocation
-                      </button>
-                      <button
-                        className="btn  btn-primary"
-                        onClick={handleEmpAppraisal}
-                        hidden={currEmp.role !== "ADMIN"}
-                      >
-                        Appraisal
-                      </button>
-                      <button
-                        className="btn  btn-primary"
-                        onClick={handleApprove}
-                        hidden={currEmp.role !== "ADMIN"}
-                      >
-                        Approval
-                      </button>
-                    </li>
-                  </ul>
+              <div className="col-md-8">
+                <div className="card mb-4 h-100 shadow-sm border-light">
+                  <div className="card-body">
+                    <h5 className="card-title mb-4">Details</h5>
+                    <ul className="list-unstyled">
+                      <li className="d-flex justify-content-between mb-3">
+                        <strong className="text-muted">Full Name:</strong>
+                        <span>
+                          {currEmp.firstName} {currEmp.lastName}
+                        </span>
+                      </li>
+                      <li className="d-flex justify-content-between mb-3">
+                        <strong className="text-muted">Email:</strong>
+                        <span>{currEmp.email}</span>
+                      </li>
+                      <li className="d-flex justify-content-between mb-3">
+                        <strong className="text-muted">Phone:</strong>
+                        <span>{currEmp.contactNumber}</span>
+                      </li>
+                      <li className="d-flex justify-content-between">
+                        <button
+                          className="btn btn-primary"
+                          onClick={handleNavigateEmployee}
+                          hidden={currEmp.role !== "empl"}
+                        >
+                          View Tasks
+                        </button>
+                        <button
+                          className="btn  btn-primary"
+                          onClick={handleProjectAllocation}
+                          hidden={currEmp.role !== "ADMIN"}
+                        >
+                          Project Allocation
+                        </button>
+                        <button
+                          className="btn  btn-primary"
+                          onClick={handleEmpAppraisal}
+                          hidden={currEmp.role !== "ADMIN"}
+                        >
+                          Appraisal
+                        </button>
+                        <button
+                          className="btn  btn-primary"
+                          onClick={handleApprove}
+                          hidden={currEmp.role !== "ADMIN"}
+                        >
+                          Approval
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      </>
-    )
-  );
-};
+        </section>
+      )}
+    </>
+);
+}
+
 
 export default LandingPage;

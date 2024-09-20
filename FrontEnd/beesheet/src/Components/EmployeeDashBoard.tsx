@@ -11,14 +11,14 @@ import { changeToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faHouse } from "@fortawesome/free-solid-svg-icons";
 import ToastComponent from "./ToastComponent";
+import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);
   const empId = useSelector((state: ReduxState) => state.ID);
   const config = useSelector((state: ReduxState) => state.header);
-  // const [empId setEmpId] = useState<String>(useSelector((state:ReduxState)=>state.ID));
-  // const [config, setconfig] = useState<{}>(useSelector((state:ReduxState)=>state.ID));
+  const[loader,setLoader]=useState(false);
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
   const locationEnum = ["office", "home"];
@@ -62,6 +62,7 @@ const EmployeeDashBoard = () => {
     dispatch(changeToken());
   }, []);
   async function getTaskList() {
+    setLoader(true);
     try {
       const res = await axios.get(
         "http://localhost:8080/tasks/" + empId,
@@ -71,9 +72,12 @@ const EmployeeDashBoard = () => {
     } catch (error) {
       console.log(error);
     }
+    finally{
+      setLoader(false);
+    }
   }
   useEffect(() => {
-   
+   setLoader(true);
     async function getProjectList() {
       // console.log(empId,config);
 
@@ -86,6 +90,9 @@ const EmployeeDashBoard = () => {
         setProjectList(res.data);
       } catch (error) {
         console.log(error);
+      }
+      finally{
+        setLoader(false);
       }
     }
     getTaskList();
@@ -203,7 +210,8 @@ const EmployeeDashBoard = () => {
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
-          {taskList.length == 0 && <h2>No Tasks Added</h2>}
+          {loader&&<EmployeeCardSkeleton/>}
+          {!loader&&<>{taskList.length == 0 && <h2>No Tasks Added</h2>}
           {taskList &&
             taskList.map((tasks: Task) => (
               <div
@@ -279,7 +287,7 @@ const EmployeeDashBoard = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))}</>}
         </div>
 
         <div className="position-fixed bottom-0 end-0 m-3">
@@ -299,12 +307,13 @@ const EmployeeDashBoard = () => {
           <>
             <div className="modal-backdrop fade show"></div>
             <div
-              className="modal show fade d-block"
+              className="modal  show fade d-block"
               role="dialog"
               tabIndex={-1}
+              
             >
-              <div className="modal-dialog d-flex justify-content-center">
-                <div className="modal-content w-75">
+              <div className="modal-dialog d-flex justify-content-center" >
+                <div className="modal-content w-100 ">
                   <div className="modal-header">
                     <h5 className="modal-title" id="exampleModalLabel2">
                       {modalText && <span>Add Task</span>}
@@ -319,7 +328,7 @@ const EmployeeDashBoard = () => {
 
                   <form onSubmit={handleSubmit(handleSub)}>
                     <div
-                      className="modal-body p-4"
+                      className="modal-body p-3"
                       style={{ maxHeight: "300px", overflowY: "auto" }}
                     >
                       <div className="form-outline mb-4">

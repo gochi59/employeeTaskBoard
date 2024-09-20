@@ -19,6 +19,7 @@ const Signup = () => {
   const [errorPresent, setErrorPresent] = useState<string | null>(null);
   const [schema, setSchema] = useState<ZodSchema<any>>(z.object({}));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [navigate,setNavigate]=useState(true);
 
   useEffect(() => {
     async function getAllDesignation() {
@@ -89,6 +90,7 @@ const Signup = () => {
       const res = await axios.post("http://localhost:8080/signup", employee);
       console.log(res);
       setErrorPresent("Submitted Succesfully Wait for Approval ");
+      setNavigate(true);
       reset();
     } catch (error: any) {
       const err = error.response.data;
