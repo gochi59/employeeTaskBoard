@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
+// @PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
 public class EmployeeDashboardController {
 
     private final EmployeeDashboardService service;
@@ -38,6 +38,8 @@ public class EmployeeDashboardController {
     }
 
 
+
+    @PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
     @PostMapping("/tasks/{id}")
     public ResponseEntity<Object> addTaskToEmployee(@RequestBody @Valid TaskInput input, @PathVariable int id) {
         service.addTaskToEmp(id, input);
