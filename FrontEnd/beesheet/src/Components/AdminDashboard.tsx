@@ -16,7 +16,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     dispatch(changeToken());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     async function getAllEmp() {
