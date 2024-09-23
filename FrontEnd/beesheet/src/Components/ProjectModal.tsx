@@ -8,9 +8,10 @@ interface Props {
   closeModal: () => void;
   projectList: Project[];
   currEmp: Employee;
+  updateEmpProjects:(emp:number,projects:string[])=>void;
 }
 
-const ProjectModal = ({ closeModal, projectList, currEmp }: Props) => {
+const ProjectModal = ({ closeModal, projectList, currEmp,updateEmpProjects }: Props) => {
   const { register, reset, handleSubmit } = useForm();
   const headerConfig = useSelector((state: ReduxState) => state.header);
     const [loader,setLoader]=useState(false);
@@ -28,6 +29,8 @@ const ProjectModal = ({ closeModal, projectList, currEmp }: Props) => {
           responseBody,
           headerConfig
         );
+        const newProjectsToBeAdded=projectList.filter((project:Project)=>data.project.includes(String(project.id)));
+        updateEmpProjects(currEmp.empId,[...currEmp.projectTitles,...newProjectsToBeAdded.map((project:Project)=>project.name)]);
         closeModal();
         reset();
       } catch (error) {

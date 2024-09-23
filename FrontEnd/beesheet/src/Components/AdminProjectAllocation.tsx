@@ -27,6 +27,14 @@ const AdminProjectAllocation = () => {
     getAllEmp();
   }, [config]);
 
+  const updateEmployeeProjects = (empId:number, newProjects:string[]) => {
+    setEmpList((prevList) =>
+      prevList.map((emp) =>
+        emp.empId === empId ? { ...emp, projectTitles: newProjects } : emp
+      )
+    );
+  };
+
   return (
     <div className="container-fluid min-vh-100 bg-dark-subtle p-2 overflow-x-hidden">
       <Navbar empId={id} config={config} />
@@ -41,6 +49,7 @@ const AdminProjectAllocation = () => {
               buttonText="Projects"
               allProjects={emp.projectTitles}
               loading={false}
+              updateEmployeeProjects={updateEmployeeProjects}
             />
           ))}
       </div>

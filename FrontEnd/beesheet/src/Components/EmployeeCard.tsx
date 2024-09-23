@@ -13,9 +13,10 @@ interface props {
   buttonText: string;
   allProjects: string[];
   loading: boolean;
+  updateEmployeeProjects:(emp:number,projects:string[])=>void
 }
 
-const EmployeeCard = ({ emp, buttonText, allProjects, loading }: props) => {
+const EmployeeCard = ({ emp, buttonText, allProjects, loading,updateEmployeeProjects }: props) => {
   const [loader, setLoader] = useState<boolean>(false);
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [empAttributeRating, setEmpAttributeRating] = useState<AttributeRating[]>([]);
@@ -79,7 +80,7 @@ const decideEmpOrProj=(emp:Employee)=>{
     reset();
   };
   
-console.log(emp);
+// console.log(emp);
   return (
     <div>
       <div className="col h-100 mt-2 p-2" key={emp.empId}>
@@ -123,7 +124,9 @@ console.log(emp);
           currEmpId={emp}
         />
       )}
-      {projectModalToggle&&<ProjectModal closeModal={closeModal}  projectList={projectList} currEmp={currEmp}/>}
+      {projectModalToggle&&<ProjectModal closeModal={closeModal}  projectList={projectList} updateEmpProjects={updateEmployeeProjects} currEmp={currEmp}
+      
+      />}
     </div>
   );
 };

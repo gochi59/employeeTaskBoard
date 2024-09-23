@@ -86,8 +86,9 @@ const AdminDashboard = () => {
                     emp={emp}
                     buttonText={"Tasks"}
                     allProjects={emp.projectTitles}
-                    loading={true}
-                  />
+                    loading={true} updateEmployeeProjects={function (emp: number, projects: string[]): void {
+                      throw new Error("Function not implemented.");
+                    } }                  />
                 ))}
             {empList &&
               empList
@@ -107,8 +108,9 @@ const AdminDashboard = () => {
                     emp={emp}
                     buttonText={"Tasks"}
                     allProjects={emp.projectTitles}
-                    loading={true}
-                  />
+                    loading={true} updateEmployeeProjects={function (emp: number, projects: string[]): void {
+                      throw new Error("Function not implemented.");
+                    } }                  />
                 ))}
           </div>
         </div>

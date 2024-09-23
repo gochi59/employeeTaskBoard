@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import ToastComponent from "./ToastComponent";
 import Navbar from "./NavbarComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
+import { Navigate } from "react-router-dom";
 
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>();
