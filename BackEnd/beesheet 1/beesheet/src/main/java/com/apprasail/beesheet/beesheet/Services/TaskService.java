@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.management.Notification;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
 
@@ -43,53 +41,45 @@ public class TaskService {
 
     public void deleteTask(int empId, int taskId) throws IllegalAccessException {
 
-        Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
+        Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         List<Task> empTasks = employee.getEmp_Tasks();
+        boolean anyTaskMarkedForAppraisal=false;
         boolean exists = false;
         for (Task empTask : empTasks) {
             if (empTask.getTaskId() == taskId) {
-                if(empTask.getTaskRating()!=null)
-                {
+                if (empTask.getTaskRating() != null) {
                     throw new IllegalAccessException("Cannot delete rated tasks");
                 }
                 empTasks.remove(empTask);
                 exists = true;
                 break;
             }
+            else if(empTask.getTaskRating()==null)
+            {
+                anyTaskMarkedForAppraisal|=empTask.isMarkedForAppraisal();
+            }
         }
         if (!exists)
-            throw new IllegalArgumentException();
-        try {
-            employee.setEmp_Tasks(empTasks);
-            employeeRepo.save(employee);
-            taskRepo.deleteById(taskId);
-        } catch (Exception e) {
-            throw e;
+        {   throw new IllegalArgumentException();}
+        employee.setEmp_Tasks(empTasks);
+        if(!anyTaskMarkedForAppraisal)
+        {
+            employee.setApprasailDone(true);
         }
+        employeeRepo.save(employee);
+        taskRepo.deleteById(taskId);
     }
 
     public void updateTask(int empId, int taskId, TaskInput input) throws IllegalAccessException {
         System.out.println(input);
-       
-        Employee employee = employeeRepo.findById(empId).orElseThrow(()->new IllegalArgumentException("Invalid id"));
-        if(input.isMarkedForAppraisal())
-        {
-            Calendar dojCalendar = Calendar.getInstance();
-            dojCalendar.setTime(employee.getDOJ());
-            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-            if (dojCalendar.get(Calendar.YEAR) < currentYear) {
-                notificationService.sendNotifToAdmin(employee.getFirstName() + " added task for approval.");
-            }
-            employee.setApprasailDone(false);
-        }
+        Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
             Task task = taskRepo.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));
-            if(task.getTaskRating()!=null)
-        {
-            throw new IllegalAccessException("Cannot edit rated tasks");
-        } 
+            if (task.getTaskRating() != null) {
+                throw new IllegalAccessException("Cannot edit rated tasks");
+            }
             task.setTitle(input.getTitle());
             task.setMarkedForAppraisal(input.isMarkedForAppraisal());
             task.setWorkLocation(input.getWorkLocation());
@@ -98,9 +88,20 @@ public class TaskService {
             task.setDescription(input.getDescription());
             task.setDate(input.getDate());
             taskRepo.save(task);
+            if (input.isMarkedForAppraisal()) {
+                Calendar dojCalendar = Calendar.getInstance();
+                dojCalendar.setTime(employee.getDOJ());
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+    
+                if (dojCalendar.get(Calendar.YEAR) < currentYear) {
+                    notificationService.sendNotifToAdmin(employee.getFirstName() + " added task for approval.");
+                }
+                employee.setApprasailDone(false);
+            }
         } else {
             throw new IllegalArgumentException("Task not found in this Employee's Task List");
         }
+        
 
     }
 

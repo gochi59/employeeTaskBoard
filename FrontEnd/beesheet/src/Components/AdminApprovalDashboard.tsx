@@ -12,6 +12,7 @@ const AdminApprovalDashboard = () => {
   const [errorPresent, setErrorPresent] = useState("");
   const empId = useSelector((state: ReduxState) => state.ID);
   const [loader,setLoader]=useState(false);
+  const [navigateToError,setNavigateToError]=useState(false);
 
 
   useEffect(() => {
@@ -25,11 +26,21 @@ const AdminApprovalDashboard = () => {
         setUsers(response.data);
       } catch (error) {
         console.error(error);
+        if(error.response.status===401)
+          {
+            setNavigateToError(true);
+          }
       }
   
     }
     fetchUsers();
   }, [headerConfig]);
+
+
+  if(navigateToError)
+    {
+      return <Navigate to="*" replace={false}/>
+    }
 
   const handleApprove = async (tempId: number) => {
     setLoader(true);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { AttributeRating, ReduxState, Task } from "../models/AllModels";
+import { AttributeRating, Employee, ReduxState, Task } from "../models/AllModels";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ interface props {
   closeModal: () => void;
   currEmpTaskList: Task[];
   empAttributeRating: AttributeRating[];
-  currEmpId: number;
+  currEmpId: Employee;
 }
 
 const TaskAttributeRating = ({
@@ -35,7 +35,7 @@ const TaskAttributeRating = ({
       const attributeTitle = attribute.attribute;
       const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
       return axios.put(
-        `http://localhost:8080/admin/employee/attribute/${currEmpId}`,
+        `http://localhost:8080/admin/employee/attribute/${currEmpId.empId}`,
         updatedAttribute,
         headerConfig
       );
@@ -44,6 +44,7 @@ const TaskAttributeRating = ({
     try {
       await Promise.all([...taskPromises, ...attributePromises]);
       closeModal();
+      currEmpId.apprasailDone=true;
     } catch (error) {
       console.log(error);
     } finally {

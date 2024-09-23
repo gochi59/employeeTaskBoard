@@ -79,14 +79,14 @@ const decideEmpOrProj=(emp:Employee)=>{
     reset();
   };
   
-console.log(loader);
+console.log(emp);
   return (
     <div>
       <div className="col h-100 mt-2 p-2" key={emp.empId}>
         <div className="card h-100 shadow-sm border-0 rounded-4">
           <div className="card-body">
             <h5 className="card-title mb-3 text-primary">
-              {emp.firstName} {emp.lastName}
+              {emp.firstName} {emp.lastName} {emp.apprasailDone}
               {emp.apprasailDone && (
                 <OverlayTrigger
                   delay={{ hide: 450, show: 200 }}
@@ -120,7 +120,7 @@ console.log(loader);
           closeModal={closeModal}
           currEmpTaskList={currEmpTaskList}
           empAttributeRating={empAttributeRating}
-          currEmpId={emp.empId}
+          currEmpId={emp}
         />
       )}
       {projectModalToggle&&<ProjectModal closeModal={closeModal}  projectList={projectList} currEmp={currEmp}/>}

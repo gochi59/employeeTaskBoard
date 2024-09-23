@@ -1,6 +1,5 @@
 package com.apprasail.beesheet.beesheet.Services;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,6 +37,7 @@ public class EmployeeDashboardService {
         Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         List<Task> taskList = emp.getEmp_Tasks();
         if (input.isMarkedForAppraisal()) {
+            emp.setApprasailDone(false);
             Calendar dojCalendar = Calendar.getInstance();
             dojCalendar.setTime(emp.getDOJ());
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
