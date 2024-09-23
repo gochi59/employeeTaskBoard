@@ -5,8 +5,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Async
+@Slf4j
 public class EmailService {
 
     private final JavaMailSender mailSender;
@@ -24,5 +27,6 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(body);
         mailSender.send(message);
+        log.info("Message sent to "+to);
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
 import com.apprasail.beesheet.beesheet.Repository.TaskRepository;
@@ -16,10 +15,12 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class TaskService {
 
     private final TaskRepository taskRepo;
@@ -32,11 +33,8 @@ public class TaskService {
     }
 
     public void add(TaskInput input) {
-        try {
             taskRepo.save(taskInputToObject.convertToObject(input));
-        } catch (TransactionSystemException e) {
-            throw e;
-        }
+            log.info("new task added");
     }
 
     public void deleteTask(int empId, int taskId) throws IllegalAccessException {
@@ -45,6 +43,7 @@ public class TaskService {
         List<Task> empTasks = employee.getEmp_Tasks();
         boolean anyTaskMarkedForAppraisal=false;
         boolean exists = false;
+        log.info("Task deleted for "+employee.getFirstName()+" with task id: "+taskId);
         for (Task empTask : empTasks) {
             if (empTask.getTaskId() == taskId) {
                 if (empTask.getTaskRating() != null) {
@@ -71,8 +70,7 @@ public class TaskService {
     }
 
     public void updateTask(int empId, int taskId, TaskInput input) throws IllegalAccessException {
-        System.out.println(input);
-
+        log.info(taskId+" task being updated for "+empId);
         Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         boolean check = employee.getEmp_Tasks().stream().anyMatch(t -> t.getTaskId() == taskId);
         if (check) {
@@ -106,7 +104,7 @@ public class TaskService {
     }
 
     public List<EmployeeDTO> findTasksByNameContaining(String name) {
-
+        log.info("find task by name containing called");
         List<Employee> empList = employeeRepo.findByFirstNameContaining(name);
         return empList.stream().map(emp -> {
             EmployeeDTO dto = new EmployeeDTO();

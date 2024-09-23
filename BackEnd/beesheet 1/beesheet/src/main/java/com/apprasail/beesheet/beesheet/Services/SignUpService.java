@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.management.Notification;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +24,12 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @AllArgsConstructor
+@Slf4j
 public class SignUpService {
 
     private final EmployeeRepo employeeRepo;
@@ -40,7 +40,6 @@ public class SignUpService {
     private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
     private final NotificationService notificationService;
 
-    @Transactional
     public void addEmployee(TemporaryUser input) {
         String inputEmail = input.getEmail();
         List<Employee> employees = employeeRepo.findAll();
@@ -53,10 +52,12 @@ public class SignUpService {
         input.setPassword(encoder.encode(input.getPassword()));
         temporaryUserRepo.save(input);
         notificationService.sendNotifToAdmin(input.getFirstName()+" "+input.getLastName()+" just signed up");
+        log.info("new user signed up");
     }
 
     public List<EmployeeDTO> findAll() {
         List<Employee> employees = employeeRepo.findAll();
+        log.info("All employees fetched in signupservice");
         return employees.stream().map(emp -> {
             EmployeeDTO dto = new EmployeeDTO();
             dto.setEmpId(emp.getEmpId());
@@ -75,6 +76,7 @@ public class SignUpService {
 
     public void approveUser(int id) {
         TemporaryUser input = temporaryUserRepo.findById(id).orElseThrow(() -> new IllegalArgumentException());
+        log.info(input.getFirstName() +" being approved");
         Employee emp = new Employee();
         emp.setApprasailDone(false);
         emp.setFirstName(input.getFirstName());
@@ -110,12 +112,14 @@ public class SignUpService {
     public void rejectEmployee(int id) {
         TemporaryUser user = temporaryUserRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
+        log.info(user.getFirstName()+" being rejected");
         emailService.sendNewMail(user.getEmail(), "Signup Status",
                 "Your request to sign up to beesheets has been rejected");
         temporaryUserRepo.deleteById(id);
     }
 
     public void deleteAllEmployees() {
+        log.info("All employees deleted");
         employeeRepo.deleteAll();
     }
 

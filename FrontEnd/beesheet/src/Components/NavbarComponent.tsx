@@ -114,6 +114,10 @@ const location=useLocation();
   const logout = () => {
     localStorage.removeItem("userToken");
     dispatch(clearToken());
+    if(internalRef.current!==null)
+    {
+      clearInterval(internalRef.current);
+    }
     setLogoutToggle(true);
   };
 

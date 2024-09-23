@@ -27,10 +27,12 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class AdminDashboardServices {
 
     private final EmployeeRepo employeeRepo;
@@ -43,6 +45,7 @@ public class AdminDashboardServices {
 
 
     public List<EmployeeDTO> findAll() {
+        log.info("All employee list fetched");
         List<Employee> list = employeeRepo.findAll();
         List<EmployeeDTO> employeeDTOList = list.stream().map(emp -> employeeToDTO.employeeDTO(emp))
                 .collect(Collectors.toList());
@@ -50,6 +53,7 @@ public class AdminDashboardServices {
     }
 
     public List<ProjectDTO> findAllProjects() {
+        log.info("All projects list fetched");
         List<ProjectDTO> dtoList;
         List<Project> projects = projectRepo.findAll();
         dtoList = projects.stream().map(project -> {
@@ -63,6 +67,7 @@ public class AdminDashboardServices {
     }
 
     public void addProject(ProjectInput projectInput) {
+        log.info("New Project added "+projectInput.getName());
         Project project = new Project();
         project.setName(projectInput.getName());
         project.setEmp(Collections.<Employee>emptyList());
@@ -75,6 +80,7 @@ public class AdminDashboardServices {
         Employee emp = employeeRepo.findById(empid)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
         projects.stream().forEach((project)->{List<Employee> employees = project.getEmp();
+            log.info("Employee "+emp.getFirstName()+" assigned to project id "+input.getProjects());
         if (employees != null && !employees.stream().anyMatch(empl -> empl.getEmpId() == empid)) {
             List<Project> projectsEmp = emp.getProjects();
             employees.add(emp);
@@ -91,12 +97,10 @@ public class AdminDashboardServices {
     public void changeTaskRating(int id, TaskInput input) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));
         task.setTaskRating(input.getTaskRating());
-        System.out.println(input.getTaskRating());
-        System.out.println(task.getTaskId() + " " + task.getTaskRating());
         taskRepository.save(task);
+        log.info("Rating of task of id "+id+" is being changed");
     }
 
-    @Transactional
     public void changeAttributeRating(int id, EmployeeRatingInput input) {
 
         Employee employee = employeeRepo.findById(id)
@@ -118,6 +122,7 @@ public class AdminDashboardServices {
         employee.setEmployeeDesignationMapping(employeeDesignationMapping);
         employeeRepo.save(employee);
         notificationService.sendNotifToEmp(employee, "Admin has rated you");
+        log.info("Attribute Rating changed of employee "+employee.getFirstName());
     }
 
     public List<EmployeeRatingInput> getAttributeRating(int eid) {
@@ -132,14 +137,15 @@ public class AdminDashboardServices {
             EmployeeRatingInput employeeRatingInput = new EmployeeRatingInput();
             employeeRatingInput.setAttribute(attributes.getTitle());
             employeeRatingInput.setRating(string);
-            System.out.println(employeeRatingInput);
             employeeRatingInputs.add(employeeRatingInput);
         }));
+        log.info("Attribute Ratings accessed of "+employee.getFirstName());
         return employeeRatingInputs;
     }
 
     public void deleteEmployee(int id) {
         Employee employee=employeeRepo.findById(id).orElseThrow((()->new IllegalArgumentException("Invalid User id")));
+        log.info(employee.getFirstName() +" is deleted");
         employeeRepo.deleteById(id);
     }
 

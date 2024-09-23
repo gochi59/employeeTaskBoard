@@ -14,7 +14,10 @@ import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class EmployeeToDTO {
 
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
@@ -58,6 +61,7 @@ public class EmployeeToDTO {
         employeeDTO.setNotifications(emp.getNotification());
         employeeDTO.setApprasailDone(emp.isApprasailDone());
         employeeDTO.setNotifications(emp.getNotification());
+        log.info("Object to dto for employee called");
         return employeeDTO;
     }
 }

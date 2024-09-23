@@ -17,9 +17,12 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Transactional
+@Slf4j
 public class EmployeeDashboardService {
 
     private final EmployeeRepo employeeRepo;
@@ -32,7 +35,6 @@ public class EmployeeDashboardService {
         return emp.getEmp_Tasks();
     }
 
-    @Transactional
     public void addTaskToEmp(int id, TaskInput input) {
         Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         List<Task> taskList = emp.getEmp_Tasks();
@@ -50,6 +52,7 @@ public class EmployeeDashboardService {
         taskList.add(taskInputToObject.convertToObject(input));
         emp.setEmp_Tasks(taskList);
         employeeRepo.save(emp);
+        log.info("New task added to employee: "+emp.getFirstName());
     }
 
     public List<ProjectDTO> getProject(int id) {
@@ -57,7 +60,7 @@ public class EmployeeDashboardService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Id"));
 
         List<Project> projectsCopy = new ArrayList<>(employee.getProjects());
-
+        log.info("Project being fetched with id: "+id);
         return projectsCopy.stream()
                 .map(project -> {
                     ProjectDTO projectDTO = new ProjectDTO();
@@ -73,6 +76,7 @@ public class EmployeeDashboardService {
 
     public EmployeeDTO getEmpInfo(int id) {
         Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Id"));
+        log.info("Employee info being fetched of id: "+id);
         return employeeToDTO.employeeDTO(employee);
     }
 

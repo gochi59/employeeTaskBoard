@@ -15,9 +15,10 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.DesignationInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.DesignationOutputDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeByDesignationDTO;
 
-import aj.org.objectweb.asm.Attribute;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class DesignationService {
 
     private final DesignationRepo designationRepo;
@@ -39,6 +40,7 @@ public class DesignationService {
         des.setTitle(input.getName());
         des.setEmpList(Collections.<Employee>emptyList());
         designationRepo.save(des);
+        log.info("New designation added "+input.getName());
     }
 
     public List<DesignationOutputDTO> findAll() {
@@ -50,6 +52,7 @@ public class DesignationService {
             designationOutputDTO.setEmployees((des.getEmpList().stream()).map(emp->employeeToDTO.employeeDTO(emp)).toList());
             return designationOutputDTO;
         }).toList();
+        log.info("All designation list fetched");
         return designationOutputDTOs;
     }
 
@@ -64,6 +67,7 @@ public class DesignationService {
                         dto.setEmpTask(emp.getEmp_Tasks());
                         return dto;
                       }).collect(Collectors.toList());
+        log.info("All employees being fetched of designation: "+name);
         return allEmpByDesig;
     }
 
@@ -74,6 +78,7 @@ public class DesignationService {
         attributes.add(attribute);
         designation.setAttributes(attributes);
         designationRepo.save(designation);
+        log.info("Attribute "+aId+" added to desination "+dId);
     }
     
 
