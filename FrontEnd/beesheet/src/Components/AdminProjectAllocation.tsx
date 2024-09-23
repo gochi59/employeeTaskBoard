@@ -15,6 +15,7 @@ const AdminProjectAllocation = () => {
   const [loading, setLoading] = useState(false);
   const [navigateError,setNavigateError]=useState(false);
   const dispatch=useDispatch();
+  const [errorPresent,setErrorPresent]=useState("");
 
   useEffect(() => {
     const getAllEmp = async () => {
@@ -24,6 +25,9 @@ const AdminProjectAllocation = () => {
         setEmpList(res.data);
       } catch (error:any) {
         console.error("Error fetching employees:", error);
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
+        }
         if(error.response.status===401)
         {
           setNavigateError(true);
@@ -57,7 +61,8 @@ const AdminProjectAllocation = () => {
     return <Navigate to="*"></Navigate>
   }
   return (
-    <div className="container-fluid min-vh-100 bg-dark-subtle p-2 overflow-x-hidden">
+    <>
+    <div className="container-fluid min-vh-100 bg-dark-subtle p-2 pt-md-1 pt-5 overflow-x-hidden">
       <Navbar empId={id} config={config} />
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-5">
         {loading && <EmployeeCardSkeleton />}
@@ -75,6 +80,13 @@ const AdminProjectAllocation = () => {
           ))}
       </div>
     </div>
+    {errorPresent && (
+      <ToastComponent
+        closeMessage={() => setErrorPresent("")}
+        errorPresent={errorPresent}
+      ></ToastComponent>
+    )}
+    </>
   );
 };
 

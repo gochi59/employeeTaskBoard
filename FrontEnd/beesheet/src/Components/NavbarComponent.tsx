@@ -5,6 +5,7 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 import { clearToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCancel, faCross, faX } from "@fortawesome/free-solid-svg-icons";
+import ToastComponent from "./ToastComponent";
 
 interface Props {
   empId: string;
@@ -20,6 +21,8 @@ const Navbar = ({ empId, config }: Props) => {
   const [logoutToggle, setLogoutToggle] = useState(false);
   const [loader, setLoader] = useState(false);
   const [homeToggle, setHomeToggle] = useState<boolean>(false);
+  const [errorPresent, setErrorPresent] = useState<string>("");
+
 const location=useLocation();
   const interval = 10000;
 
@@ -35,13 +38,13 @@ const location=useLocation();
       console.log(error);
       if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
         {
+            if(error.message==="Network Error")
+              {
+                setErrorPresent("Internal Server Error");   
+              }
           dispatch(clearToken());
           localStorage.removeItem("userToken");
         }
-        if(error.message==="Network Error")
-          {
-            alert("Internal Server Error");   
-          }
     } finally {
       setLoader(false);
     }
@@ -210,6 +213,12 @@ const location=useLocation();
           Logout
         </button>
       </div>
+      {errorPresent && (
+          <ToastComponent
+            closeMessage={() => setErrorPresent("")}
+            errorPresent={errorPresent}
+          ></ToastComponent>
+        )}
     </div>
   );
 };

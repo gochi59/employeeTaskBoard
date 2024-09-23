@@ -7,12 +7,14 @@ import { changeToken, clearToken } from "../redux/HeaderSlice";
 import EmployeeCard from "./EmployeeCard";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
+import ToastComponent from "./ToastComponent";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const loginId = useSelector((state: ReduxState) => state.ID);
   const [navigateToError,setNavigateToError]=useState(false);
+  const [errorPresent,setErrorPresent]=useState("");
 
   const dispatch = useDispatch();
 
@@ -30,6 +32,9 @@ const AdminDashboard = () => {
         setEmpList(res.data);
       } catch (error:any) {
         console.log(error);
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
+        }
         if(error.response.status===401)
         {
           console.log(typeof error)
@@ -57,23 +62,8 @@ const AdminDashboard = () => {
     <>
       <Navbar empId={loginId} config={headerConfig} />
       <div>
-        <div className="container-fluid bg-dark-subtle p-2 pb-3 vh-100 overflow-x-hidden rounded-1">
-          <form className="d-flex justify-content-end">
-            <input
-              type="search"
-              name="search"
-              id="search"
-              placeholder="Search Name"
-              className="p-1 rounded-3 border-0 m-2"
-            />
-            <button
-              type="submit"
-              className="btn btn-dark p-1 m-2"
-              style={{ height: "2rem", width: "4.3rem" }}
-            >
-              Search
-            </button>
-          </form>
+        <div className="container-fluid bg-dark-subtle p-2 mt-5 pt-md-1 pt-5 pb-3 vh-100 overflow-x-hidden rounded-1">
+         
 
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
             {!empList && <EmployeeCardSkeleton />}
@@ -124,6 +114,12 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      {errorPresent && (
+          <ToastComponent
+            closeMessage={() => setErrorPresent("")}
+            errorPresent={errorPresent}
+          ></ToastComponent>
+        )}
     </>
   );
 };

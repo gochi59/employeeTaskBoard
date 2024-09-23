@@ -27,9 +27,8 @@ const AdminApprovalDashboard = () => {
         setUsers(response.data);
       } catch (error: any) {
         console.error(error);
-        if(error.message==="Network Error")
-        {
-          return <Navigate to="/"/>
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
         }
         if (error.response.status === 401) {
           setNavigateToError(true);

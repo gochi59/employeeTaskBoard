@@ -75,6 +75,9 @@ const EmployeeDashBoard = () => {
       setTaskList(res.data);
     } catch (error: any) {
       console.log(error);
+      if (error.message === "Network Error") {
+        setErrorPresent("Internal Server Error");
+      }
       if (
         error.response.data === "JWT token is expired." ||
         error.response.data === "Invalid JWT token."
@@ -533,7 +536,7 @@ const EmployeeDashBoard = () => {
             errorPresent={errorPresent}
           ></ToastComponent>
         )}
-      </div>
+      </div>  
     </div>
   );
 };

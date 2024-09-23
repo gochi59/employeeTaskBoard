@@ -29,7 +29,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
     private final ApplicationContext applicationContext;
-    private static Logger log=LoggerFactory.getLogger(JWTFilter.class);
+    private static final Logger log=LoggerFactory.getLogger(JWTFilter.class);
     
     public JWTFilter(JWTService jwtService, ApplicationContext applicationContext) {
         this.jwtService = jwtService;
@@ -87,3 +87,4 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
 }
+ 

@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 import Navbar from "./NavbarComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { clearToken } from "../redux/HeaderSlice";
+import ToastComponent from "./ToastComponent";
 
 const LandingPage = () => {
   const config = useSelector((state: ReduxState) => state.header);
@@ -19,6 +20,7 @@ const LandingPage = () => {
   const [empApproval, setEmpApproval] = useState<boolean>(false);
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
+  const [errorPresent,setErrorPresent]=useState("");
 
   useEffect(() => {
     async function fetchEmployeeInfo() {
@@ -31,6 +33,9 @@ const LandingPage = () => {
         setCurrEmp(res.data);
       } catch (error: any) {
         console.error(error);
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
+        }
         if (
           error.response.data === "JWT token is expired." ||
           error.response.data === "Invalid JWT token."
@@ -80,6 +85,7 @@ const LandingPage = () => {
     return <Navigate to="/admin/approval"></Navigate>;
   }
 
+  console.log(errorPresent);
   return (
     <>
       <Navbar empId={empId} config={config} />
@@ -165,10 +171,17 @@ const LandingPage = () => {
                   </div>
                 </div>
               </div>
+          
             </div>
           </div>
         </section>
       )}
+      {errorPresent && (
+          <ToastComponent
+            closeMessage={() => setErrorPresent("")}
+            errorPresent={errorPresent}
+          ></ToastComponent>
+        )}
     </>
   );
 };
