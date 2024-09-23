@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class AdminDashboardServices {
 
     private final EmployeeRepo employeeRepo;

@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import AdminMainPage from "./Components/AdminMainPage";
 import LandingPage from "./Components/LandingPage";
+import ErrorPage from "./Components/ErrorPage";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
     path:"/home",
     element:<LandingPage/>
   }
+  ,{
+    path:"*",
+    element:<ErrorPage/>
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(

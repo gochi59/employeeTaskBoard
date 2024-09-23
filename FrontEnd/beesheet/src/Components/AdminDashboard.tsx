@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
 import EmployeeCard from "./EmployeeCard";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
+import { Navigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const loginId = useSelector((state: ReduxState) => state.ID);
+  const [navigateToError,setNavigateToError]=useState(false);
 
   const dispatch = useDispatch();
 
@@ -28,10 +30,19 @@ const AdminDashboard = () => {
         setEmpList(res.data);
       } catch (error) {
         console.log(error);
+        if(error.response.status===401)
+        {
+          setNavigateToError(true);
+        }
       }
     }
     getAllEmp();
   }, []);
+
+  if(navigateToError)
+  {
+    return <Navigate to="*" replace={false}/>
+  }
 
   return (
     <>
