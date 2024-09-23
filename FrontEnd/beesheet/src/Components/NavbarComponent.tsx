@@ -31,8 +31,13 @@ const location=useLocation();
         config
       );
       setNotificationList(res.data);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
+      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
     } finally {
       setLoader(false);
     }
@@ -87,6 +92,9 @@ const location=useLocation();
     };
   }, []);
 
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
   const logout = () => {
     localStorage.removeItem("userToken");
     dispatch(clearToken());

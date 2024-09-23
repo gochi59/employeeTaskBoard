@@ -2,20 +2,27 @@ import React, { useState } from "react";
 import { useForm, FieldValues } from "react-hook-form";
 import { Employee, Project, ReduxState } from "../models/AllModels";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearToken } from "../redux/HeaderSlice";
+import { Navigate } from "react-router-dom";
 
 interface Props {
   closeModal: () => void;
   projectList: Project[];
   currEmp: Employee;
-  updateEmpProjects:(emp:number,projects:string[])=>void;
+  updateEmpProjects: (emp: number, projects: string[]) => void;
 }
 
-const ProjectModal = ({ closeModal, projectList, currEmp,updateEmpProjects }: Props) => {
+const ProjectModal = ({
+  closeModal,
+  projectList,
+  currEmp,
+  updateEmpProjects,
+}: Props) => {
   const { register, reset, handleSubmit } = useForm();
   const headerConfig = useSelector((state: ReduxState) => state.header);
-    const [loader,setLoader]=useState(false);
-
+  const [loader, setLoader] = useState(false);
+  const dispatch=useDispatch();
   const assignProjects = async (data: FieldValues) => {
     setLoader(true);
     const responseBody = {
@@ -29,18 +36,33 @@ const ProjectModal = ({ closeModal, projectList, currEmp,updateEmpProjects }: Pr
           responseBody,
           headerConfig
         );
-        const newProjectsToBeAdded=projectList.filter((project:Project)=>data.project.includes(String(project.id)));
-        updateEmpProjects(currEmp.empId,[...currEmp.projectTitles,...newProjectsToBeAdded.map((project:Project)=>project.name)]);
+        const newProjectsToBeAdded = projectList.filter((project: Project) =>
+          data.project.includes(String(project.id))
+        );
+        updateEmpProjects(currEmp.empId, [
+          ...currEmp.projectTitles,
+          ...newProjectsToBeAdded.map((project: Project) => project.name),
+        ]);
         closeModal();
         reset();
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error assigning project:", error);
-      }
-      finally{
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
+      } finally {
         setLoader(false);
       }
     }
   };
+
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
 
   return (
     <div
@@ -83,8 +105,18 @@ const ProjectModal = ({ closeModal, projectList, currEmp,updateEmpProjects }: Pr
               </select>
             </div>
             <div className="modal-footer d-flex justify-content-between">
-              <button type="submit" className="btn btn-success m-1" disabled={loader}>
-              {loader&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+              <button
+                type="submit"
+                className="btn btn-success m-1"
+                disabled={loader}
+              >
+                {loader && (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Assign Project
               </button>
               <button

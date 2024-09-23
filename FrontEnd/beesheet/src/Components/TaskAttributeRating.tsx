@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { AttributeRating, Employee, ReduxState, Task } from "../models/AllModels";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearToken } from "../redux/HeaderSlice";
+import { Navigate } from "react-router-dom";
 
 interface props {
   closeModal: () => void;
@@ -19,6 +21,7 @@ const TaskAttributeRating = ({
 }: props) => {
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch=useDispatch();
   const ratingSubmit = async (data: FieldValues) => {
     setLoading(true);
     const taskPromises = currEmpTaskList.map((task) => {
@@ -45,8 +48,13 @@ const TaskAttributeRating = ({
       await Promise.all([...taskPromises, ...attributePromises]);
       closeModal();
       currEmpId.apprasailDone=true;
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
+      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
     } finally {
       setLoading(false);
     }
@@ -54,6 +62,9 @@ const TaskAttributeRating = ({
 
   const { register, handleSubmit } = useForm();
 
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
   return (
     <div>
       <div

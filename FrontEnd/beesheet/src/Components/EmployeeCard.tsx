@@ -3,10 +3,12 @@ import { AttributeRating, Employee, Project, ReduxState, Task } from '../models/
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import axios from 'axios';
 import TaskAttributeRating from './TaskAttributeRating';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import TaskAttributeRatingSkeleton from './Skeletons/TaskAttributeRatingSkeleton';
 import ProjectModal from './ProjectModal';
+import { clearToken } from '../redux/HeaderSlice';
+import { Navigate } from 'react-router-dom';
 
 interface props {
   emp: Employee;
@@ -26,6 +28,7 @@ const EmployeeCard = ({ emp, buttonText, allProjects, loading,updateEmployeeProj
   const { reset } = useForm();
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [projectModalToggle, setProjectModalToggle] = useState(false);
+  const dispatch=useDispatch();
 
 const decideEmpOrProj=(emp:Employee)=>{
     if(loading)
@@ -47,8 +50,13 @@ const decideEmpOrProj=(emp:Employee)=>{
         setEmpAttributeRating(res2.data);
         setCurrEmpTaskList(res.data);
         setShowModal(true);
-      } catch (error) {
+      } catch (error:any) {
         console.log(error);
+        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
       } finally {
         setLoader(false);
       }
@@ -64,8 +72,13 @@ const decideEmpOrProj=(emp:Employee)=>{
         setProjectList(res.data);
         setProjectModalToggle(true);
         // setCurrEmp(empId);
-      } catch (error) {
+      } catch (error:any) {
         console.error("Error fetching projects:", error);
+        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
       }
     }
     getAllProjects();
@@ -81,6 +94,9 @@ const decideEmpOrProj=(emp:Employee)=>{
   };
   
 // console.log(emp);
+if (!localStorage.getItem("userToken")) {
+  return <Navigate to="/"></Navigate>;
+}
   return (
     <div>
       <div className="col h-100 mt-2 p-2" key={emp.empId}>

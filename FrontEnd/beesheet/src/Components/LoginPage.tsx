@@ -37,6 +37,7 @@ const LoginPage = () => {
       setNavigate(true);
     } catch (error: any) {
         console.log(error);
+        
       if (error) {
         alert("Invalid Username or password");
       }

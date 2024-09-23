@@ -3,7 +3,7 @@ import Navbar from "./NavbarComponent";
 import axios from "axios";
 import { Employee, ReduxState, Task } from "../models/AllModels";
 import { useDispatch, useSelector } from "react-redux";
-import { changeToken } from "../redux/HeaderSlice";
+import { changeToken, clearToken } from "../redux/HeaderSlice";
 import EmployeeCard from "./EmployeeCard";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
@@ -28,17 +28,26 @@ const AdminDashboard = () => {
           headerConfig
         );
         setEmpList(res.data);
-      } catch (error) {
+      } catch (error:any) {
         console.log(error);
         if(error.response.status===401)
         {
+          console.log(typeof error)
           setNavigateToError(true);
         }
+        else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
       }
     }
     getAllEmp();
   }, []);
 
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
   if(navigateToError)
   {
     return <Navigate to="*" replace={false}/>

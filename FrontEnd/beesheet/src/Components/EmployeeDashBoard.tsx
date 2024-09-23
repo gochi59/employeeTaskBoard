@@ -7,11 +7,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { changeToken } from "../redux/HeaderSlice";
+import { changeToken, clearToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faHouse } from "@fortawesome/free-solid-svg-icons";
 import ToastComponent from "./ToastComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
+import { Navigate } from "react-router-dom";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
@@ -69,8 +70,13 @@ const EmployeeDashBoard = () => {
         config
       );
       setTaskList(res.data);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
+      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
     }
     finally{
       setLoader(false);
@@ -88,8 +94,13 @@ const EmployeeDashBoard = () => {
         );
         // console.log(res.data)
         setProjectList(res.data);
-      } catch (error) {
+      } catch (error:any) {
         console.log(error);
+        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
       }
       finally{
         setLoader(false);
@@ -136,8 +147,13 @@ const EmployeeDashBoard = () => {
         reset();
         setTogalModal(false);
         getTaskList();
-      } catch (error) {
+      } catch (error:any) {
         console.log(error);
+        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
       }
     } else {
       try {
@@ -154,12 +170,17 @@ const EmployeeDashBoard = () => {
         setTaskList(editTaskList);
         console.log(res);
         setTogalModal(false);
-      } catch (error) {
+      } catch (error:any) {
         if(error.response.data==="java.lang.IllegalAccessException")
           {
             setErrorPresent("Cannot edit rated task");
             setTogalModal(false);
           }
+          if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+            {
+              dispatch(clearToken());
+              localStorage.removeItem("userToken");
+            }
         console.log(error);
       }
     }
@@ -176,11 +197,16 @@ const EmployeeDashBoard = () => {
         );
         console.log(res);
         setTaskList(taskList.filter((t) => t.taskId !== id));
-      } catch (error) {
+      } catch (error:any) {
         if(error.response.data==="java.lang.IllegalAccessException")
         {
           setErrorPresent("Cannot delete rated task");
         }
+        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
         console.log(error);
       }
     }
@@ -204,7 +230,11 @@ const EmployeeDashBoard = () => {
       date: taskDate
     });
   };
-  console.log(taskList);
+  // console.log(taskList);
+
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
   return (
     <div className="bg-dark-subtle min-vh-100 mt-5">
       <Navbar empId={empId} config={config}></Navbar>

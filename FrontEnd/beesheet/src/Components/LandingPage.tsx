@@ -1,34 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Employee, ReduxState } from "../models/AllModels";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import Navbar from "./NavbarComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
+import { clearToken } from "../redux/HeaderSlice";
 
 const LandingPage = () => {
   const config = useSelector((state: ReduxState) => state.header);
   const empId = useSelector((state: ReduxState) => state.ID);
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [navigateToEmp, setNavigateToEmp] = useState<boolean>(false);
-  const [navigateToAdminProject,setNavigateToAdminProject]=useState<boolean>(false);
-  const [navigateToAdminAppraisal,setNavigateToAdminAppraisal]=useState<boolean>(false);
-  const [empApproval,setEmpApproval]=useState<boolean>(false);
-  const [loader,setLoader]=useState(false);
+  const [navigateToAdminProject, setNavigateToAdminProject] =
+    useState<boolean>(false);
+  const [navigateToAdminAppraisal, setNavigateToAdminAppraisal] =
+    useState<boolean>(false);
+  const [empApproval, setEmpApproval] = useState<boolean>(false);
+  const [loader, setLoader] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-      async function fetchEmployeeInfo() {
-          setLoader(true);
+    async function fetchEmployeeInfo() {
+      setLoader(true);
       try {
         const res = await axios.get(
           `http://localhost:8080/employee/${empId}`,
           config
         );
         setCurrEmp(res.data);
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
-      }
-      finally{
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
+      } finally {
         setLoader(false);
       }
     }
@@ -38,43 +48,47 @@ const LandingPage = () => {
   const handleNavigateEmployee = () => {
     setNavigateToEmp(true);
   };
-  
-  const handleProjectAllocation=()=>{
+
+  const handleProjectAllocation = () => {
     setNavigateToAdminProject(true);
   };
 
-  const handleEmpAppraisal=()=>{
+  const handleEmpAppraisal = () => {
     setNavigateToAdminAppraisal(true);
-  }
+  };
 
-  const handleApprove=()=>{
+  const handleApprove = () => {
     setEmpApproval(true);
-  }
+  };
 
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
   if (navigateToEmp) {
     return <Navigate to="/user" />;
   }
 
-  if(navigateToAdminProject)
-  {
-    return <Navigate to="/admin/project"></Navigate>
+  if (navigateToAdminProject) {
+    return <Navigate to="/admin/project"></Navigate>;
   }
 
-  if(navigateToAdminAppraisal)
-  {
-    return <Navigate to="/admin"></Navigate>
+  if (navigateToAdminAppraisal) {
+    return <Navigate to="/admin"></Navigate>;
   }
 
-  if(empApproval)
-  {
-    return <Navigate to="/admin/approval"></Navigate>
+  if (empApproval) {
+    return <Navigate to="/admin/approval"></Navigate>;
   }
 
   return (
     <>
-    <Navbar empId={empId} config={config}/>
-    {loader && <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-5"><EmployeeCardSkeleton /></div>}
-    {!loader && currEmp && (
+      <Navbar empId={empId} config={config} />
+      {loader && (
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-5">
+          <EmployeeCardSkeleton />
+        </div>
+      )}
+      {!loader && currEmp && (
         <section className="container-fluid bg-dark-subtle min-vh-100 py-5 mt-5 ">
           <div className="container">
             <div className="row">
@@ -93,9 +107,7 @@ const LandingPage = () => {
                     <p className="card-text text-muted mb-4">
                       {currEmp.role === "empl" ? "Employee" : "Admin"}
                     </p>
-                    <p className="card-text mb-4">
-                      EmpId: {currEmp.empId}
-                    </p>
+                    <p className="card-text mb-4">EmpId: {currEmp.empId}</p>
                   </div>
                 </div>
               </div>
@@ -158,8 +170,7 @@ const LandingPage = () => {
         </section>
       )}
     </>
-);
-}
-
+  );
+};
 
 export default LandingPage;

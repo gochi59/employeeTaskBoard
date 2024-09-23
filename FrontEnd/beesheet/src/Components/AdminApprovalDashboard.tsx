@@ -1,47 +1,45 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { TemporaryEmployee, ReduxState } from "../models/AllModels";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ToastComponent from "./ToastComponent";
 import Navbar from "./NavbarComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
+import { clearToken } from "../redux/HeaderSlice";
 
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>();
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [errorPresent, setErrorPresent] = useState("");
   const empId = useSelector((state: ReduxState) => state.ID);
-  const [loader,setLoader]=useState(false);
-  const [navigateToError,setNavigateToError]=useState(false);
-
+  const [loader, setLoader] = useState(false);
+  const [navigateToError, setNavigateToError] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchUsers() {
-  
       try {
         const response = await axios.get(
           "http://localhost:8080/tempusers",
           headerConfig
         );
         setUsers(response.data);
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
-        if(error.response.status===401)
-          {
-            setNavigateToError(true);
-          }
+        if (error.response.status === 401) {
+          setNavigateToError(true);
+        } else if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
       }
-  
     }
     fetchUsers();
-  }, [headerConfig]);
-
-
-  if(navigateToError)
-    {
-      return <Navigate to="*" replace={false}/>
-    }
+  }, []);
 
   const handleApprove = async (tempId: number) => {
     setLoader(true);
@@ -52,10 +50,16 @@ const AdminApprovalDashboard = () => {
       );
       setUsers(users.filter((user) => user.tempId !== tempId));
       setErrorPresent(`User Approved`);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-    }
-    finally{
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    } finally {
       setLoader(false);
     }
   };
@@ -69,10 +73,16 @@ const AdminApprovalDashboard = () => {
       );
       setUsers(users.filter((user) => user.tempId !== tempId));
       setErrorPresent(`User Rejected`);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-    }
-    finally{
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    } finally {
       setLoader(false);
     }
   };
@@ -90,43 +100,60 @@ const AdminApprovalDashboard = () => {
     setErrorPresent("");
   };
 
+  if (!localStorage.getItem("userToken")) {
+    return <Navigate to="/"></Navigate>;
+  }
+  if (navigateToError) {
+    return <Navigate to="*" replace={false} />;
+  }
+
   return (
     <>
       <Navbar empId={empId} config={headerConfig} />
       <div className="container-fluid min-vh-100 bg-dark-subtle pt-md-0 pt-5">
         <div className="row pt-5 mt-4">
-          {!users&&<EmployeeCardSkeleton/>}
+          {!users && <EmployeeCardSkeleton />}
           {users &&
-            users.slice().reverse().map((user: TemporaryEmployee) => (
-              <div className="col-md-4 pb-3" key={user.tempId}>
-                <div className="card mb-4 shadow-sm border-0 rounded-4 h-100 p-2">
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      {user.firstName} {user.lastName}
-                    </h5>
-                    <p className="card-text">
-                      <strong>Email:</strong> {user.email}
-                    </p>
-                    <p className="card-text">
-                      <strong>Designation:</strong> {user.designation}
-                    </p>
-                    <p className="card-text">
-                      <strong>Date of Join:</strong> {user.dateOfJoin}
-                    </p>
-                    <p className="card-text">
-                      <strong>Contact Number:</strong> {user.contactNumber}
-                    </p>
-                    <p className="card-text">
-                      <strong>Role:</strong> {user.role === "empl" ? "Employee" : user.role}
-                    </p>
-                      </div>
+            users
+              .slice()
+              .reverse()
+              .map((user: TemporaryEmployee) => (
+                <div className="col-md-4 pb-3" key={user.tempId}>
+                  <div className="card mb-4 shadow-sm border-0 rounded-4 h-100 p-2">
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        {user.firstName} {user.lastName}
+                      </h5>
+                      <p className="card-text">
+                        <strong>Email:</strong> {user.email}
+                      </p>
+                      <p className="card-text">
+                        <strong>Designation:</strong> {user.designation}
+                      </p>
+                      <p className="card-text">
+                        <strong>Date of Join:</strong> {user.dateOfJoin}
+                      </p>
+                      <p className="card-text">
+                        <strong>Contact Number:</strong> {user.contactNumber}
+                      </p>
+                      <p className="card-text">
+                        <strong>Role:</strong>{" "}
+                        {user.role === "empl" ? "Employee" : user.role}
+                      </p>
+                    </div>
                     <div className="card-footer d-flex justify-content-between">
                       <button
                         className="btn btn-success me-2"
                         onClick={() => handleApprove(user.tempId)}
                         disabled={loader}
-                      >  
-                      {loader&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                      >
+                        {loader && (
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                        )}
                         Approve
                       </button>
                       <button
@@ -134,17 +161,25 @@ const AdminApprovalDashboard = () => {
                         onClick={() => handleReject(user.tempId)}
                         disabled={loader}
                       >
-                      {loader&&<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
-
+                        {loader && (
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                        )}
                         Reject
                       </button>
                     </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
         {errorPresent && (
-          <ToastComponent closeMessage={closeMessage} errorPresent={errorPresent} />
+          <ToastComponent
+            closeMessage={closeMessage}
+            errorPresent={errorPresent}
+          />
         )}
       </div>
     </>
