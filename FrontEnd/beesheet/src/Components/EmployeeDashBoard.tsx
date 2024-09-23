@@ -19,12 +19,12 @@ const EmployeeDashBoard = () => {
   const [togalModal, setTogalModal] = useState(false);
   const empId = useSelector((state: ReduxState) => state.ID);
   const config = useSelector((state: ReduxState) => state.header);
-  const[loader,setLoader]=useState(false);
+  const [loader, setLoader] = useState(false);
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
   const locationEnum = ["office", "home"];
   const [projectList, setProjectList] = useState<Project[]>();
-  const [errorPresent,setErrorPresent]=useState<string>("");
+  const [errorPresent, setErrorPresent] = useState<string>("");
   // console.log(empId,config);
 
   const dispatch = useDispatch();
@@ -49,7 +49,10 @@ const EmployeeDashBoard = () => {
       .string()
       .time({ message: "Enter time in valid format: 00:00:00 (hr:min:sec)" }),
     markedForAppraisal: z.boolean(),
-    date: z.string().min(1,{message:"This is a required field"}).transform((str)=>new Date(str)),
+    date: z
+      .string()
+      .min(1, { message: "This is a required field" })
+      .transform((str) => new Date(str)),
   });
 
   const {
@@ -70,20 +73,21 @@ const EmployeeDashBoard = () => {
         config
       );
       setTaskList(res.data);
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error);
-      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
-    }
-    finally{
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    } finally {
       setLoader(false);
     }
   }
   useEffect(() => {
-   setLoader(true);
+    setLoader(true);
     async function getProjectList() {
       // console.log(empId,config);
 
@@ -94,15 +98,19 @@ const EmployeeDashBoard = () => {
         );
         // console.log(res.data)
         setProjectList(res.data);
-      } catch (error:any) {
+      } catch (error: any) {
         console.log(error);
-        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-          {
-            dispatch(clearToken());
-            localStorage.removeItem("userToken");
-          }
-      }
-      finally{
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
+        }
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
+      } finally {
         setLoader(false);
       }
     }
@@ -147,13 +155,19 @@ const EmployeeDashBoard = () => {
         reset();
         setTogalModal(false);
         getTaskList();
-      } catch (error:any) {
+      } catch (error: any) {
         console.log(error);
-        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-          {
-            dispatch(clearToken());
-            localStorage.removeItem("userToken");
-          }
+        if (error.message === "Network Error") {
+          setTogalModal(false);
+          setErrorPresent(error.message);
+        }
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
       }
     } else {
       try {
@@ -170,17 +184,22 @@ const EmployeeDashBoard = () => {
         setTaskList(editTaskList);
         console.log(res);
         setTogalModal(false);
-      } catch (error:any) {
-        if(error.response.data==="java.lang.IllegalAccessException")
-          {
-            setErrorPresent("Cannot edit rated task");
-            setTogalModal(false);
-          }
-          if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-            {
-              dispatch(clearToken());
-              localStorage.removeItem("userToken");
-            }
+      } catch (error: any) {
+        if (error.message === "Network Error") {
+          setTogalModal(false);
+          setErrorPresent(error.message);
+        }
+        if (error.response.data === "java.lang.IllegalAccessException") {
+          setErrorPresent("Cannot edit rated task");
+          setTogalModal(false);
+        }
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
         console.log(error);
       }
     }
@@ -197,16 +216,20 @@ const EmployeeDashBoard = () => {
         );
         console.log(res);
         setTaskList(taskList.filter((t) => t.taskId !== id));
-      } catch (error:any) {
-        if(error.response.data==="java.lang.IllegalAccessException")
-        {
+      } catch (error: any) {
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
+        }
+        if (error.response.data === "java.lang.IllegalAccessException") {
           setErrorPresent("Cannot delete rated task");
         }
-        if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-          {
-            dispatch(clearToken());
-            localStorage.removeItem("userToken");
-          }
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
         console.log(error);
       }
     }
@@ -217,8 +240,8 @@ const EmployeeDashBoard = () => {
     setTogalModal(true);
     console.log(task);
     setCurrTask(task);
-    const taskDate = new Date(task.date).toISOString().split('T')[0];;
-  
+    const taskDate = new Date(task.date).toISOString().split("T")[0];
+
     reset({
       title: task.title,
       markedForAppraisal:
@@ -227,7 +250,7 @@ const EmployeeDashBoard = () => {
       project: task.project,
       time: task.time,
       description: task.description,
-      date: taskDate
+      date: taskDate,
     });
   };
   // console.log(taskList);
@@ -240,84 +263,95 @@ const EmployeeDashBoard = () => {
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
-          {loader&&<EmployeeCardSkeleton/>}
-          {!loader&&<>{taskList.length == 0 && <h2>No Tasks Added</h2>}
-          {taskList &&
-            taskList.map((tasks: Task) => (
-              <div
-                className="card p-1 mb-3 bg-body-secondary"
-                key={tasks.taskId}
-              >
-                <div className="card-header">
-                  <div className="row justify-content-between">
-                    <span className="h5 col-7">
-                      {tasks.title}{" "}
-                      {tasks.markedForAppraisal && (
-                        <OverlayTrigger
-                          delay={{ hide: 450, show: 200 }}
-                          overlay={(props) => (
-                            <Tooltip {...props}>
-                              Task marked for appraisal.
-                            </Tooltip>
+          {loader && <EmployeeCardSkeleton />}
+          {!loader && (
+            <>
+              {taskList.length == 0 && <h2>No Tasks Added</h2>}
+              {taskList &&
+                taskList.map((tasks: Task) => (
+                  <div
+                    className="card p-1 mb-3 bg-body-secondary"
+                    key={tasks.taskId}
+                  >
+                    <div className="card-header">
+                      <div className="row justify-content-between">
+                        <span className="h5 col-7">
+                          {tasks.title}{" "}
+                          {tasks.markedForAppraisal && (
+                            <OverlayTrigger
+                              delay={{ hide: 450, show: 200 }}
+                              overlay={(props) => (
+                                <Tooltip {...props}>
+                                  Task marked for appraisal.
+                                </Tooltip>
+                              )}
+                            >
+                              <i
+                                className="fa fa-solid fa-check"
+                                style={{ color: "green" }}
+                              ></i>
+                            </OverlayTrigger>
                           )}
-                        >
-                          <i
-                            className="fa fa-solid fa-check"
-                            style={{ color: "green" }}
-                          ></i>
-                        </OverlayTrigger>
-                      )}
-                      {tasks.workLocation === "office" && (
-                        <OverlayTrigger
-                          delay={{ hide: 450, show: 200 }}
-                          overlay={(props) => (
-                            <Tooltip {...props}>Office</Tooltip>
+                          {tasks.workLocation === "office" && (
+                            <OverlayTrigger
+                              delay={{ hide: 450, show: 200 }}
+                              overlay={(props) => (
+                                <Tooltip {...props}>Office</Tooltip>
+                              )}
+                            >
+                              <FontAwesomeIcon
+                                icon={faBuilding}
+                                className="ps-1"
+                              />
+                            </OverlayTrigger>
                           )}
-                        >
-                          <FontAwesomeIcon icon={faBuilding} className="ps-1" />
-                        </OverlayTrigger>
-                      )}
-                      {tasks.workLocation === "home" && (
-                        <OverlayTrigger
-                          delay={{ hide: 450, show: 200 }}
-                          overlay={(props) => (
-                            <Tooltip {...props}>Home</Tooltip>
+                          {tasks.workLocation === "home" && (
+                            <OverlayTrigger
+                              delay={{ hide: 450, show: 200 }}
+                              overlay={(props) => (
+                                <Tooltip {...props}>Home</Tooltip>
+                              )}
+                            >
+                              <FontAwesomeIcon
+                                icon={faHouse}
+                                className="ps-1"
+                              />
+                            </OverlayTrigger>
                           )}
+                        </span>{" "}
+                        <button
+                          className="btn btn-primary col-lg-1 col-auto"
+                          disabled={tasks.taskRating ? true : false}
+                          onClick={() => {
+                            editTask(tasks);
+                          }}
                         >
-                          <FontAwesomeIcon icon={faHouse} className="ps-1" />
-                        </OverlayTrigger>
-                      )}
-                    </span>{" "}
-                    <button
-                      className="btn btn-primary col-lg-1 col-auto"
-                      disabled={tasks.taskRating ? true : false}
-                      onClick={() => {
-                        editTask(tasks);
-                      }}
-                    >
-                      Edit
-                    </button>
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      <p>{tasks.description}</p>
+                    </div>
+                    <div className="card-footer">
+                      <div className="row justify-content-between">
+                        <span className="col-7">
+                          Date Added: {String(tasks.date)} Time Spent:{" "}
+                          {tasks.time}
+                        </span>
+                        <button
+                          className="btn btn-danger col-lg-1 col-auto"
+                          onClick={() => deleteTask(tasks.taskId)}
+                          disabled={tasks.taskRating ? true : false}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <p>{tasks.description}</p>
-                </div>
-                <div className="card-footer">
-                  <div className="row justify-content-between">
-                    <span className="col-7">
-                      Date Added: {String(tasks.date)} Time Spent: {tasks.time}
-                    </span>
-                    <button
-                      className="btn btn-danger col-lg-1 col-auto"
-                      onClick={() => deleteTask(tasks.taskId)}
-                      disabled={tasks.taskRating ? true : false}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}</>}
+                ))}
+            </>
+          )}
         </div>
 
         <div className="position-fixed bottom-0 end-0 m-3">
@@ -340,9 +374,8 @@ const EmployeeDashBoard = () => {
               className="modal  show fade d-block"
               role="dialog"
               tabIndex={-1}
-              
             >
-              <div className="modal-dialog d-flex justify-content-center" >
+              <div className="modal-dialog d-flex justify-content-center">
                 <div className="modal-content w-100 ">
                   <div className="modal-header">
                     <h5 className="modal-title" id="exampleModalLabel2">
@@ -494,7 +527,12 @@ const EmployeeDashBoard = () => {
             </div>
           </>
         )}
-        {errorPresent&&<ToastComponent closeMessage={()=>setErrorPresent("")} errorPresent={errorPresent}></ToastComponent>}
+        {errorPresent && (
+          <ToastComponent
+            closeMessage={() => setErrorPresent("")}
+            errorPresent={errorPresent}
+          ></ToastComponent>
+        )}
       </div>
     </div>
   );

@@ -27,6 +27,10 @@ const AdminApprovalDashboard = () => {
         setUsers(response.data);
       } catch (error: any) {
         console.error(error);
+        if(error.message==="Network Error")
+        {
+          return <Navigate to="/"/>
+        }
         if (error.response.status === 401) {
           setNavigateToError(true);
         } else if (
@@ -113,6 +117,7 @@ const AdminApprovalDashboard = () => {
       <div className="container-fluid min-vh-100 bg-dark-subtle pt-md-0 pt-5">
         <div className="row pt-5 mt-4">
           {!users && <EmployeeCardSkeleton />}
+          {users?.length===0&&<h2 className="text-center">No new sign up</h2>}
           {users &&
             users
               .slice()

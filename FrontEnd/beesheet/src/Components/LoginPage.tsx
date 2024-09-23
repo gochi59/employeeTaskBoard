@@ -37,8 +37,11 @@ const LoginPage = () => {
       setNavigate(true);
     } catch (error: any) {
         console.log(error);
-        
-      if (error) {
+        if(error.message==="Network Error")
+        {
+          alert("Internal Server Error");   
+        }
+      else if (error.status===401) {
         alert("Invalid Username or password");
       }
     }

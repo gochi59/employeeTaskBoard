@@ -38,6 +38,10 @@ const location=useLocation();
           dispatch(clearToken());
           localStorage.removeItem("userToken");
         }
+        if(error.message==="Network Error")
+          {
+            alert("Internal Server Error");   
+          }
     } finally {
       setLoader(false);
     }
@@ -64,8 +68,17 @@ const location=useLocation();
     try {
       await axios.delete("http://localhost:8080/notification/" + empId, config);
       setNotificationList([]);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
+      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
+      if(error.message==="Network Error")
+        {
+            return <div className="h1 text-center">Internal Server Error</div>
+        }
     } finally {
       setLoader(false);
     }
