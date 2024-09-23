@@ -82,7 +82,7 @@ const EmployeeCard = ({
   useEffect(()=>{
     getTaskList(emp.empId);
 
-  })
+  },[])
   const openEmpTasks = (empId: number) => {
     setLoader(true);
     
@@ -214,6 +214,7 @@ const EmployeeCard = ({
           currEmpTaskList={currEmpTaskList}
           empAttributeRating={empAttributeRating}
           currEmpId={emp}
+          setCurrEmpTaskList={setCurrEmpTaskList}
           
         />
       )}

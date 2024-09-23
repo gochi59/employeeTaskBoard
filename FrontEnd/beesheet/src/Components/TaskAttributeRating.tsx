@@ -11,6 +11,7 @@ interface props {
   currEmpTaskList: Task[];
   empAttributeRating: AttributeRating[];
   currEmpId: Employee;
+  setCurrEmpTaskList:(task:Task[])=>void;
 }
 
 const TaskAttributeRating = ({
@@ -18,6 +19,7 @@ const TaskAttributeRating = ({
   currEmpTaskList,
   empAttributeRating,
   currEmpId,
+  setCurrEmpTaskList
 }: props) => {
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,6 +30,7 @@ const TaskAttributeRating = ({
       const str = task.taskId;
       const updatedTask = { ...task, taskRating: data[str] };
       currEmpTaskList=currEmpTaskList.map((task:Task)=>task.taskId===str?{...task,taskRating:data[str]}:task);
+      setCurrEmpTaskList(currEmpTaskList);
       return axios.put(
         `http://localhost:8080/admin/task/${str}`,
         updatedTask,
