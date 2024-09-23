@@ -42,6 +42,7 @@ const EmployeeCard = ({
   const { reset } = useForm();
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [projectModalToggle, setProjectModalToggle] = useState(false);
+  const [currAttributeList,setCurrAttributeList]=useState<AttributeRating[]>([]);
   const dispatch = useDispatch();
 
   const decideEmpOrProj = (emp: Employee) => {
@@ -79,8 +80,30 @@ const EmployeeCard = ({
     }
   }
 
+  async function getAttributeRating(empId:number)
+  {
+    try {
+      const res=await axios.get(`http://localhost:8080/admin/employee/attribute/${empId}`,headerConfig);
+      setCurrAttributeList(res.data);
+    } catch (error:any) {
+      console.log(error);
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    }
+    finally {
+      setLoader(false);
+    }
+  }
+
+
   useEffect(()=>{
     getTaskList(emp.empId);
+    getAttributeRating(emp.empId);
 
   },[])
   const openEmpTasks = (empId: number) => {
@@ -165,14 +188,38 @@ const EmployeeCard = ({
                             (acc, task) => acc + parseInt(task.taskRating),
                             0
                           ) /
-                        emp.empTask.filter(
+                        currEmpTaskList.filter(
                           (task: Task) =>
                             task.taskRating !== "0" && task.markedForAppraisal
                         ).length
                       ).toFixed(2)}
                     </span>
                   </OverlayTrigger>
-                 
+                  <OverlayTrigger
+                    delay={{ hide: 450, show: 200 }}
+                    overlay={(props) => (
+                      <Tooltip {...props}>Average Employee Attribute Rating</Tooltip>
+                    )}
+                  >
+                    <span className="px-2">
+                      {(
+                        currAttributeList
+                          .filter(
+                            (attribute: AttributeRating) =>
+                              attribute.rating !== "0" 
+                          )
+                          .reduce(
+                            (acc, attribute) => acc + parseInt(attribute.rating),
+                            0
+                          ) /
+                        currAttributeList.filter(
+                          (attribute: AttributeRating) =>
+                            attribute.rating !== "0" 
+                            
+                        ).length
+                      ).toFixed(2)}
+                    </span>
+                  </OverlayTrigger>
                 </>
               )}
             </h5>
@@ -215,7 +262,8 @@ const EmployeeCard = ({
           empAttributeRating={empAttributeRating}
           currEmpId={emp}
           setCurrEmpTaskList={setCurrEmpTaskList}
-          
+          currAttributeList={currAttributeList}
+          setCurrAttributeList={setCurrAttributeList}
         />
       )}
       {projectModalToggle && (
