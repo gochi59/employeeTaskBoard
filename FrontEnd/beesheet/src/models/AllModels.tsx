@@ -21,7 +21,7 @@ export interface FormDataForSignup {
   email: string;
 }
 
-export interface Task {
+export interface  Task {
   date: Date;
   description: string;
   markedForAppraisal: boolean;

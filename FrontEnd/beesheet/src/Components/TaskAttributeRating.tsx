@@ -27,6 +27,7 @@ const TaskAttributeRating = ({
     const taskPromises = currEmpTaskList.map((task) => {
       const str = task.taskId;
       const updatedTask = { ...task, taskRating: data[str] };
+      currEmpTaskList=currEmpTaskList.map((task:Task)=>task.taskId===str?{...task,taskRating:data[str]}:task);
       return axios.put(
         `http://localhost:8080/admin/task/${str}`,
         updatedTask,
