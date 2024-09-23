@@ -207,7 +207,7 @@ const EmployeeCard = ({
           </div>
         </div>
       </div>
-      {(showModal || loader) && loading && <TaskAttributeRatingSkeleton />}
+      {(showModal && loader) && loading && <TaskAttributeRatingSkeleton />}
       {showModal && !loader && loading && (
         <TaskAttributeRating
           closeModal={closeModal}
