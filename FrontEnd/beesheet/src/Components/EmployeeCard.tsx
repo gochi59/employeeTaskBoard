@@ -103,7 +103,7 @@ if (!localStorage.getItem("userToken")) {
         <div className="card h-100 shadow-sm border-0 rounded-4">
           <div className="card-body">
             <h5 className="card-title mb-3 text-primary">
-              {emp.firstName} {emp.lastName} {emp.apprasailDone}
+              {emp.firstName} {emp.lastName}
               {emp.apprasailDone && (
                 <OverlayTrigger
                   delay={{ hide: 450, show: 200 }}
@@ -115,7 +115,7 @@ if (!localStorage.getItem("userToken")) {
             </h5>
             <p className="card-text"><strong>Designation:</strong> {emp.designationTitle}</p>
             <p className="card-text"><strong>Email:</strong> {emp.email}</p>
-            <p className="card-text"><strong>Date of Joining:</strong> {emp.doj}</p>
+            <p className="card-text"><strong>Date of Joining:</strong> {emp.doj.slice(0,10)}</p>
             <p className="card-text"><strong>Projects:</strong></p>
             <ul className="list-unstyled">
               {allProjects.map((project) => (

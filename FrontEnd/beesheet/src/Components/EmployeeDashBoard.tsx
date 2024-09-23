@@ -339,7 +339,7 @@ const EmployeeDashBoard = () => {
                     <div className="card-footer">
                       <div className="row justify-content-between">
                         <span className="col-7">
-                          Date Added: {String(tasks.date)} Time Spent:{" "}
+                          Date Added: {(String(tasks.date).slice(0,10))} Time Spent:{" "}
                           {tasks.time}
                         </span>
                         <button

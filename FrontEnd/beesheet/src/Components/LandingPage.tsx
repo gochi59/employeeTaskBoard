@@ -137,6 +137,19 @@ const LandingPage = () => {
                         <strong className="text-muted">Phone:</strong>
                         <span>{currEmp.contactNumber}</span>
                       </li>
+                      <li className="d-flex justify-content-between mb-3">
+                        <strong className="text-muted">Desgination: </strong>
+                        <span>
+                          {currEmp.designationTitle}
+                        </span>
+                      </li>
+                      <li className="d-flex justify-content-between mb-3">
+                        <strong className="text-muted">Date of Join: </strong>
+                        <span>
+                          {currEmp.doj.slice(0,10 )}
+                        </span>
+                      </li>
+                      
                       <li className="d-flex justify-content-between">
                         <button
                           className="btn btn-primary"
