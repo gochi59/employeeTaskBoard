@@ -42,7 +42,7 @@ const Navbar = ({ empId, config }: Props) => {
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [togalToTasks,setTogalToTasks]=useState(false);
   const location = useLocation();
-  const interval = 2900;
+  const interval = 5000;
 
   async function getTaskList(empId: number) {
     try {

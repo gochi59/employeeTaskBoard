@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.apprasail.beesheet.beesheet.Repository.EmployeeRepo;
@@ -39,7 +40,7 @@ public class EmployeeDashboardService {
     public Page<TaskOutput> getTaskofEmployee(int id,int pageSize,int pageNumber) {
         Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize,Sort.by("date"));
         Page<Task> tasks = taskRepository.findAllByEmp(emp, pageable);
         
         return tasks.map(task -> {

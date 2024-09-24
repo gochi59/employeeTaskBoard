@@ -139,62 +139,64 @@ const LandingPage = () => {
                       </li>
                       <li className="d-flex justify-content-between mb-3">
                         <strong className="text-muted">Desgination: </strong>
-                        <span>
-                          {currEmp.designationTitle}
-                        </span>
+                        <span>{currEmp.designationTitle}</span>
                       </li>
                       <li className="d-flex justify-content-between mb-3">
                         <strong className="text-muted">Date of Join: </strong>
-                        <span>
-                          {currEmp.doj}
-                        </span>
+                        <span>{currEmp.doj}</span>
                       </li>
-                      
-                      <li className="d-flex justify-content-between">
-                        <button
-                          className="btn btn-primary"
-                          onClick={handleNavigateEmployee}
-                          hidden={currEmp.role !== "empl"}
-                        >
-                          View Tasks
-                        </button>
-                        <button
-                          className="btn  btn-primary"
-                          onClick={handleProjectAllocation}
-                          hidden={currEmp.role !== "ADMIN"}
-                        >
-                          Project Allocation
-                        </button>
-                        <button
-                          className="btn  btn-primary"
-                          onClick={handleEmpAppraisal}
-                          hidden={currEmp.role !== "ADMIN"}
-                        >
-                          Appraisal
-                        </button>
-                        <button
-                          className="btn  btn-primary"
-                          onClick={handleApprove}
-                          hidden={currEmp.role !== "ADMIN"}
-                        >
-                          Approval
-                        </button>
+                      <li className="row">
+                        <div className="col-12 col-md-6 col-lg-3 mb-2">
+                          <button
+                            className="btn btn-primary w-100"
+                            onClick={handleNavigateEmployee}
+                            hidden={currEmp.role !== "empl"}
+                          >
+                            View Tasks
+                          </button>
+                        </div>
+                        <div className="col-12 col-md-6 col-lg-5 mb-2">
+                          <button
+                            className="btn  btn-primary w-100"
+                            onClick={handleProjectAllocation}
+                            hidden={currEmp.role !== "ADMIN"}
+                          >
+                            Project Allocation
+                          </button>
+                        </div>
+                        <div className="col-12 col-md-6 col-lg-3 mb-2">
+                          <button
+                            className="btn  btn-primary w-100"
+                            onClick={handleEmpAppraisal}
+                            hidden={currEmp.role !== "ADMIN"}
+                          >
+                            Appraisal
+                          </button>
+                        </div>
+                        <div className="col-12 col-md-6 col-lg-2 mb-2">
+                          <button
+                            className="btn  btn-primary w-100"
+                            onClick={handleApprove}
+                            hidden={currEmp.role !== "ADMIN"}
+                          >
+                            Approval
+                          </button>
+                        </div>
                       </li>
                     </ul>
                   </div>
                 </div>
               </div>
-          
             </div>
           </div>
         </section>
       )}
       {errorPresent && (
-          <ToastComponent
-            closeMessage={() => setErrorPresent("")}
-            errorPresent={errorPresent}
-          ></ToastComponent>
-        )}
+        <ToastComponent
+          closeMessage={() => setErrorPresent("")}
+          errorPresent={errorPresent}
+        ></ToastComponent>
+      )}
     </>
   );
 };

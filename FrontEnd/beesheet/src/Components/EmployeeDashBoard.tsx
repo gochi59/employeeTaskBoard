@@ -279,11 +279,11 @@ const EmployeeDashBoard = () => {
   if (!localStorage.getItem("userToken")) {
     return <Navigate to="/"></Navigate>;
   }
-  return (
-    <div className="bg-dark-subtle min-vh-100 mt-5 ">
+  return (<>
       <Navbar empId={empId} config={config}></Navbar>
-      <div className="container-fluid  ">
-        <div className="py-3">
+    <div className="bg-dark-subtle min-vh-100 pt-5 pt-md-4 mt-md-4 mt-5">
+      <div className="container-fluid ">
+        <div className="py-3 ">
           {loader && <EmployeeCardSkeleton />}
           {!loader && (
             <>
@@ -568,6 +568,7 @@ const EmployeeDashBoard = () => {
         </span>
       </div>
     </div>
+    </>
   );
 };
 
