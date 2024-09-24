@@ -42,7 +42,7 @@ const Navbar = ({ empId, config }: Props) => {
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [togalToTasks,setTogalToTasks]=useState(false);
   const location = useLocation();
-  const interval = 10000;
+  const interval = 2900;
 
   async function getTaskList(empId: number) {
     try {
@@ -356,8 +356,8 @@ const Navbar = ({ empId, config }: Props) => {
                               >
                                 {notification.message}
                               </span>
-                              <button className="btn btn-danger ms-5" disabled={loader} onClick={()=>deleteThisNotif(notification.id)}>
-                              <FontAwesomeIcon icon={faCancel} />
+                              <button className="btn btn-danger ms-5 px-auto pb-1 my-auto" disabled={loader} onClick={()=>deleteThisNotif(notification.id)}>
+                              <FontAwesomeIcon icon={faX} />
 
                               </button>
                             </span>
@@ -390,9 +390,9 @@ const Navbar = ({ empId, config }: Props) => {
       {showTaskAttributeModal && selectedEmpId && (
         <TaskAttributeRating
           closeModal={() => setShowTaskAttributeModal(false)}
-          currEmpTaskList={currEmpTaskList} // Pass the necessary props
+          currEmpTaskList={currEmpTaskList} 
           empAttributeRating={empAttributeRating}
-          currEmpId={currEmp} // Pass the selected employee ID
+          currEmpId={currEmp} 
           setCurrEmpTaskList={setCurrEmpTaskList}
           currAttributeList={currAttributeList}
           setCurrAttributeList={setCurrAttributeList}

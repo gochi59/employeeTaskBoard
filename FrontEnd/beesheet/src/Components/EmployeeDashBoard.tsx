@@ -45,8 +45,8 @@ const EmployeeDashBoard = () => {
   }, [errorPresent]);
 
   const schema = z.object({
-    title: z.string().min(1, { message: "This is a required field" }),
-    description: z.string().min(1, { message: "This is a required field" }),
+    title: z.string().min(1, { message: "This is a required field" }).max(50,{message:"word limit reached"}),
+    description: z.string().min(1, { message: "This is a required field" }).max(100,{message:"word limit reached"}),
     workLocation: z.string().min(1, { message: "This is a required field" }),
     project: z.string().min(1, { message: "This is a required field" }),
     time: z
@@ -280,7 +280,7 @@ const EmployeeDashBoard = () => {
     return <Navigate to="/"></Navigate>;
   }
   return (
-    <div className="bg-dark-subtle min-vh-100 mt-5">
+    <div className="bg-dark-subtle min-vh-100 mt-5 ">
       <Navbar empId={empId} config={config}></Navbar>
       <div className="container-fluid  ">
         <div className="py-3">
@@ -341,7 +341,7 @@ const EmployeeDashBoard = () => {
                           )}
                         </span>{" "}
                         <button
-                          className="btn btn-primary col-lg-1 col-auto"
+                          className="btn btn-primary col-lg-1 col-auto h-25 h-md-100"
                           disabled={tasks.taskRating ? true : false}
                           onClick={() => {
                             editTask(tasks);
@@ -356,12 +356,16 @@ const EmployeeDashBoard = () => {
                     </div>
                     <div className="card-footer">
                       <div className="row justify-content-between">
-                        <span className="col-7">
-                          Date Added: {String(tasks.date)} Time Spent:{" "}
-                          {tasks.time}
+                        <span className="col-md-7 col-auto">
+                          <span>
+                          Date Added: {String(tasks.date).slice(0,10)}
+                          </span>
+                          <span>
+                          Time Spent: {tasks.time}
+                          </span>
                         </span>
                         <button
-                          className="btn btn-danger col-lg-1 col-auto"
+                          className="btn btn-danger col-lg-1 col-auto h-25 h-md-100"
                           onClick={() => deleteTask(tasks.taskId)}
                           disabled={tasks.taskRating ? true : false}
                         >
