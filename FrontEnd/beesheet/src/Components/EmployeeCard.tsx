@@ -58,7 +58,13 @@ const EmployeeCard = ({
     try {
       const res = await axios.get(
         `http://localhost:8080/tasks/${empId}`,
-        headerConfig
+        {
+          ...headerConfig,
+          params:{
+            pageNumber:0,
+            pageSize:100000
+          }
+        }
       );
       const res2 = await axios.get(
         `http://localhost:8080/admin/employee/attribute/${empId}`,

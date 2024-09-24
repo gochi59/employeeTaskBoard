@@ -8,4 +8,6 @@ import com.apprasail.beesheet.beesheet.model.Entities.Project;
 @Repository
 public interface ProjectRepo extends JpaRepository<Project, Integer> {
 
+    Project findByName(String name);
+
 }

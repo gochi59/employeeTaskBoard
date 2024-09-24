@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -37,6 +38,9 @@ public class Task {
 
     @DateTimeFormat(pattern="yyyy-mm-dd")
     Date date;
+
+    @ManyToOne
+    private Employee emp;
 
     String taskRating;
 }

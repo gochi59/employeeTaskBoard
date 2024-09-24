@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apprasail.beesheet.beesheet.Services.EmployeeDashboardService;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Input.PaginationForTaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
@@ -33,8 +35,8 @@ public class EmployeeDashboardController {
 
 
     @GetMapping("/tasks/{id}")
-    public ResponseEntity<?> findTaskListOfEmployee(@PathVariable int id) {
-        return new ResponseEntity<>(service.getTaskofEmployee(id),HttpStatus.ACCEPTED);
+    public ResponseEntity<?> findTaskListOfEmployee(@PathVariable int id,@RequestParam int pageSize,@RequestParam int pageNumber) {
+        return new ResponseEntity<>(service.getTaskofEmployee(id,pageSize,pageNumber),HttpStatus.ACCEPTED);
     }
 
 

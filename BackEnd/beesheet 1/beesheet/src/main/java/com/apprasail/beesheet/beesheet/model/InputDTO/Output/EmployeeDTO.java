@@ -20,7 +20,7 @@ public class EmployeeDTO {
     private String role;
     private String designationTitle; 
     private List<String>projectTitles;
-    private List<Task> empTask;
+    private List<TaskOutput> empTask;
     private Map<Attributes,String>attributeRating;
     private List<String>notifications;
     private boolean apprasailDone;

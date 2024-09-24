@@ -68,6 +68,9 @@ public class AdminDashboardServices {
 
     public void addProject(ProjectInput projectInput) {
         log.info("New Project added "+projectInput.getName());
+        Project checkProject=projectRepo.findByName(projectInput.getName());
+        if(checkProject!=null)
+            throw new IllegalArgumentException("Project Already exists");
         Project project = new Project();
         project.setName(projectInput.getName());
         project.setEmp(Collections.<Employee>emptyList());

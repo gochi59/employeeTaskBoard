@@ -21,6 +21,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Project;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.Entities.TemporaryUser;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.TaskOutput;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -51,7 +52,7 @@ public class SignUpService {
         }
         input.setPassword(encoder.encode(input.getPassword()));
         temporaryUserRepo.save(input);
-        notificationService.sendNotifToAdmin(input.getFirstName()+" "+input.getLastName()+" just signed up");
+        notificationService.sendNotifToAdmin(-1,input.getFirstName()+" "+input.getLastName()+" just signed up");
         log.info("new user signed up");
     }
 
@@ -69,7 +70,19 @@ public class SignUpService {
             dto.setContactNumber(emp.getContactNumber());
             dto.setRole(emp.getRole());
             dto.setDesignationTitle(emp.getDesignation().getTitle());
-            dto.setEmpTask(emp.getEmp_Tasks());
+            dto.setEmpTask(emp.getEmp_Tasks().stream().map(task->{
+                TaskOutput output=new TaskOutput();
+            output.setTaskId(task.getTaskId());
+            output.setDate(task.getDate());
+            output.setDescription(task.getDescription());
+            output.setEmpId(task.getEmp().getEmpId());
+            output.setTime(task.getTime());
+            output.setTitle(task.getTitle());
+            output.setProject(task.getProject());
+            output.setMarkedForAppraisal(task.isMarkedForAppraisal());
+            output.setTaskRating(task.getTaskRating());
+            return output;
+            }).toList());
             return dto;
         }).collect(Collectors.toList());
     }

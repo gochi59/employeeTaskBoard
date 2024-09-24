@@ -12,6 +12,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.Task;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.TaskOutput;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -92,7 +93,7 @@ public class TaskService {
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
     
                 if (dojCalendar.get(Calendar.YEAR) < currentYear) {
-                    notificationService.sendNotifToAdmin(employee.getFirstName() + " added task for approval.");
+                    notificationService.sendNotifToAdmin(employee.getEmpId(),employee.getFirstName() + " added task for approval.");
                 }
                 employee.setApprasailDone(false);
             }
@@ -116,7 +117,19 @@ public class TaskService {
             dto.setContactNumber(emp.getContactNumber());
             dto.setRole(emp.getRole());
             dto.setDesignationTitle(emp.getDesignation().getTitle());
-            dto.setEmpTask(emp.getEmp_Tasks());
+            dto.setEmpTask(emp.getEmp_Tasks().stream().map(task->{
+                TaskOutput output=new TaskOutput();
+            output.setTaskId(task.getTaskId());
+            output.setDate(task.getDate());
+            output.setDescription(task.getDescription());
+            output.setEmpId(task.getEmp().getEmpId());
+            output.setTime(task.getTime());
+            output.setTitle(task.getTitle());
+            output.setProject(task.getProject());
+            output.setMarkedForAppraisal(task.isMarkedForAppraisal());
+            output.setTaskRating(task.getTaskRating());
+            return output;
+            }).toList());
             return dto;
         }).collect(Collectors.toList());
     }

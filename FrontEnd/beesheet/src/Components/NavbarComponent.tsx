@@ -6,6 +6,13 @@ import { clearToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCancel, faCross, faX } from "@fortawesome/free-solid-svg-icons";
 import ToastComponent from "./ToastComponent";
+import {
+  AttributeRating,
+  Employee,
+  Notifications,
+  Task,
+} from "../models/AllModels";
+import TaskAttributeRating from "./TaskAttributeRating";
 
 interface Props {
   empId: string;
@@ -13,7 +20,7 @@ interface Props {
 }
 
 const Navbar = ({ empId, config }: Props) => {
-  const [notificationList, setNotificationList] = useState<string[]>([]);
+  const [notificationList, setNotificationList] = useState<Notifications[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement | null>(null);
   const internalRef = useRef<number | null>(null);
@@ -22,9 +29,91 @@ const Navbar = ({ empId, config }: Props) => {
   const [loader, setLoader] = useState(false);
   const [homeToggle, setHomeToggle] = useState<boolean>(false);
   const [errorPresent, setErrorPresent] = useState<string>("");
-
-const location=useLocation();
+  const [toggleToAdminApproval, setTogalToAdminApproval] = useState(false);
+  const [showTaskAttributeModal, setShowTaskAttributeModal] = useState(false);
+  const [selectedEmpId, setSelectedEmpId] = useState<number>();
+  const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
+  const [currAttributeList, setCurrAttributeList] = useState<AttributeRating[]>(
+    []
+  );
+  const [empAttributeRating, setEmpAttributeRating] = useState<
+    AttributeRating[]
+  >([]);
+  const [currEmp, setCurrEmp] = useState<Employee>();
+  const [togalToTasks,setTogalToTasks]=useState(false);
+  const location = useLocation();
   const interval = 10000;
+
+  async function getTaskList(empId: number) {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/tasks/${empId}`,
+        {
+          ...config,
+          params:{
+            pageNumber:0,
+            pageSize:100000
+          }
+        }
+      );
+      const res2 = await axios.get(
+        `http://localhost:8080/admin/employee/attribute/${empId}`,
+        config
+      );
+      setEmpAttributeRating(res2.data);
+      setCurrEmpTaskList(res.data);
+    } catch (error: any) {
+      console.log(error);
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    } finally {
+      setLoader(false);
+    }
+  }
+
+  async function getAttributeRating(empId: number) {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/admin/employee/attribute/${empId}`,
+        config
+      );
+      setCurrEmp(res.data);
+    } catch (error: any) {
+      console.log(error);
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    } finally {
+      setLoader(false);
+    }
+  }
+
+  async function getEmpDetails(empId: number) {
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:8080/employee/${empId}`,
+        config
+      );
+      setCurrEmp(res.data);
+    } catch (error: any) {
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+    }
+  }
 
   async function getAllNotifications() {
     setLoader(true);
@@ -34,17 +123,18 @@ const location=useLocation();
         config
       );
       setNotificationList(res.data);
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error);
-      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        {
-            if(error.message==="Network Error")
-              {
-                setErrorPresent("Internal Server Error");   
-              }
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        if (error.message === "Network Error") {
+          setErrorPresent("Internal Server Error");
         }
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
     } finally {
       setLoader(false);
     }
@@ -56,6 +146,8 @@ const location=useLocation();
       internalRef.current = null;
     }
   };
+
+  // console.log(notificationList);
 
   const startPolling = () => {
     getAllNotifications();
@@ -69,19 +161,23 @@ const location=useLocation();
   const clearAllNotifications = async () => {
     setLoader(true);
     try {
-      await axios.delete("http://localhost:8080/notification/" + empId, config);
+      await axios.delete(
+        "http://localhost:8080/notifications/" + empId,
+        config
+      );
       setNotificationList([]);
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error);
-      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
-      if(error.message==="Network Error")
-        {
-            return <div className="h1 text-center">Internal Server Error</div>
-        }
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
+      if (error.message === "Network Error") {
+        return <div className="h1 text-center">Internal Server Error</div>;
+      }
     } finally {
       setLoader(false);
     }
@@ -114,8 +210,7 @@ const location=useLocation();
   const logout = () => {
     localStorage.removeItem("userToken");
     dispatch(clearToken());
-    if(internalRef.current!==null)
-    {
+    if (internalRef.current !== null) {
       clearInterval(internalRef.current);
     }
     setLogoutToggle(true);
@@ -130,10 +225,58 @@ const location=useLocation();
   };
 
   if (homeToggle) {
-    if(location.pathname!="/home")
-    {return <Navigate to="/home" />;}
+    if (location.pathname != "/home") {
+      return <Navigate to="/home" />;
+    }
   }
 
+  const toggleNotificationEvent = (empIddd: number, message: string) => {
+    if (message.includes("signed")) {
+      setTogalToAdminApproval(true);
+    } else if (message.includes("approval")) {
+      setSelectedEmpId(empIddd);
+      setShowTaskAttributeModal(true);
+      getTaskList(empIddd);
+      getAttributeRating(empIddd);
+      getEmpDetails(empIddd);
+    }
+    else if(message.includes("Admin"))
+    {
+      setTogalToTasks(true);
+    }
+  };
+
+
+  const deleteThisNotif=async(id:number)=>{
+    setLoader(true);
+  try {
+    await axios.delete("http://localhost:8080/notification/"+id,config); 
+    setNotificationList( notificationList.filter(notif=>notif.id!=id));
+  } catch (error:any) {
+    if (
+      error.response.data === "JWT token is expired." ||
+      error.response.data === "Invalid JWT token."
+    ) {
+      dispatch(clearToken());
+      localStorage.removeItem("userToken");
+    }
+    if (error.message === "Network Error") {
+      return <div className="h1 text-center">Internal Server Error</div>;
+    }
+  }
+  finally{
+    setLoader(false);
+  }
+  }
+
+  if(togalToTasks&&location.pathname!="/user")
+  {
+    return <Navigate to="/user"/>
+  }
+  if (toggleToAdminApproval && location.pathname != "/admin/approval") {
+    return <Navigate to="/admin/approval" />;
+  }
+  // console.log(notificationList);
   return (
     <div className="navbar bg-dark text-bg-dark px-2 fixed-top d-flex justify-content-between align-items-center">
       <div className="navbar-brand text-light">
@@ -145,7 +288,7 @@ const location=useLocation();
         </Link>
       </div>
       <div className="d-flex align-items-center">
-        { (
+        {
           <>
             <i
               className="fa fa-regular fa-bell btn btn-dark position-relative me-3"
@@ -166,14 +309,19 @@ const location=useLocation();
                 <div className="p-2 d-flex justify-content-between align-items-center bg-light">
                   <h5 className="mb-0 text-dark">Notifications</h5>
                   <span>
-                  <button
-                    className="btn px-2 btn-sm btn-danger"
-                    onClick={clearAllNotifications}
-                    disabled={notificationList.length === 0 || loader}
-                  >
-                    Clear All
-                  </button>
-                  <FontAwesomeIcon className="px-2 btn btn-light" icon={faX} color="black" onClick={()=>setShowNotifications(false)}/>
+                    <button
+                      className="btn px-2 btn-sm btn-danger"
+                      onClick={clearAllNotifications}
+                      disabled={notificationList.length === 0 || loader}
+                    >
+                      Clear All
+                    </button>
+                    <FontAwesomeIcon
+                      className="px-2 btn btn-light"
+                      icon={faX}
+                      color="black"
+                      onClick={() => setShowNotifications(false)}
+                    />
                   </span>
                 </div>
 
@@ -191,12 +339,28 @@ const location=useLocation();
                       {notificationList
                         .slice()
                         .reverse()
-                        .map((notification, index) => (
+                        .map((notification: Notifications) => (
                           <li
-                            key={index}
-                            className="list-group-item d-flex align-items-center"
+                            key={notification.id}
+                            className="list-group-item d-flex align-items-center "
                           >
-                            {notification}
+                            <span className="d-flex justify-content-between">
+                              <span
+                                className="btn"
+                                onClick={() =>
+                                  toggleNotificationEvent(
+                                    notification.empId,
+                                    notification.message
+                                  )
+                                }
+                              >
+                                {notification.message}
+                              </span>
+                              <button className="btn btn-danger ms-5" disabled={loader}>
+                              <FontAwesomeIcon icon={faCancel} onClick={()=>deleteThisNotif(notification.id)} />
+
+                              </button>
+                            </span>
                           </li>
                         ))}
                     </ul>
@@ -209,7 +373,7 @@ const location=useLocation();
               </div>
             )}
           </>
-        )}
+        }
         <button className="btn btn-dark ms-3" onClick={home}>
           Home
         </button>
@@ -218,11 +382,22 @@ const location=useLocation();
         </button>
       </div>
       {errorPresent && (
-          <ToastComponent
-            closeMessage={() => setErrorPresent("")}
-            errorPresent={errorPresent}
-          ></ToastComponent>
-        )}
+        <ToastComponent
+          closeMessage={() => setErrorPresent("")}
+          errorPresent={errorPresent}
+        ></ToastComponent>
+      )}
+      {showTaskAttributeModal && selectedEmpId && (
+        <TaskAttributeRating
+          closeModal={() => setShowTaskAttributeModal(false)}
+          currEmpTaskList={currEmpTaskList} // Pass the necessary props
+          empAttributeRating={empAttributeRating}
+          currEmpId={currEmp} // Pass the selected employee ID
+          setCurrEmpTaskList={setCurrEmpTaskList}
+          currAttributeList={currAttributeList}
+          setCurrAttributeList={setCurrAttributeList}
+        />
+      )}
     </div>
   );
 };

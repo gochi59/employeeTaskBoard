@@ -30,13 +30,13 @@ export interface  Task {
   taskRating: string;
   time: string;
   title: string;
-  workLocation: "office" | "home"; 
+  workLocation: string; 
 }
 
 export interface taskInput{
     title:string;
     markedForAppraisal:boolean;
-    workLocation:"office" | "home"; 
+    workLocation:string; 
     project:string;
     time:string;
     description:string;
@@ -83,4 +83,11 @@ export interface AttributeRating{
 export interface ReduxState{
   header:{},
   ID:string
+}
+
+export interface Notifications{
+  message:string;
+  empDto:Employee;
+  empId:number;
+  id:number;
 }

@@ -9,7 +9,12 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { changeToken, clearToken } from "../redux/HeaderSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding, faHouse } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faBuilding,
+  faHouse,
+} from "@fortawesome/free-solid-svg-icons";
 import ToastComponent from "./ToastComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
@@ -22,9 +27,9 @@ const EmployeeDashBoard = () => {
   const [loader, setLoader] = useState(false);
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
-  const locationEnum = ["office", "home"];
   const [projectList, setProjectList] = useState<Project[]>();
   const [errorPresent, setErrorPresent] = useState<string>("");
+  const [currPageNumber,setCurrPageNumber]=useState(0);
   // console.log(empId,config);
 
   const dispatch = useDispatch();
@@ -41,9 +46,7 @@ const EmployeeDashBoard = () => {
   const schema = z.object({
     title: z.string().min(1, { message: "This is a required field" }),
     description: z.string().min(1, { message: "This is a required field" }),
-    workLocation: z.enum(locationEnum as [string, ...string[]], {
-      message: "Select a valid work location",
-    }),
+    workLocation: z.string().min(1, { message: "This is a required field" }),
     project: z.string().min(1, { message: "This is a required field" }),
     time: z
       .string()
@@ -68,11 +71,16 @@ const EmployeeDashBoard = () => {
   async function getTaskList() {
     setLoader(true);
     try {
-      const res = await axios.get(
-        "http://localhost:8080/tasks/" + empId,
-        config
-      );
+      const paginationInput = {
+        pageNumber: currPageNumber,
+        pageSize: 3,
+      };
+      const res = await axios.get("http://localhost:8080/tasks/" + empId, {
+        ...config,
+        params: paginationInput,
+      });
       setTaskList(res.data);
+      console.log(res.data);
     } catch (error: any) {
       console.log(error);
       if (error.message === "Network Error") {
@@ -119,14 +127,14 @@ const EmployeeDashBoard = () => {
     }
     getTaskList();
     getProjectList();
-  }, []);
-  // console.log(config);
+  }, [currPageNumber]);
+  // console.log(taskList);
 
   const addTask = () => {
     reset({
       title: "",
       markedForAppraisal: false,
-      workLocation: "office",
+      workLocation: "",
       project: "",
       time: "",
       description: "",
@@ -157,6 +165,7 @@ const EmployeeDashBoard = () => {
         setTaskList([...taskList, task]);
         reset();
         setTogalModal(false);
+        console.log(taskList, "Aa");
         getTaskList();
       } catch (error: any) {
         console.log(error);
@@ -256,8 +265,15 @@ const EmployeeDashBoard = () => {
       date: taskDate,
     });
   };
-  // console.log(taskList);
 
+  const nextPageTogal=()=>{
+    setCurrPageNumber(currPageNumber+1);
+  }
+
+  const prevPageTogal=()=>{
+    setCurrPageNumber(currPageNumber-1);
+  }
+  
   if (!localStorage.getItem("userToken")) {
     return <Navigate to="/"></Navigate>;
   }
@@ -339,7 +355,7 @@ const EmployeeDashBoard = () => {
                     <div className="card-footer">
                       <div className="row justify-content-between">
                         <span className="col-7">
-                          Date Added: {(String(tasks.date).slice(0,10))} Time Spent:{" "}
+                          Date Added: {String(tasks.date)} Time Spent:{" "}
                           {tasks.time}
                         </span>
                         <button
@@ -357,7 +373,7 @@ const EmployeeDashBoard = () => {
           )}
         </div>
 
-        <div className="position-fixed bottom-0 end-0 m-3">
+        <div className="position-fixed bottom-0 end-0 m-3 me-5">
           <button
             className="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
             style={{ height: "3rem", width: "3rem" }}
@@ -536,7 +552,15 @@ const EmployeeDashBoard = () => {
             errorPresent={errorPresent}
           ></ToastComponent>
         )}
-      </div>  
+      </div>
+      <div className="d-flex justify-content-between px-1 pb-1  ">
+        <span className="position-fixed bottom-0 start-0">
+          {currPageNumber>0&&<FontAwesomeIcon icon={faArrowLeft} className="btn btn-dark" onClick={prevPageTogal} />}
+        </span>
+        <span className="position-fixed bottom-0 end-0">
+          {taskList.length>0&&<FontAwesomeIcon icon={faArrowRight} className="btn btn-dark" onClick={nextPageTogal}/>}
+        </span>
+      </div>
     </div>
   );
 };

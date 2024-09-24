@@ -1,13 +1,11 @@
 package com.apprasail.beesheet.beesheet.model.Entities;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -52,7 +50,7 @@ public class Employee {
     @NotBlank(message = "Invalid Role")
     private String role;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy="emp")
     private List<Task> emp_Tasks;
 
     @ManyToMany
@@ -62,8 +60,8 @@ public class Employee {
     @JoinColumn(name = "mapping_id", referencedColumnName = "id")
     private EmployeeDesignationMapping employeeDesignationMapping;
 
-    @ElementCollection
-    private List<String>notification=new ArrayList<>();
+    @OneToMany(mappedBy="emp",cascade=CascadeType.ALL)
+    private List<Notification> notifications;
 
     // @ColumnDefault(value=false)
     private boolean apprasailDone=false;

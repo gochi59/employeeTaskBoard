@@ -85,7 +85,7 @@ const LandingPage = () => {
     return <Navigate to="/admin/approval"></Navigate>;
   }
 
-  console.log(errorPresent);
+  console.log(currEmp);
   return (
     <>
       <Navbar empId={empId} config={config} />
@@ -146,7 +146,7 @@ const LandingPage = () => {
                       <li className="d-flex justify-content-between mb-3">
                         <strong className="text-muted">Date of Join: </strong>
                         <span>
-                          {currEmp.doj.slice(0,10 )}
+                          {currEmp.doj}
                         </span>
                       </li>
                       

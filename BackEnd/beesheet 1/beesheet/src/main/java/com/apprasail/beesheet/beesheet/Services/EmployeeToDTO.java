@@ -13,6 +13,7 @@ import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.Entities.EmployeeDesignationMapping;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
+import com.apprasail.beesheet.beesheet.model.InputDTO.Output.TaskOutput;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +39,19 @@ public class EmployeeToDTO {
         employeeDTO.setDesignationTitle(emp.getDesignation().getTitle());
         employeeDTO.setRole(emp.getRole());
         employeeDTO.setEmail(emp.getEmail());
-        employeeDTO.setEmpTask(emp.getEmp_Tasks());
+        employeeDTO.setEmpTask(emp.getEmp_Tasks().stream().map(task->{
+            TaskOutput output=new TaskOutput();
+            output.setTaskId(task.getTaskId());
+            output.setDate(task.getDate());
+            output.setDescription(task.getDescription());
+            output.setEmpId(task.getEmp().getEmpId());
+            output.setTime(task.getTime());
+            output.setTitle(task.getTitle());
+            output.setProject(task.getProject());
+            output.setMarkedForAppraisal(task.isMarkedForAppraisal());
+            output.setTaskRating(task.getTaskRating());
+            return output;
+        }).toList());
         if (emp.getEmployeeDesignationMapping() == null||emp.getEmployeeDesignationMapping().getSkillRating().isEmpty()) {
             EmployeeDesignationMapping employeeDesignationMapping = new EmployeeDesignationMapping();
             employeeDesignationMapping.setEmployee(emp);
@@ -55,12 +68,11 @@ public class EmployeeToDTO {
         }
         employeeDTO.setProjectTitles(
                 (emp.getProjects()).stream().map(project -> project.getName()).collect(Collectors.toList()));
-        if(emp.getNotification()==null)
-            emp.setNotification(new ArrayList<>());
+        if(emp.getNotifications().isEmpty())
+            emp.setNotifications(new ArrayList<>());
         employeeRepo.save(emp);
-        employeeDTO.setNotifications(emp.getNotification());
+        employeeDTO.setNotifications(emp.getNotifications().stream().map((notifications)->notifications.getMessage()).toList());
         employeeDTO.setApprasailDone(emp.isApprasailDone());
-        employeeDTO.setNotifications(emp.getNotification());
         log.info("Object to dto for employee called");
         return employeeDTO;
     }
