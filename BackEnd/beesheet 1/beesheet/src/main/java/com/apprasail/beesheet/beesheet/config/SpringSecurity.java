@@ -46,7 +46,7 @@ public class SpringSecurity {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        request -> request.requestMatchers("/login", "/signup", "/alldes","/**").permitAll()
+                        request -> request.requestMatchers("/login", "/signup", "/alldes").permitAll()
                                 .requestMatchers("/admin/**","/tempusers").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
