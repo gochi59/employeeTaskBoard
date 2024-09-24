@@ -52,10 +52,8 @@ const LoginPage = () => {
 
   const dispatch=useDispatch();
 
-  if(navigate)
+  if(navigate||localStorage.getItem("userToken"))
   {
-    const jwtToken=(String(localStorage.getItem("userToken")));
-    const {Role}=jwtDecode<JwtPayload>(jwtToken);
     dispatch(changeToken());
    return <Navigate to="/home"></Navigate>
   }

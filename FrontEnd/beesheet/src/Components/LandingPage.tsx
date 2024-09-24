@@ -143,10 +143,10 @@ const LandingPage = () => {
                       </li>
                       <li className="d-flex justify-content-between mb-3">
                         <strong className="text-muted">Date of Join: </strong>
-                        <span>{currEmp.doj}</span>
+                        <span>{currEmp.doj.slice(0,10)}</span>
                       </li>
                       <li className="row">
-                        <div className="col-12 col-md-6 col-lg-3 mb-2">
+                        {currEmp.role==="empl"&&<div className="col-12 col-md-6 col-lg-3 mb-2">
                           <button
                             className="btn btn-primary w-100"
                             onClick={handleNavigateEmployee}
@@ -154,7 +154,7 @@ const LandingPage = () => {
                           >
                             View Tasks
                           </button>
-                        </div>
+                        </div>}
                         <div className="col-12 col-md-6 col-lg-5 mb-2">
                           <button
                             className="btn  btn-primary w-100"
@@ -173,7 +173,7 @@ const LandingPage = () => {
                             Appraisal
                           </button>
                         </div>
-                        <div className="col-12 col-md-6 col-lg-2 mb-2">
+                        <div className="col-12 col-md-6 col-lg-3 mb-2">
                           <button
                             className="btn  btn-primary w-100"
                             onClick={handleApprove}

@@ -12,6 +12,7 @@ import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is import
 import "bootstrap/dist/js/bootstrap.bundle.min"; // Ensure Bootstrap JS is imported
 import { Toast } from "react-bootstrap";
 import ToastComponent from "./ToastComponent";
+import { Navigate } from "react-router-dom";
 
 const Signup = () => {
   const [designationList, setDesignationList] = useState<Designation[]>([]);
@@ -104,6 +105,10 @@ const Signup = () => {
     setErrorPresent(null);
   };
 
+  if(localStorage.getItem("userToken"))
+  {
+    return <Navigate to="/home"/>
+  }
   return (
     <div className="container-fluid">
       <div className="row min-vh-100">
