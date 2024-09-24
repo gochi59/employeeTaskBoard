@@ -287,7 +287,7 @@ const Navbar = ({ empId, config }: Props) => {
           BeeHyv
         </Link>
       </div>
-      <div className="d-flex align-items-center">
+      <div className="d-flex align-items-center ms-auto">
         {
           <>
             <i
