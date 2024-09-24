@@ -356,8 +356,8 @@ const Navbar = ({ empId, config }: Props) => {
                               >
                                 {notification.message}
                               </span>
-                              <button className="btn btn-danger ms-5" disabled={loader}>
-                              <FontAwesomeIcon icon={faCancel} onClick={()=>deleteThisNotif(notification.id)} />
+                              <button className="btn btn-danger ms-5" disabled={loader} onClick={()=>deleteThisNotif(notification.id)}>
+                              <FontAwesomeIcon icon={faCancel} />
 
                               </button>
                             </span>
