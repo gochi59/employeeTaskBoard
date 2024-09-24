@@ -30,6 +30,7 @@ const EmployeeDashBoard = () => {
   const [projectList, setProjectList] = useState<Project[]>();
   const [errorPresent, setErrorPresent] = useState<string>("");
   const [currPageNumber,setCurrPageNumber]=useState(0);
+  const [lastPage,setLastPage]=useState(1000);
   // console.log(empId,config);
 
   const dispatch = useDispatch();
@@ -79,8 +80,9 @@ const EmployeeDashBoard = () => {
         ...config,
         params: paginationInput,
       });
-      setTaskList(res.data);
-      console.log(res.data);
+      setLastPage(res.data.totalPages);
+      setTaskList(res.data.content);
+      console.log(res);
     } catch (error: any) {
       console.log(error);
       if (error.message === "Network Error") {
@@ -558,7 +560,7 @@ const EmployeeDashBoard = () => {
           {currPageNumber>0&&<FontAwesomeIcon icon={faArrowLeft} className="btn btn-dark" onClick={prevPageTogal} />}
         </span>
         <span className="position-fixed bottom-0 end-0">
-          {taskList.length>0&&<FontAwesomeIcon icon={faArrowRight} className="btn btn-dark" onClick={nextPageTogal}/>}
+          {currPageNumber!==lastPage-1&&<FontAwesomeIcon icon={faArrowRight} className="btn btn-dark" onClick={nextPageTogal}/>}
         </span>
       </div>
     </div>

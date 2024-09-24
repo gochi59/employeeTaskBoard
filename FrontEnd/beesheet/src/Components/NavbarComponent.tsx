@@ -61,7 +61,7 @@ const Navbar = ({ empId, config }: Props) => {
         config
       );
       setEmpAttributeRating(res2.data);
-      setCurrEmpTaskList(res.data);
+      setCurrEmpTaskList(res.data.content);
     } catch (error: any) {
       console.log(error);
       if (

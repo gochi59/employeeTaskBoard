@@ -36,13 +36,13 @@ public class EmployeeDashboardService {
     private final NotificationService notificationService;
     private final TaskRepository taskRepository;
 
-    public List<TaskOutput> getTaskofEmployee(int id,int pageSize,int pageNumber) {
+    public Page<TaskOutput> getTaskofEmployee(int id,int pageSize,int pageNumber) {
         Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Task> tasks = taskRepository.findAllByEmp(emp, pageable);
-        List<Task> tasksEmp = tasks.getContent();
-        return tasksEmp.stream().map(task -> {
+        
+        return tasks.map(task -> {
             TaskOutput output = new TaskOutput();
             output.setTaskId(task.getTaskId());
             output.setDate(task.getDate());
@@ -55,7 +55,7 @@ public class EmployeeDashboardService {
             output.setWorkLocation(task.getWorkLocation());
             output.setTaskRating(task.getTaskRating());
             return output;
-        }).toList();
+        });
     }
 
     public void addTaskToEmp(int id, TaskInput input) {
