@@ -375,7 +375,7 @@ const EmployeeDashBoard = () => {
           )}
         </div>
 
-        <div className="position-fixed bottom-0 end-0 m-3 me-5">
+        <div className="position-fixed bottom-0 end-0 mb-5">
           <button
             className="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
             style={{ height: "3rem", width: "3rem" }}
@@ -555,11 +555,11 @@ const EmployeeDashBoard = () => {
           ></ToastComponent>
         )}
       </div>
-      <div className="d-flex justify-content-between px-1 pb-1  ">
-        <span className="position-fixed bottom-0 start-0">
+      <div className="d-flex justify-content-between px-2 pb-1  ">
+        <span className="position-fixed bottom-0 start-0 ps-1">
           {currPageNumber>0&&<FontAwesomeIcon icon={faArrowLeft} className="btn btn-dark" onClick={prevPageTogal} />}
         </span>
-        <span className="position-fixed bottom-0 end-0">
+        <span className="position-fixed bottom-0 end-0 pe-1">
           {currPageNumber!==lastPage-1&&<FontAwesomeIcon icon={faArrowRight} className="btn btn-dark" onClick={nextPageTogal}/>}
         </span>
       </div>
