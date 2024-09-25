@@ -3,72 +3,67 @@ import { FieldValues, useForm } from "react-hook-form";
 import { AttributeRating, Employee, ReduxState, Task } from "../models/AllModels";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { clearToken } from "../redux/HeaderSlice";
+import { clearToken, setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
 
 interface props {
   closeModal: () => void;
   currEmpTaskList: Task[];
-  empAttributeRating: AttributeRating[];
   currEmpId: Employee;
-  setCurrEmpTaskList:(task:Task[])=>void;
   currAttributeList:AttributeRating[];
-  setCurrAttributeList:(att:AttributeRating[])=>void;
 }
 
 const TaskAttributeRating = ({
   closeModal,
   currEmpTaskList,
-  empAttributeRating,
   currEmpId,
-  setCurrEmpTaskList,
   currAttributeList,
-  setCurrAttributeList
 }: props) => {
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch=useDispatch();
   const ratingSubmit = async (data: FieldValues) => {
     setLoading(true);
-    const taskPromises = currEmpTaskList.map((task) => {
-      const str = task.taskId;
-      const updatedTask = { ...task, taskRating: data[str] };
-      currEmpTaskList=currEmpTaskList.map((task:Task)=>task.taskId===str?{...task,taskRating:data[str]}:task);
-      setCurrEmpTaskList(currEmpTaskList);
-      return axios.put(
-        `http://localhost:8080/admin/task/${str}`,
-        updatedTask,
-        headerConfig
-      );
-    });
-
-    const attributePromises = empAttributeRating.map((attribute) => {
-      const attributeTitle = attribute.attribute;
-      const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
-      currAttributeList=currAttributeList.map((attribute:AttributeRating)=>attribute.attribute===attributeTitle?{...attribute,rating:data[attributeTitle]}:attribute);
-      setCurrAttributeList(currAttributeList);
-      return axios.put(
-        `http://localhost:8080/admin/employee/attribute/${currEmpId.empId}`,
-        updatedAttribute,
-        headerConfig
-      );
-    });
-
     try {
-      await Promise.all([...taskPromises, ...attributePromises]);
-      closeModal();
-      currEmpId.apprasailDone=true;
-    } catch (error:any) {
-      console.log(error);
-      if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
+        // Update each task one by one
+        for (const task of currEmpTaskList) {
+            const str = task.taskId;
+            const updatedTask = { ...task, taskRating: data[str] };
+            currEmpTaskList = currEmpTaskList.map((task: Task) => task.taskId === str ? { ...task, taskRating: data[str] } : task);
+            await axios.put(
+                `http://localhost:8080/admin/task/${str}`,
+                updatedTask,
+                headerConfig
+            );
+        }
+
+        // Update each attribute one by one
+        for (const attribute of currAttributeList) {
+            const attributeTitle = attribute.attribute;
+            const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
+            currAttributeList = currAttributeList.map((attribute: AttributeRating) => attribute.attribute === attributeTitle ? { ...attribute, rating: data[attributeTitle] } : attribute);
+            await axios.put(
+                `http://localhost:8080/admin/employee/attribute/${currEmpId.empId}`,
+                updatedAttribute,
+                headerConfig
+            );
+        }
+
+        dispatch(setEmployeeTaskAttributeList({ emp: currEmpId.empId, taskList: currEmpTaskList, attributeList: currAttributeList }));
+
+        closeModal();
+        currEmpId.apprasailDone = true;
+    } catch (error: any) {
+        console.log(error);
+        if (error.response.data === "JWT token is expired." || error.response.data === "Invalid JWT token.") {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
         }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const { register, handleSubmit } = useForm();
 
@@ -162,7 +157,7 @@ const TaskAttributeRating = ({
                         </tr>
                       </thead>
                       <tbody>
-                        {empAttributeRating.map(
+                        {currAttributeList.map(
                           (attribute: AttributeRating) => (
                             <tr key={attribute.attribute}>
                               <td>{attribute.attribute}</td>

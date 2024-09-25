@@ -33,9 +33,6 @@ const Navbar = ({ empId, config }: Props) => {
   const [showTaskAttributeModal, setShowTaskAttributeModal] = useState(false);
   const [selectedEmpId, setSelectedEmpId] = useState<number>();
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
-  const [currAttributeList, setCurrAttributeList] = useState<AttributeRating[]>(
-    []
-  );
   const [empAttributeRating, setEmpAttributeRating] = useState<
     AttributeRating[]
   >([]);
@@ -393,9 +390,7 @@ const Navbar = ({ empId, config }: Props) => {
           currEmpTaskList={currEmpTaskList} 
           empAttributeRating={empAttributeRating}
           currEmpId={currEmp} 
-          setCurrEmpTaskList={setCurrEmpTaskList}
-          currAttributeList={currAttributeList}
-          setCurrAttributeList={setCurrAttributeList}
+          currAttributeList={empAttributeRating}
         />
       )}
     </div>

@@ -41,7 +41,7 @@ public class AdminDashboardServices {
     private final TaskRepository taskRepository;
     private final AttributeRepo attributeRepo;
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
 
     public List<EmployeeDTO> findAll() {

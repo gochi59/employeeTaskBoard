@@ -82,7 +82,8 @@ export interface AttributeRating{
 
 export interface ReduxState{
   header:{},
-  ID:string
+  ID:string,
+  employeeTaskAndAttributeList:ReduxEmpList[],
 }
 
 export interface Notifications{
@@ -90,4 +91,10 @@ export interface Notifications{
   empDto:Employee;
   empId:number;
   id:number;
+}
+
+export interface ReduxEmpList{
+  emp:number;
+  taskList:Task[];
+  attributeList:AttributeRating[];
 }

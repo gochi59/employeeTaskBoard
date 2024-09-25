@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
     import jakarta.persistence.FetchType;
     import jakarta.persistence.GeneratedValue;
     import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
     import jakarta.persistence.OneToMany;
     import jakarta.validation.constraints.NotBlank;
     import lombok.Data;
@@ -24,7 +25,7 @@ import jakarta.persistence.Entity;
         @Column(unique = true,nullable=false)
         private String title;
 
-        @OneToMany
+        @ManyToMany
         private List<Attributes> attributes;
         
         @OneToMany(fetch = FetchType.LAZY,mappedBy="designation")

@@ -564,7 +564,7 @@ const EmployeeDashBoard = () => {
           {currPageNumber>0&&<FontAwesomeIcon icon={faArrowLeft} className="btn btn-dark" onClick={prevPageTogal} />}
         </span>
         <span className="position-fixed bottom-0 end-0 pe-1">
-          {currPageNumber!==lastPage-1&&<FontAwesomeIcon icon={faArrowRight} className="btn btn-dark" onClick={nextPageTogal}/>}
+          {lastPage>0&&currPageNumber!==lastPage-1&&<FontAwesomeIcon icon={faArrowRight} className="btn btn-dark" onClick={nextPageTogal}/>}
         </span>
       </div>
     </div>

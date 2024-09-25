@@ -3,6 +3,7 @@ import {
   AttributeRating,
   Employee,
   Project,
+  ReduxEmpList,
   ReduxState,
   Task,
 } from "../models/AllModels";
@@ -13,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import TaskAttributeRatingSkeleton from "./Skeletons/TaskAttributeRatingSkeleton";
 import ProjectModal from "./ProjectModal";
-import { clearToken } from "../redux/HeaderSlice";
+import { clearToken, setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
 
 interface props {
@@ -70,8 +71,9 @@ const EmployeeCard = ({
         `http://localhost:8080/admin/employee/attribute/${empId}`,
         headerConfig
       );
-      setEmpAttributeRating(res2.data);
+      setCurrAttributeList(res2.data);
       setCurrEmpTaskList(res.data.content);
+      dispatch(setEmployeeTaskAttributeList({emp:empId,taskList:res.data.content,attributeList:res2.data}));
     } catch (error: any) {
       console.log(error);
       if (
@@ -86,30 +88,9 @@ const EmployeeCard = ({
     }
   }
 
-  async function getAttributeRating(empId:number)
-  {
-    try {
-      const res=await axios.get(`http://localhost:8080/admin/employee/attribute/${empId}`,headerConfig);
-      setCurrAttributeList(res.data);
-    } catch (error:any) {
-      console.log(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
-    }
-    finally {
-      setLoader(false);
-    }
-  }
-
-
   useEffect(()=>{
     getTaskList(emp.empId);
-    getAttributeRating(emp.empId);
+    console.log(currEmpTaskList);
 
   },[])
   const openEmpTasks = (empId: number) => {
@@ -119,6 +100,7 @@ const EmployeeCard = ({
     setShowModal(true);
 
   };
+  const reduxTaskList=useSelector((state:ReduxState)=>state.employeeTaskAndAttributeList).find((obj:ReduxEmpList)=>obj.emp===emp.empId)||{emp:-1,taskList:[],attributeList:[]};
 
   const openProjects = (empId: Employee) => {
     setCurrEmp(empId);
@@ -185,7 +167,7 @@ const EmployeeCard = ({
                   >
                     <span className="px-2">
                       {(
-                        currEmpTaskList
+                        reduxTaskList.taskList
                           .filter(
                             (task: Task) =>
                               task.taskRating !== "0" && task.markedForAppraisal
@@ -194,7 +176,7 @@ const EmployeeCard = ({
                             (acc, task) => acc + parseInt(task.taskRating),
                             0
                           ) /
-                        currEmpTaskList.filter(
+                        reduxTaskList.taskList.filter(
                           (task: Task) =>
                             task.taskRating !== "0" && task.markedForAppraisal
                         ).length
@@ -209,7 +191,7 @@ const EmployeeCard = ({
                   >
                     <span className="px-2">
                       {(
-                        currAttributeList
+                        reduxTaskList.attributeList
                           .filter(
                             (attribute: AttributeRating) =>
                               attribute.rating !== "0" 
@@ -218,7 +200,7 @@ const EmployeeCard = ({
                             (acc, attribute) => acc + parseInt(attribute.rating),
                             0
                           ) /
-                        currAttributeList.filter(
+                        reduxTaskList.attributeList.filter(
                           (attribute: AttributeRating) =>
                             attribute.rating !== "0" 
                             
@@ -265,11 +247,8 @@ const EmployeeCard = ({
         <TaskAttributeRating
           closeModal={closeModal}
           currEmpTaskList={currEmpTaskList}
-          empAttributeRating={empAttributeRating}
           currEmpId={emp}
-          setCurrEmpTaskList={setCurrEmpTaskList}
           currAttributeList={currAttributeList}
-          setCurrAttributeList={setCurrAttributeList}
         />
       )}
       {projectModalToggle && (
