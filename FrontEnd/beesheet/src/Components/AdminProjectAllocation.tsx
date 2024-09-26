@@ -30,15 +30,15 @@ const AdminProjectAllocation = () => {
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        // if(error.response.status===401)
-        // {
-        //   setNavigateError(true);
-        // }
-        // else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        // {
-        //   dispatch(clearToken());
-        //   localStorage.removeItem("userToken");
-        // }
+        if(error.response.status===401||error.response.status===403)
+        {
+          setNavigateError(true);
+        }
+        else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
       } finally {
         setLoading(false);
       }

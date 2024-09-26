@@ -35,16 +35,16 @@ const AdminDashboard = () => {
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        // if(error.response.status===401)
-        // {
-        //   console.log(typeof error)
-        //   setNavigateToError(true);
-        // }
-        // else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        //   {
-        //     dispatch(clearToken());
-        //     localStorage.removeItem("userToken");
-        //   }
+        if(error.response.status===401||error.response.status===403)
+        {
+          console.log(typeof error)
+          setNavigateToError(true);
+        }
+        else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+          {
+            dispatch(clearToken());
+            localStorage.removeItem("userToken");
+          }
       }
     }
     getAllEmp();

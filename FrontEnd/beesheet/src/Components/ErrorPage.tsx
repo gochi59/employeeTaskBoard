@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
-import { StyledText } from "../models/AllModels";
-import { useDispatch } from "react-redux";
+import { ReduxState, StyledText } from "../models/AllModels";
+import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../redux/HeaderSlice";
-
+import axiosInstance from "../axios/axiosInstance";
 const ErrorPage = () => {
+  const empId=useSelector((state:ReduxState)=>state.ID);
 
     const dispatch=useDispatch();
-    const logout=()=>{
+    const logout=async()=>{
+        await axiosInstance.delete("/cookie")      
         dispatch(clearToken());
         localStorage.removeItem("userToken");
     }

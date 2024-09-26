@@ -30,15 +30,15 @@ const AdminApprovalDashboard = () => {
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        // if (error.response.status === 401) {
-        //   setNavigateToError(true);
-        // } else if (
-        //   error.response.data === "JWT token is expired." ||
-        //   error.response.data === "Invalid JWT token."
-        // ) {
-        //   dispatch(clearToken());
-        //   localStorage.removeItem("userToken");
-        // }
+        if (error.response.status === 401||error.response.status===403) {
+          setNavigateToError(true);
+        } else if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
       }
     }
     fetchUsers();
@@ -54,13 +54,13 @@ const AdminApprovalDashboard = () => {
       setErrorPresent(`User Approved`);
     } catch (error: any) {
       console.error(error);
-      // if (
-      //   error.response.data === "JWT token is expired." ||
-      //   error.response.data === "Invalid JWT token."
-      // ) {
-      //   dispatch(clearToken());
-      //   localStorage.removeItem("userToken");
-      // }
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
     } finally {
       setLoader(false);
     }
@@ -77,13 +77,13 @@ const AdminApprovalDashboard = () => {
       setErrorPresent(`User Rejected`);
     } catch (error: any) {
       console.error(error);
-      // if (
-      //   error.response.data === "JWT token is expired." ||
-      //   error.response.data === "Invalid JWT token."
-      // ) {
-      //   dispatch(clearToken());
-      //   localStorage.removeItem("userToken");
-      // }
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
     } finally {
       setLoader(false);
     }

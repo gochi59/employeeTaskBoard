@@ -26,7 +26,7 @@ public class RefreshTokenController {
         
     }
 
-    @DeleteMapping("/removecookie")
+    @DeleteMapping("/cookie")
     public void  logout(@CookieValue(value="userToken")String userCookie,HttpServletResponse response) {
 
         refreshTokenService.logout(userCookie,response);

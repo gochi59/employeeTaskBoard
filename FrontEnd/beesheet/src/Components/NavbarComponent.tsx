@@ -185,7 +185,7 @@ const Navbar = ({ empId, config }: Props) => {
     return <Navigate to="/"></Navigate>;
   }
   const logout = async() => {
-    await axiosInstance.delete("/removecookie");
+    await axiosInstance.delete("/cookie");
     localStorage.removeItem("userToken");
     dispatch(clearToken());
     if (internalRef.current !== null) {

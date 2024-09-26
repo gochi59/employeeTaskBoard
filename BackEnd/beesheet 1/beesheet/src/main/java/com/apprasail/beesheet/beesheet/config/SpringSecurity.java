@@ -43,13 +43,14 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception {
         // .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         https
+                .formLogin(formLoginCustomizer->formLoginCustomizer.disable())
+                .httpBasic(httpBasicCustomizer->httpBasicCustomizer.disable())
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         request -> request.requestMatchers("/login", "/signup", "/alldes","/refresh").permitAll()
                                 .requestMatchers("/admin/**","/tempusers").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
                 .sessionManagement((SessionManagementConfigurer<HttpSecurity> session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jWTFilter, UsernamePasswordAuthenticationFilter.class);
         return https.build();
