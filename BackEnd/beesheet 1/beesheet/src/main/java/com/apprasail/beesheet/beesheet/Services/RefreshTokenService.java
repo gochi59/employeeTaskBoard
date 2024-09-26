@@ -31,7 +31,7 @@ public class RefreshTokenService {
         RefreshToken token = new RefreshToken();
         token.setEmp(employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Employee Not Found")));
         token.setToken(UUID.randomUUID().toString());
-        token.setExpiry(Instant.now().plusSeconds(60 * 60));
+        token.setExpiry(Instant.now().plusSeconds(60*60));
         refreshTokenRepo.save(token);
         return token;
     }
