@@ -7,9 +7,7 @@ const initialState = {
     {
       headers: { Authorization: "Bearer " + localStorage.getItem("userToken") },
     } || {},
-  ID: localStorage.getItem("userToken")
-    ? jwtDecode<JwtPayload>(localStorage.getItem("userToken") || "").sub
-    : "",
+  ID: "",
   employeeTaskAndAttributeList: [
     {
       emp: 0,
@@ -24,14 +22,14 @@ export const Slice = createSlice({
   initialState,
   reducers: {
     changeToken: (state) => {
-      const jwt = localStorage.getItem("userToken") || "";
-      const { sub } = jwtDecode<JwtPayload>(jwt);
-      const config = {
-        headers: { Authorization: "Bearer " + jwt },
-      };
-      state.header = config;
-      state.ID = sub || "";
-      //   console.log(state.header,state.ID);
+      // const jwt = localStorage.getItem("userToken") || "";
+      // const { sub } = jwtDecode<JwtPayload>(jwt);
+      // const config = {
+      //   headers: { Authorization: "Bearer " + jwt },
+      // };
+      // state.header = config;
+      // state.ID = sub || "";
+      // //   console.log(state.header,state.ID);
     },
     clearToken: (state) => {
       state.header = {

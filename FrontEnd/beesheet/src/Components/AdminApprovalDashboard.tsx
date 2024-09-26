@@ -27,6 +27,9 @@ const AdminApprovalDashboard = () => {
         setUsers(response.data);
       } catch (error: any) {
         console.error(error);
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
@@ -54,6 +57,9 @@ const AdminApprovalDashboard = () => {
       setErrorPresent(`User Approved`);
     } catch (error: any) {
       console.error(error);
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
+      }
       if (
         error.response.data === "JWT token is expired." ||
         error.response.data === "Invalid JWT token."
@@ -77,6 +83,9 @@ const AdminApprovalDashboard = () => {
       setErrorPresent(`User Rejected`);
     } catch (error: any) {
       console.error(error);
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
+      }
       if (
         error.response.data === "JWT token is expired." ||
         error.response.data === "Invalid JWT token."
@@ -111,7 +120,7 @@ const AdminApprovalDashboard = () => {
 
   return (
     <>
-      <Navbar empId={empId} config={headerConfig} />
+      <Navbar />
       <div className="container-fluid min-vh-100 bg-dark-subtle pt-md-0 pt-5">
         <div className="row pt-5 mt-4">
           {!users && <EmployeeCardSkeleton />}

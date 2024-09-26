@@ -32,6 +32,9 @@ const AdminDashboard = () => {
         setEmpList(res.data);
       } catch (error:any) {
         console.log(error);
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
@@ -60,7 +63,7 @@ const AdminDashboard = () => {
 
   return (
     <>
-      <Navbar empId={loginId} config={headerConfig} />
+      <Navbar  />
       <div>
         <div className="container-fluid bg-dark-subtle p-2 mt-5 pt-md-1 pt-5 pb-3 vh-100 overflow-x-hidden rounded-1">
          

@@ -19,12 +19,11 @@ import ToastComponent from "./ToastComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);
-  const empId = useSelector((state: ReduxState) => state.ID);
-  const config = useSelector((state: ReduxState) => state.header);
   const [loader, setLoader] = useState(false);
   const [modalText, setModalText] = useState<boolean>();
   const [currTask, setCurrTask] = useState<Task>();
@@ -32,6 +31,8 @@ const EmployeeDashBoard = () => {
   const [errorPresent, setErrorPresent] = useState<string>("");
   const [currPageNumber,setCurrPageNumber]=useState(0);
   const [lastPage,setLastPage]=useState(1000);
+  const [navigateToError,setNavigateToError]=useState(false);
+  const [empId,setEmpId]=useState("");
   // console.log(empId,config);
 
   const dispatch = useDispatch();
@@ -67,24 +68,25 @@ const EmployeeDashBoard = () => {
     formState: { errors },
   } = useForm<taskInput>({ resolver: zodResolver(schema) });
 
-  useEffect(() => {
-    dispatch(changeToken());
-  }, []);
-  async function getTaskList() {
+  async function getTaskList(currEmpId:string) {
     setLoader(true);
     try {
       const paginationInput = {
         pageNumber: currPageNumber,
         pageSize: 3,
       };
-      const res = await axiosInstance.get("/tasks/" + empId, {
+      const currEmpId=jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub||"";
+      const res = await axiosInstance.get("/tasks/" + currEmpId, {
         params: paginationInput,
       });
       setLastPage(res.data.totalPages);
       setTaskList(res.data.content);
-      console.log(res);
+      // console.log(res);    
     } catch (error: any) {
       console.log(error);
+      if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
       if (error.message === "Network Error") {
         setErrorPresent("Internal Server Error");
       }
@@ -99,35 +101,48 @@ const EmployeeDashBoard = () => {
       setLoader(false);
     }
   }
+
+  async function getProjectList(currEmpId:string) {
+    // console.log(empId,config);
+
+    try {
+      const res = await axiosInstance.get(
+        "/" + currEmpId + "/project"
+      );
+      // console.log(res.data)
+      setProjectList(res.data);
+    } catch (error: any) {
+      console.log(error);
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
+      }
+      if (error.message === "Network Error") {
+        setErrorPresent("Internal Server Error");
+      }
+      // if (
+      //   error.response.data === "JWT token is expired." ||
+      //   error.response.data === "Invalid JWT token."
+      // ) {
+      //   dispatch(clearToken());
+      //   localStorage.removeItem("userToken");
+      // }
+    } finally {
+      setLoader(false);
+    }
+  }
   useEffect(() => {
     setLoader(true);
-    async function getProjectList() {
-      // console.log(empId,config);
-
-      try {
-        const res = await axiosInstance.get(
-          "/" + empId + "/project"
-        );
-        // console.log(res.data)
-        setProjectList(res.data);
-      } catch (error: any) {
-        console.log(error);
-        if (error.message === "Network Error") {
-          setErrorPresent("Internal Server Error");
-        }
-        // if (
-        //   error.response.data === "JWT token is expired." ||
-        //   error.response.data === "Invalid JWT token."
-        // ) {
-        //   dispatch(clearToken());
-        //   localStorage.removeItem("userToken");
-        // }
-      } finally {
-        setLoader(false);
+    try {
+      const currEmpId=jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub||"";
+      setEmpId(currEmpId);
+      getTaskList(currEmpId);
+      getProjectList(currEmpId);
+    } catch (error) {
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
       }
     }
-    getTaskList();
-    getProjectList();
+   
   }, [currPageNumber]);
   // console.log(taskList);
 
@@ -170,14 +185,16 @@ const EmployeeDashBoard = () => {
         getTaskList();
       } catch (error: any) {
         console.log(error);
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
         if (error.message === "Network Error") {
           setTogalModal(false);
           setErrorPresent(error.message);
         }
         if (
           error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
+          error.response.data === "Invalid JWT token."||error.response.data==="Unable to refresh token") {
           dispatch(clearToken());
           localStorage.removeItem("userToken");
         }
@@ -197,6 +214,9 @@ const EmployeeDashBoard = () => {
         console.log(res);
         setTogalModal(false);
       } catch (error: any) {
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
         if (error.message === "Network Error") {
           setTogalModal(false);
           setErrorPresent(error.message);
@@ -225,22 +245,25 @@ const EmployeeDashBoard = () => {
         const res = await axiosInstance.delete(
           "/task/" + empId + "/" + id
         );
-        console.log(res);
+        // console.log(res);
         setTaskList(taskList.filter((t) => t.taskId !== id));
       } catch (error: any) {
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
         if (error.response.data === "java.lang.IllegalAccessException") {
           setErrorPresent("Cannot delete rated task");
         }
-        // if (
-        //   error.response.data === "JWT token is expired." ||
-        //   error.response.data === "Invalid JWT token."
-        // ) {
-        //   dispatch(clearToken());
-        //   localStorage.removeItem("userToken");
-        // }
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          dispatch(clearToken());
+          localStorage.removeItem("userToken");
+        }
         console.log(error);
       }
     }
@@ -276,8 +299,11 @@ const EmployeeDashBoard = () => {
   if (!localStorage.getItem("userToken")) {
     return <Navigate to="/"></Navigate>;
   }
+  if (navigateToError) {
+    return <Navigate to="*" replace={false} />;
+  }
   return (<>
-      <Navbar empId={empId} config={config}></Navbar>
+      <Navbar ></Navbar>
     <div className="bg-dark-subtle min-vh-100 pt-5 pt-md-4 mt-md-4 mt-5">
       <div className="container-fluid ">
         <div className="py-3 ">

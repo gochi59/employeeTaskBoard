@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AttributeRating,
   Employee,
@@ -8,13 +8,12 @@ import {
   Task,
 } from "../models/AllModels";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import axios from "axios";
 import TaskAttributeRating from "./TaskAttributeRating";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import TaskAttributeRatingSkeleton from "./Skeletons/TaskAttributeRatingSkeleton";
 import ProjectModal from "./ProjectModal";
-import { clearToken, setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
+import { setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 
@@ -42,6 +41,7 @@ const EmployeeCard = ({
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [projectModalToggle, setProjectModalToggle] = useState(false);
   const [currAttributeList,setCurrAttributeList]=useState<AttributeRating[]>([]);
+  const [navigateToError,setNavigateToError]=useState(false);
   const dispatch = useDispatch();
 
   const decideEmpOrProj = (emp: Employee) => {
@@ -72,13 +72,15 @@ const EmployeeCard = ({
       dispatch(setEmployeeTaskAttributeList({emp:empId,taskList:res.data.content,attributeList:res2.data}));
     } catch (error: any) {
       console.log(error);
-      // if (
-      //   error.response.data === "JWT token is expired." ||
-      //   error.response.data === "Invalid JWT token."
-      // ) {
-      //   dispatch(clearToken());
-      //   localStorage.removeItem("userToken");
-      // }
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
+      }
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        localStorage.removeItem("userToken");
+      }
     } finally {
       setLoader(false);
     }
@@ -111,13 +113,15 @@ const EmployeeCard = ({
         // setCurrEmp(empId);
       } catch (error: any) {
         console.error("Error fetching projects:", error);
-        // if (
-        //   error.response.data === "JWT token is expired." ||
-        //   error.response.data === "Invalid JWT token."
-        // ) {
-        //   dispatch(clearToken());
-        //   localStorage.removeItem("userToken");
-        // }
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
+        if (
+          error.response.data === "JWT token is expired." ||
+          error.response.data === "Invalid JWT token."
+        ) {
+          localStorage.removeItem("userToken");
+        }
       }
     }
     getAllProjects();
@@ -134,6 +138,9 @@ const EmployeeCard = ({
   // console.log(emp);
   if (!localStorage.getItem("userToken")) {
     return <Navigate to="/"></Navigate>;
+  }
+  if (navigateToError) {
+    return <Navigate to="*" replace={false} />;
   }
   return (
     <div>

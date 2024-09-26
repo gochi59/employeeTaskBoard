@@ -8,8 +8,8 @@ const ErrorPage = () => {
 
     const dispatch=useDispatch();
     const logout=async()=>{
-        await axiosInstance.delete("/cookie")      
-        dispatch(clearToken());
+        // await axiosInstance.delete("/cookie") ;     
+        // dispatch(clearToken());
         localStorage.removeItem("userToken");
     }
   return (

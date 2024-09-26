@@ -14,13 +14,10 @@ import {
 } from "../models/AllModels";
 import TaskAttributeRating from "./TaskAttributeRating";
 import axiosInstance from "../axios/axiosInstance";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
-interface Props {
-  empId: string;
-  config: {};
-}
 
-const Navbar = ({ empId, config }: Props) => {
+const Navbar = () => {
   const [notificationList, setNotificationList] = useState<Notifications[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement | null>(null);
@@ -40,14 +37,16 @@ const Navbar = ({ empId, config }: Props) => {
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [togalToTasks, setTogalToTasks] = useState(false);
   const location = useLocation();
-  const interval = 5000;
+  const interval = 10000;
+  const [navigateToError, setNavigateToError] = useState(false);
+
 
   async function getTaskList(empId: number) {
     try {
       const res = await axiosInstance.get(`/tasks/${empId}`, {
         params: {
           pageNumber: 0,
-          pageSize: 100000,
+          pageSize: 10000,
         },
       });
       const res2 = await axiosInstance.get(
@@ -61,7 +60,6 @@ const Navbar = ({ empId, config }: Props) => {
         error.response.data === "JWT token is expired." ||
         error.response.data === "Invalid JWT token."
       ) {
-        dispatch(clearToken());
         localStorage.removeItem("userToken");
       }
     } finally {
@@ -79,13 +77,13 @@ const Navbar = ({ empId, config }: Props) => {
       setCurrEmp(res.data);
     } catch (error: any) {
       console.log(error);
-      // if (
-      //   error.response.data === "JWT token is expired." ||
-      //   error.response.data === "Invalid JWT token."
-      // ) {
-      //   dispatch(clearToken());
-      //   localStorage.removeItem("userToken");
-      // }
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
     } finally {
       setLoader(false);
     }
@@ -100,24 +98,28 @@ const Navbar = ({ empId, config }: Props) => {
       const res=await axiosInstance.get(`/employee/${empId}`);
       setCurrEmp(res.data);
     } catch (error: any) {
-      // if (
-      //   error.response.data === "JWT token is expired." ||
-      //   error.response.data === "Invalid JWT token."
-      // ) {
-      //   dispatch(clearToken());
-      //   localStorage.removeItem("userToken");
-      // }
+      if (
+        error.response.data === "JWT token is expired." ||
+        error.response.data === "Invalid JWT token."
+      ) {
+        dispatch(clearToken());
+        localStorage.removeItem("userToken");
+      }
     }
   }
 
-  async function getAllNotifications() {
+  async function getAllNotifications(empId:string) {
+    console.log(empId);
     setLoader(true);
     try {
+      const empId=jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub||"";
       const res = await axiosInstance.get("/notification/"+empId);
       setNotificationList(res.data);
     } catch (error: any) {
       console.log(error);
-      
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
+      }
     } finally {
       setLoader(false);
     }
@@ -133,8 +135,15 @@ const Navbar = ({ empId, config }: Props) => {
   // console.log(notificationList);
 
   const startPolling = () => {
-    getAllNotifications();
-    internalRef.current = setInterval(getAllNotifications, interval);
+    try {
+      const empId=jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub||"";
+      getAllNotifications(empId);
+      internalRef.current = setInterval(getAllNotifications, interval);
+    } catch (error:any) {
+      if ((error.message as string).includes("Invalid token specified:")) {
+        setNavigateToError(true);
+      }
+    }
   };
 
   const toggleNotifications = () => {
@@ -148,6 +157,8 @@ const Navbar = ({ empId, config }: Props) => {
       //   "http://localhost:8080/notifications/" + empId,
       //   config
       // );
+      const empId=jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub||"";
+      
       await axiosInstance.delete("/notifications/"+empId);
       setNotificationList([]);
     } catch (error: any) {
@@ -244,6 +255,9 @@ const Navbar = ({ empId, config }: Props) => {
     return <Navigate to="/admin/approval" />;
   }
   // console.log(notificationList);
+  if (navigateToError) {
+    return <Navigate to="*" replace={false} />;
+  }
   return (
     <div className="navbar bg-dark text-bg-dark px-2 fixed-top d-flex justify-content-between align-items-center">
       <div className="navbar-brand text-light">

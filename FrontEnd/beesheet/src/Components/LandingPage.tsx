@@ -6,26 +6,34 @@ import { Navigate } from "react-router-dom";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import ToastComponent from "./ToastComponent";
 import NavbarComponent from "./NavbarComponent";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 const LandingPage = () => {
   const config = useSelector((state: ReduxState) => state.header);
-  const empId = useSelector((state: ReduxState) => state.ID);
+
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [navigateToEmp, setNavigateToEmp] = useState<boolean>(false);
-  const [navigateToAdminProject, setNavigateToAdminProject] = useState<boolean>(false);
-  const [navigateToAdminAppraisal, setNavigateToAdminAppraisal] = useState<boolean>(false);
+  const [navigateToAdminProject, setNavigateToAdminProject] =
+    useState<boolean>(false);
+  const [navigateToAdminAppraisal, setNavigateToAdminAppraisal] =
+    useState<boolean>(false);
   const [empApproval, setEmpApproval] = useState<boolean>(false);
   const [loader, setLoader] = useState(false);
   const [errorPresent, setErrorPresent] = useState("");
+  const [navigateToError, setNavigateToError] = useState(false);
 
   useEffect(() => {
     async function fetchEmployeeInfo() {
       setLoader(true);
       try {
+        const empId = jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub;
         const res = await axiosInstance.get(`/employee/${empId}`);
         setCurrEmp(res.data);
       } catch (error: any) {
-        console.error(error);
+        console.error((error.message as string),(error.message as string).includes("Invalid token specified:"));
+        if ((error.message as string).includes("Invalid token specified:")) {
+          setNavigateToError(true);
+        }
         setErrorPresent(error.message);
       } finally {
         setLoader(false);
@@ -47,10 +55,12 @@ const LandingPage = () => {
   if (navigateToAdminProject) return <Navigate to="/admin/project" />;
   if (navigateToAdminAppraisal) return <Navigate to="/admin" />;
   if (empApproval) return <Navigate to="/admin/approval" />;
-
+  if (navigateToError) {
+    return <Navigate to="*" replace={false} />;
+  }
   return (
     <>
-      <NavbarComponent empId={empId} config={config}></NavbarComponent>
+      <NavbarComponent></NavbarComponent>
       {loader && (
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-5">
           <EmployeeCardSkeleton />
@@ -87,7 +97,9 @@ const LandingPage = () => {
                     <ul className="list-unstyled">
                       <li className="d-flex justify-content-between mb-3">
                         <strong className="text-muted">Full Name:</strong>
-                        <span>{currEmp.firstName} {currEmp.lastName}</span>
+                        <span>
+                          {currEmp.firstName} {currEmp.lastName}
+                        </span>
                       </li>
                       <li className="d-flex justify-content-between mb-3">
                         <strong className="text-muted">Email:</strong>
@@ -116,30 +128,36 @@ const LandingPage = () => {
                             </button>
                           </div>
                         )}
-                        {currEmp.role==='ADMIN'&&<div className="col-12 col-md-6 col-lg-5 mb-2">
-                          <button
-                            className="btn btn-primary w-100"
-                            onClick={handleProjectAllocation}
-                          >
-                            Project Allocation
-                          </button>
-                        </div>}
-                        {currEmp.role==="ADMIN"&&<div className="col-12 col-md-6 col-lg-3 mb-2">
-                          <button
-                            className="btn btn-primary w-100"
-                            onClick={handleEmpAppraisal}
-                          >
-                            Appraisal
-                          </button>
-                        </div>}
-                        {currEmp.role==="ADMIN"&&<div className="col-12 col-md-6 col-lg-3 mb-2">
-                          <button
-                            className="btn btn-primary w-100"
-                            onClick={handleApprove}
-                          >
-                            Approval
-                          </button>
-                        </div>}
+                        {currEmp.role === "ADMIN" && (
+                          <div className="col-12 col-md-6 col-lg-5 mb-2">
+                            <button
+                              className="btn btn-primary w-100"
+                              onClick={handleProjectAllocation}
+                            >
+                              Project Allocation
+                            </button>
+                          </div>
+                        )}
+                        {currEmp.role === "ADMIN" && (
+                          <div className="col-12 col-md-6 col-lg-3 mb-2">
+                            <button
+                              className="btn btn-primary w-100"
+                              onClick={handleEmpAppraisal}
+                            >
+                              Appraisal
+                            </button>
+                          </div>
+                        )}
+                        {currEmp.role === "ADMIN" && (
+                          <div className="col-12 col-md-6 col-lg-3 mb-2">
+                            <button
+                              className="btn btn-primary w-100"
+                              onClick={handleApprove}
+                            >
+                              Approval
+                            </button>
+                          </div>
+                        )}
                       </li>
                     </ul>
                   </div>

@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 function isTokenExpired(token: string): boolean {
   const decodedToken: any = jwtDecode<JwtPayload>(token);
   const currentTime = Math.floor(Date.now() / 1000);
-  console.log(decodedToken.exp,currentTime);    
+//   console.log(decodedToken.exp,currentTime);         
   return decodedToken.exp <= currentTime;
 }
 
@@ -36,11 +36,11 @@ async function refreshAccessToken(empId: number): Promise<string> {
 
 // Request interceptor: Attach token to every request
 axiosInstance.interceptors.request.use(async (config) => {
-  let token = localStorage.getItem("userToken");
+  let token = localStorage.getItem("userToken")||"";
 
   if (token && isTokenExpired(token)) {
     try {
-      const empId = store.getState().ID; // Get empId from Redux
+      const empId = jwtDecode<JwtPayload>(token).sub; // Get empId from Redux
       token = await refreshAccessToken(empId); // Refresh token if expired
     } catch (error) {
       return Promise.reject(error); // Return error if token refresh fails
@@ -62,14 +62,14 @@ axiosInstance.interceptors.response.use(
 
     if (
       error.response &&
-      (error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token.") &&
+      (error.response.data === "JWT token is expired.") &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
 
       try {
-        const empId = store.getState().ID; // Get empId from Redux
+  let token = localStorage.getItem("userToken")||"";
+        const empId = jwtDecode<JwtPayload>(token).sub||""; // Get empId from Redux
         const newToken = await refreshAccessToken(empId); // Refresh token
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return axiosInstance(originalRequest); // Retry original request
@@ -78,7 +78,7 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    if (error.message === "Network Error") {
+    if (error.message === "Network Error"||error.message==="Invalid JWT Token") {
       return Promise.reject(new Error("Internal Server Error"));
     }
 
