@@ -10,9 +10,13 @@ const initialState = {
   ID: localStorage.getItem("userToken")
     ? jwtDecode<JwtPayload>(localStorage.getItem("userToken") || "").sub
     : "",
-  employeeTaskAndAttributeList: [{
-    emp:0,taskList:[],attributeList:[]
-  }],
+  employeeTaskAndAttributeList: [
+    {
+      emp: 0,
+      taskList: [],
+      attributeList: [],
+    },
+  ],
 };
 
 export const Slice = createSlice({
@@ -37,13 +41,13 @@ export const Slice = createSlice({
     },
     setEmployeeTaskAttributeList: (state, action) => {
       const currEmp = action.payload.emp;
-      const taskList = action.payload.taskList;  
-      const attributeList = action.payload.attributeList;  
-      
+      const taskList = action.payload.taskList;
+      const attributeList = action.payload.attributeList;
+
       const existingEmpIndex = state.employeeTaskAndAttributeList.findIndex(
         (obj: ReduxEmpList) => obj.emp === currEmp
       );
-    
+
       if (existingEmpIndex !== -1) {
         state.employeeTaskAndAttributeList[existingEmpIndex] = {
           emp: currEmp,

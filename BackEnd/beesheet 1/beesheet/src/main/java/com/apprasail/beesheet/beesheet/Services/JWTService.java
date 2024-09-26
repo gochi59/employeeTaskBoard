@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -36,7 +35,7 @@ public class JWTService {
                 .claims(claims)
                 .subject(String.valueOf(id))
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 100000000))
+                .expiration(new Date(System.currentTimeMillis() + 120*1000))
                 .signWith(getKey())
                 .compact();
     }

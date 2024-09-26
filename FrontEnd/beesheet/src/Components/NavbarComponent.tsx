@@ -13,6 +13,7 @@ import {
   Task,
 } from "../models/AllModels";
 import TaskAttributeRating from "./TaskAttributeRating";
+import axiosInstance from "../axios/axiosInstance";
 
 interface Props {
   empId: string;
@@ -37,25 +38,20 @@ const Navbar = ({ empId, config }: Props) => {
     AttributeRating[]
   >([]);
   const [currEmp, setCurrEmp] = useState<Employee>();
-  const [togalToTasks,setTogalToTasks]=useState(false);
+  const [togalToTasks, setTogalToTasks] = useState(false);
   const location = useLocation();
   const interval = 5000;
 
   async function getTaskList(empId: number) {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/tasks/${empId}`,
-        {
-          ...config,
-          params:{
-            pageNumber:0,
-            pageSize:100000
-          }
-        }
-      );
-      const res2 = await axios.get(
-        `http://localhost:8080/admin/employee/attribute/${empId}`,
-        config
+      const res = await axiosInstance.get(`/tasks/${empId}`, {
+        params: {
+          pageNumber: 0,
+          pageSize: 100000,
+        },
+      });
+      const res2 = await axiosInstance.get(
+        `/admin/employee/attribute/${empId}`
       );
       setEmpAttributeRating(res2.data);
       setCurrEmpTaskList(res.data.content);
@@ -75,20 +71,21 @@ const Navbar = ({ empId, config }: Props) => {
 
   async function getAttributeRating(empId: number) {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/admin/employee/attribute/${empId}`,
-        config
-      );
+      // const res = await axios.get(
+      //   `http://localhost:8080/admin/employee/attribute/${empId}`,
+      //   config
+      // );
+      const res=await axiosInstance.get("/admin/employee/attribute/"+empId);
       setCurrEmp(res.data);
     } catch (error: any) {
       console.log(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
+      // if (
+      //   error.response.data === "JWT token is expired." ||
+      //   error.response.data === "Invalid JWT token."
+      // ) {
+      //   dispatch(clearToken());
+      //   localStorage.removeItem("userToken");
+      // }
     } finally {
       setLoader(false);
     }
@@ -96,42 +93,31 @@ const Navbar = ({ empId, config }: Props) => {
 
   async function getEmpDetails(empId: number) {
     try {
-      const res = await axios.get(
-        `http://127.0.0.1:8080/employee/${empId}`,
-        config
-      );
+      // const res = await axios.get(
+      //   `http://127.0.0.1:8080/employee/${empId}`,
+      //   config
+      // );
+      const res=await axiosInstance.get(`/employee/${empId}`);
       setCurrEmp(res.data);
     } catch (error: any) {
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
+      // if (
+      //   error.response.data === "JWT token is expired." ||
+      //   error.response.data === "Invalid JWT token."
+      // ) {
+      //   dispatch(clearToken());
+      //   localStorage.removeItem("userToken");
+      // }
     }
   }
 
   async function getAllNotifications() {
     setLoader(true);
     try {
-      const res = await axios.get(
-        "http://localhost:8080/notification/" + empId,
-        config
-      );
+      const res = await axiosInstance.get("/notification/"+empId);
       setNotificationList(res.data);
     } catch (error: any) {
       console.log(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        if (error.message === "Network Error") {
-          setErrorPresent("Internal Server Error");
-        }
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
+      
     } finally {
       setLoader(false);
     }
@@ -158,20 +144,14 @@ const Navbar = ({ empId, config }: Props) => {
   const clearAllNotifications = async () => {
     setLoader(true);
     try {
-      await axios.delete(
-        "http://localhost:8080/notifications/" + empId,
-        config
-      );
+      // await axios.delete(
+      //   "http://localhost:8080/notifications/" + empId,
+      //   config
+      // );
+      await axiosInstance.delete("/notifications/"+empId);
       setNotificationList([]);
     } catch (error: any) {
       console.log(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
       if (error.message === "Network Error") {
         return <div className="h1 text-center">Internal Server Error</div>;
       }
@@ -236,39 +216,28 @@ const Navbar = ({ empId, config }: Props) => {
       getTaskList(empIddd);
       getAttributeRating(empIddd);
       getEmpDetails(empIddd);
-    }
-    else if(message.includes("Admin"))
-    {
+    } else if (message.includes("Admin")) {
       setTogalToTasks(true);
     }
   };
 
-
-  const deleteThisNotif=async(id:number)=>{
+  const deleteThisNotif = async (id: number) => {
     setLoader(true);
-  try {
-    await axios.delete("http://localhost:8080/notification/"+id,config); 
-    setNotificationList( notificationList.filter(notif=>notif.id!=id));
-  } catch (error:any) {
-    if (
-      error.response.data === "JWT token is expired." ||
-      error.response.data === "Invalid JWT token."
-    ) {
-      dispatch(clearToken());
-      localStorage.removeItem("userToken");
+    try {
+      // await axios.delete("http://localhost:8080/notification/"+id,config);
+      await axiosInstance.delete("/notification/" + id);
+      setNotificationList(notificationList.filter((notif) => notif.id != id));
+    } catch (error: any) {
+      if (error.message === "Network Error") {
+        return <div className="h1 text-center">Internal Server Error</div>;
+      }
+    } finally {
+      setLoader(false);
     }
-    if (error.message === "Network Error") {
-      return <div className="h1 text-center">Internal Server Error</div>;
-    }
-  }
-  finally{
-    setLoader(false);
-  }
-  }
+  };
 
-  if(togalToTasks&&location.pathname!="/user")
-  {
-    return <Navigate to="/user"/>
+  if (togalToTasks && location.pathname != "/user") {
+    return <Navigate to="/user" />;
   }
   if (toggleToAdminApproval && location.pathname != "/admin/approval") {
     return <Navigate to="/admin/approval" />;
@@ -353,9 +322,12 @@ const Navbar = ({ empId, config }: Props) => {
                               >
                                 {notification.message}
                               </span>
-                              <button className="btn btn-danger ms-5 px-auto pb-1 my-auto" disabled={loader} onClick={()=>deleteThisNotif(notification.id)}>
-                              <FontAwesomeIcon icon={faX} />
-
+                              <button
+                                className="btn btn-danger ms-5 px-auto pb-1 my-auto"
+                                disabled={loader}
+                                onClick={() => deleteThisNotif(notification.id)}
+                              >
+                                <FontAwesomeIcon icon={faX} />
                               </button>
                             </span>
                           </li>
@@ -387,9 +359,9 @@ const Navbar = ({ empId, config }: Props) => {
       {showTaskAttributeModal && selectedEmpId && (
         <TaskAttributeRating
           closeModal={() => setShowTaskAttributeModal(false)}
-          currEmpTaskList={currEmpTaskList} 
+          currEmpTaskList={currEmpTaskList}
           empAttributeRating={empAttributeRating}
-          currEmpId={currEmp} 
+          currEmpId={currEmp}
           currAttributeList={empAttributeRating}
         />
       )}

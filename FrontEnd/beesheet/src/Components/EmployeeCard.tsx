@@ -16,6 +16,7 @@ import TaskAttributeRatingSkeleton from "./Skeletons/TaskAttributeRatingSkeleton
 import ProjectModal from "./ProjectModal";
 import { clearToken, setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
 
 interface props {
   emp: Employee;
@@ -34,9 +35,6 @@ const EmployeeCard = ({
 }: props) => {
   const [loader, setLoader] = useState<boolean>(false);
   const headerConfig = useSelector((state: ReduxState) => state.header);
-  const [empAttributeRating, setEmpAttributeRating] = useState<
-    AttributeRating[]
-  >([]);
   const [currEmpTaskList, setCurrEmpTaskList] = useState<Task[]>([]);
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [showModal, setShowModal] = useState(false);
@@ -57,32 +55,30 @@ const EmployeeCard = ({
 
   async function getTaskList(empId:number) {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/tasks/${empId}`,
+      const res = await axiosInstance.get(
+        `/tasks/${empId}`,
         {
-          ...headerConfig,
           params:{
             pageNumber:0,
             pageSize:100000
           }
         }
       );
-      const res2 = await axios.get(
-        `http://localhost:8080/admin/employee/attribute/${empId}`,
-        headerConfig
+      const res2 = await axiosInstance.get(
+        `/admin/employee/attribute/${empId}`
       );
       setCurrAttributeList(res2.data);
       setCurrEmpTaskList(res.data.content);
       dispatch(setEmployeeTaskAttributeList({emp:empId,taskList:res.data.content,attributeList:res2.data}));
     } catch (error: any) {
       console.log(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
+      // if (
+      //   error.response.data === "JWT token is expired." ||
+      //   error.response.data === "Invalid JWT token."
+      // ) {
+      //   dispatch(clearToken());
+      //   localStorage.removeItem("userToken");
+      // }
     } finally {
       setLoader(false);
     }
@@ -106,8 +102,8 @@ const EmployeeCard = ({
     setCurrEmp(empId);
     async function getAllProjects() {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/project`,
+        const res = await axiosInstance.get(
+          `/project`,
           headerConfig
         );
         setProjectList(res.data);
@@ -115,13 +111,13 @@ const EmployeeCard = ({
         // setCurrEmp(empId);
       } catch (error: any) {
         console.error("Error fetching projects:", error);
-        if (
-          error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if (
+        //   error.response.data === "JWT token is expired." ||
+        //   error.response.data === "Invalid JWT token."
+        // ) {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
       }
     }
     getAllProjects();

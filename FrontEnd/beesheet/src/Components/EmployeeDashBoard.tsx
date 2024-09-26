@@ -18,6 +18,7 @@ import {
 import ToastComponent from "./ToastComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
 
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
@@ -45,8 +46,8 @@ const EmployeeDashBoard = () => {
   }, [errorPresent]);
 
   const schema = z.object({
-    title: z.string().min(1, { message: "This is a required field" }).max(50,{message:"word limit reached"}),
-    description: z.string().min(1, { message: "This is a required field" }).max(100,{message:"word limit reached"}),
+    title: z.string().min(1, { message: "This is a required field" }).max(50,{message:"word limit reached"}).trim().min(1,{message:"String cant be only white spaces"}),
+    description: z.string().min(1, { message: "This is a required field" }).max(100,{message:"word limit reached"}).trim().min(1,{message:"String cant be only white spaces"}),
     workLocation: z.string().min(1, { message: "This is a required field" }),
     project: z.string().min(1, { message: "This is a required field" }),
     time: z
@@ -76,8 +77,7 @@ const EmployeeDashBoard = () => {
         pageNumber: currPageNumber,
         pageSize: 3,
       };
-      const res = await axios.get("http://localhost:8080/tasks/" + empId, {
-        ...config,
+      const res = await axiosInstance.get("/tasks/" + empId, {
         params: paginationInput,
       });
       setLastPage(res.data.totalPages);
@@ -105,9 +105,8 @@ const EmployeeDashBoard = () => {
       // console.log(empId,config);
 
       try {
-        const res = await axios.get(
-          "http://localhost:8080/" + empId + "/project",
-          config
+        const res = await axiosInstance.get(
+          "/" + empId + "/project"
         );
         // console.log(res.data)
         setProjectList(res.data);
@@ -116,13 +115,13 @@ const EmployeeDashBoard = () => {
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        if (
-          error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if (
+        //   error.response.data === "JWT token is expired." ||
+        //   error.response.data === "Invalid JWT token."
+        // ) {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
       } finally {
         setLoader(false);
       }
@@ -163,7 +162,7 @@ const EmployeeDashBoard = () => {
 
     if (modalText) {
       try {
-        await axios.post("http://localhost:8080/tasks/" + empId, task, config);
+        await axiosInstance.post("/tasks/" + empId, task);
         setTaskList([...taskList, task]);
         reset();
         setTogalModal(false);
@@ -187,10 +186,9 @@ const EmployeeDashBoard = () => {
       try {
         console.log(currTask);
 
-        const res = await axios.put(
-          "http://localhost:8080/task/" + empId + "/" + currTask?.taskId,
-          task,
-          config
+        const res = await axiosInstance.put(
+          "/task/" + empId + "/" + currTask?.taskId,
+          task
         );
         const editTaskList = taskList.map((t) =>
           t.taskId === currTask?.taskId ? task : t
@@ -207,13 +205,13 @@ const EmployeeDashBoard = () => {
           setErrorPresent("Cannot edit rated task");
           setTogalModal(false);
         }
-        if (
-          error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if (
+        //   error.response.data === "JWT token is expired." ||
+        //   error.response.data === "Invalid JWT token."
+        // ) {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
         console.log(error);
       }
     }
@@ -224,9 +222,8 @@ const EmployeeDashBoard = () => {
     // const id = task.taskId;
     async function deleteTaskFunc() {
       try {
-        const res = await axios.delete(
-          "http://localhost:8080/task/" + empId + "/" + id,
-          config
+        const res = await axiosInstance.delete(
+          "/task/" + empId + "/" + id
         );
         console.log(res);
         setTaskList(taskList.filter((t) => t.taskId !== id));
@@ -237,13 +234,13 @@ const EmployeeDashBoard = () => {
         if (error.response.data === "java.lang.IllegalAccessException") {
           setErrorPresent("Cannot delete rated task");
         }
-        if (
-          error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if (
+        //   error.response.data === "JWT token is expired." ||
+        //   error.response.data === "Invalid JWT token."
+        // ) {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
         console.log(error);
       }
     }

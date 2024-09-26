@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.apprasail.beesheet.beesheet.Services.LoginService;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.LoginInput;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 
@@ -22,8 +23,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody @Valid LoginInput loginInput) {
-        return loginService.login(loginInput);
+    public String login(@RequestBody @Valid LoginInput loginInput,HttpServletResponse response) {
+        return loginService.login(loginInput,response);
     }
     
     

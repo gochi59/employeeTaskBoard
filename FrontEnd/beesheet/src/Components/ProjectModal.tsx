@@ -5,6 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
 
 interface Props {
   closeModal: () => void;
@@ -31,10 +32,9 @@ const ProjectModal = ({
 
     if (currEmp) {
       try {
-        await axios.post(
-          `http://localhost:8080/admin/project/${currEmp.empId}`,
-          responseBody,
-          headerConfig
+        await axiosInstance.post(
+          `/admin/project/${currEmp.empId}`,
+          responseBody
         );
         const newProjectsToBeAdded = projectList.filter((project: Project) =>
           data.project.includes(String(project.id))
@@ -47,13 +47,13 @@ const ProjectModal = ({
         reset();
       } catch (error: any) {
         console.error("Error assigning project:", error);
-        if (
-          error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if (
+        //   error.response.data === "JWT token is expired." ||
+        //   error.response.data === "Invalid JWT token."
+        // ) {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
       } finally {
         setLoader(false);
       }

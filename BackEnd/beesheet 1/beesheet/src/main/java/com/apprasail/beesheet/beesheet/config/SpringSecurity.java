@@ -46,7 +46,7 @@ public class SpringSecurity {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        request -> request.requestMatchers("/login", "/signup", "/alldes","/**").permitAll()
+                        request -> request.requestMatchers("/login", "/signup", "/alldes","/refresh").permitAll()
                                 .requestMatchers("/admin/**","/tempusers").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
@@ -74,6 +74,8 @@ public class SpringSecurity {
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "DELETE"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        corsConfiguration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;

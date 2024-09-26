@@ -8,6 +8,7 @@ import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
 import { clearToken } from "../redux/HeaderSlice";
 import ToastComponent from "./ToastComponent";
+import axiosInstance from "../axios/axiosInstance";
 
 const AdminProjectAllocation = () => {
   const config = useSelector((state: ReduxState) => state.header);
@@ -22,22 +23,22 @@ const AdminProjectAllocation = () => {
     const getAllEmp = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:8080/admin/employees", config);
+        const res = await axiosInstance.get("/admin/employees");
         setEmpList(res.data);
       } catch (error:any) {
         console.error("Error fetching employees:", error);
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        if(error.response.status===401)
-        {
-          setNavigateError(true);
-        }
-        else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-        {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if(error.response.status===401)
+        // {
+        //   setNavigateError(true);
+        // }
+        // else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        // {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
       } finally {
         setLoading(false);
       }

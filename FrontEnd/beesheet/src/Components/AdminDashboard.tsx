@@ -8,6 +8,7 @@ import EmployeeCard from "./EmployeeCard";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
 import ToastComponent from "./ToastComponent";
+import axiosInstance from "../axios/axiosInstance";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
@@ -25,9 +26,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     async function getAllEmp() {
       try {
-        const res = await axios.get(
-          "http://localhost:8080/admin/employees",
-          headerConfig
+        const res = await axiosInstance.get(
+          "/admin/employees"
         );
         setEmpList(res.data);
       } catch (error:any) {
@@ -35,16 +35,16 @@ const AdminDashboard = () => {
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        if(error.response.status===401)
-        {
-          console.log(typeof error)
-          setNavigateToError(true);
-        }
-        else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
-          {
-            dispatch(clearToken());
-            localStorage.removeItem("userToken");
-          }
+        // if(error.response.status===401)
+        // {
+        //   console.log(typeof error)
+        //   setNavigateToError(true);
+        // }
+        // else if(error.response.data==="JWT token is expired."||error.response.data==="Invalid JWT token.")
+        //   {
+        //     dispatch(clearToken());
+        //     localStorage.removeItem("userToken");
+        //   }
       }
     }
     getAllEmp();

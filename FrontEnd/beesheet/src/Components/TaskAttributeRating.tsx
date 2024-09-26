@@ -5,6 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken, setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
 
 interface props {
   closeModal: () => void;
@@ -30,10 +31,9 @@ const TaskAttributeRating = ({
             const str = task.taskId;
             const updatedTask = { ...task, taskRating: data[str] };
             currEmpTaskList = currEmpTaskList.map((task: Task) => task.taskId === str ? { ...task, taskRating: data[str] } : task);
-            await axios.put(
-                `http://localhost:8080/admin/task/${str}`,
-                updatedTask,
-                headerConfig
+            await axiosInstance.put(
+                `/admin/task/${str}`,
+                updatedTask
             );
         }
 
@@ -42,10 +42,9 @@ const TaskAttributeRating = ({
             const attributeTitle = attribute.attribute;
             const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
             currAttributeList = currAttributeList.map((attribute: AttributeRating) => attribute.attribute === attributeTitle ? { ...attribute, rating: data[attributeTitle] } : attribute);
-            await axios.put(
-                `http://localhost:8080/admin/employee/attribute/${currEmpId.empId}`,
-                updatedAttribute,
-                headerConfig
+            await axiosInstance.put(
+                `/admin/employee/attribute/${currEmpId.empId}`,
+                updatedAttribute
             );
         }
 
@@ -55,10 +54,10 @@ const TaskAttributeRating = ({
         currEmpId.apprasailDone = true;
     } catch (error: any) {
         console.log(error);
-        if (error.response.data === "JWT token is expired." || error.response.data === "Invalid JWT token.") {
-            dispatch(clearToken());
-            localStorage.removeItem("userToken");
-        }
+        // if (error.response.data === "JWT token is expired." || error.response.data === "Invalid JWT token.") {
+        //     dispatch(clearToken());
+        //     localStorage.removeItem("userToken");
+        // }
     } finally {
         setLoading(false);
     }

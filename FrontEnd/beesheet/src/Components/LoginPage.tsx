@@ -32,7 +32,9 @@ const LoginPage = () => {
     };
     try {
       setSubmitting(true);
-      const jwtToken = await axios.post("http://localhost:8080/login", user);
+      const jwtToken = await axios.post("http://localhost:8080/login", user,{
+        withCredentials:true
+      });
       localStorage.setItem("userToken", jwtToken.data);
       setNavigate(true);
     } catch (error: any) {

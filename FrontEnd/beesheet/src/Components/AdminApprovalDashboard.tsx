@@ -7,6 +7,7 @@ import Navbar from "./NavbarComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import { Navigate } from "react-router-dom";
 import { clearToken } from "../redux/HeaderSlice";
+import axiosInstance from "../axios/axiosInstance";
 
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>();
@@ -20,9 +21,8 @@ const AdminApprovalDashboard = () => {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/tempusers",
-          headerConfig
+        const response = await axiosInstance.get(
+          "tempusers"
         );
         setUsers(response.data);
       } catch (error: any) {
@@ -30,15 +30,15 @@ const AdminApprovalDashboard = () => {
         if (error.message === "Network Error") {
           setErrorPresent("Internal Server Error");
         }
-        if (error.response.status === 401) {
-          setNavigateToError(true);
-        } else if (
-          error.response.data === "JWT token is expired." ||
-          error.response.data === "Invalid JWT token."
-        ) {
-          dispatch(clearToken());
-          localStorage.removeItem("userToken");
-        }
+        // if (error.response.status === 401) {
+        //   setNavigateToError(true);
+        // } else if (
+        //   error.response.data === "JWT token is expired." ||
+        //   error.response.data === "Invalid JWT token."
+        // ) {
+        //   dispatch(clearToken());
+        //   localStorage.removeItem("userToken");
+        // }
       }
     }
     fetchUsers();
@@ -47,21 +47,20 @@ const AdminApprovalDashboard = () => {
   const handleApprove = async (tempId: number) => {
     setLoader(true);
     try {
-      await axios.get(
-        `http://localhost:8080/admin/employee/approve/${tempId}`,
-        headerConfig
+      await axiosInstance.get(
+        `/admin/employee/approve/${tempId}`
       );
       setUsers(users.filter((user) => user.tempId !== tempId));
       setErrorPresent(`User Approved`);
     } catch (error: any) {
       console.error(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
+      // if (
+      //   error.response.data === "JWT token is expired." ||
+      //   error.response.data === "Invalid JWT token."
+      // ) {
+      //   dispatch(clearToken());
+      //   localStorage.removeItem("userToken");
+      // }
     } finally {
       setLoader(false);
     }
@@ -70,21 +69,21 @@ const AdminApprovalDashboard = () => {
   const handleReject = async (tempId: number) => {
     setLoader(true);
     try {
-      await axios.delete(
-        `http://localhost:8080/admin/employee/reject/${tempId}`,
+      await axiosInstance.delete(
+        `/admin/employee/reject/${tempId}`,
         headerConfig
       );
       setUsers(users.filter((user) => user.tempId !== tempId));
       setErrorPresent(`User Rejected`);
     } catch (error: any) {
       console.error(error);
-      if (
-        error.response.data === "JWT token is expired." ||
-        error.response.data === "Invalid JWT token."
-      ) {
-        dispatch(clearToken());
-        localStorage.removeItem("userToken");
-      }
+      // if (
+      //   error.response.data === "JWT token is expired." ||
+      //   error.response.data === "Invalid JWT token."
+      // ) {
+      //   dispatch(clearToken());
+      //   localStorage.removeItem("userToken");
+      // }
     } finally {
       setLoader(false);
     }
