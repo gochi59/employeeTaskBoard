@@ -66,7 +66,7 @@ const EmployeeDashBoard = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<taskInput>({ resolver: zodResolver(schema) });
+  } = useForm<taskInput>({ resolver: zodResolver(schema),mode:"all" });
 
   async function getTaskList(currEmpId:string) {
     setLoader(true);

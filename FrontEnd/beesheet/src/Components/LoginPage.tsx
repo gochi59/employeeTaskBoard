@@ -24,7 +24,7 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({ resolver: zodResolver(schema),mode:"all" });
   const formSubmit = async (data: FieldValues) => {
     const user = {
       email: data.email,
