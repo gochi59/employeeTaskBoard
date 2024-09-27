@@ -1,5 +1,8 @@
 package com.apprasail.beesheet.beesheet.Services;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +46,6 @@ public class AdminDashboardServices {
     private final EmployeeDesignationRatingRepo employeeDesignationRatingRepo;
     private final NotificationService notificationService;
 
-
     public List<EmployeeDTO> findAll() {
         log.info("All employee list fetched");
         List<Employee> list = employeeRepo.findAll();
@@ -67,9 +69,9 @@ public class AdminDashboardServices {
     }
 
     public void addProject(ProjectInput projectInput) {
-        log.info("New Project added "+projectInput.getName());
-        Project checkProject=projectRepo.findByName(projectInput.getName());
-        if(checkProject!=null)
+        log.info("New Project added " + projectInput.getName());
+        Project checkProject = projectRepo.findByName(projectInput.getName());
+        if (checkProject != null)
             throw new IllegalArgumentException("Project Already exists");
         Project project = new Project();
         project.setName(projectInput.getName());
@@ -78,30 +80,33 @@ public class AdminDashboardServices {
     }
 
     public void addEmpToProject(EmpToProjectInput input, int empid) {
-        List<Project>projects=new ArrayList<>();
-        projects=(input.getProjects().stream().map(x->projectRepo.findById(x).orElseThrow(()->new IllegalArgumentException("Invaid Project Id"))).toList());
+        List<Project> projects = new ArrayList<>();
+        projects = (input.getProjects().stream()
+                .map(x -> projectRepo.findById(x).orElseThrow(() -> new IllegalArgumentException("Invaid Project Id")))
+                .toList());
         Employee emp = employeeRepo.findById(empid)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
-        projects.stream().forEach((project)->{List<Employee> employees = project.getEmp();
-            log.info("Employee "+emp.getFirstName()+" assigned to project id "+input.getProjects());
-        if (employees != null && !employees.stream().anyMatch(empl -> empl.getEmpId() == empid)) {
-            List<Project> projectsEmp = emp.getProjects();
-            employees.add(emp);
-            project.setEmp(employees);
-            projectRepo.save(project);
-            projectsEmp.add(project);
-            emp.setProjects(projectsEmp);
-            employeeRepo.save(emp);
-        } else
-            throw new IllegalArgumentException("Employee already exists in this project");}
-        );
+        projects.stream().forEach((project) -> {
+            List<Employee> employees = project.getEmp();
+            log.info("Employee " + emp.getFirstName() + " assigned to project id " + input.getProjects());
+            if (employees != null && !employees.stream().anyMatch(empl -> empl.getEmpId() == empid)) {
+                List<Project> projectsEmp = emp.getProjects();
+                employees.add(emp);
+                project.setEmp(employees);
+                projectRepo.save(project);
+                projectsEmp.add(project);
+                emp.setProjects(projectsEmp);
+                employeeRepo.save(emp);
+            } else
+                throw new IllegalArgumentException("Employee already exists in this project");
+        });
     }
 
     public void changeTaskRating(int id, TaskInput input) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));
         task.setTaskRating(input.getTaskRating());
         taskRepository.save(task);
-        log.info("Rating of task of id "+id+" is being changed");
+        log.info("Rating of task of id " + id + " is being changed");
     }
 
     public void changeAttributeRating(int id, EmployeeRatingInput input) {
@@ -125,14 +130,14 @@ public class AdminDashboardServices {
         employee.setEmployeeDesignationMapping(employeeDesignationMapping);
         employeeRepo.save(employee);
         notificationService.sendNotifToEmp(employee, "Admin has rated you");
-        log.info("Attribute Rating changed of employee "+employee.getFirstName());
+        log.info("Attribute Rating changed of employee " + employee.getFirstName());
     }
 
     public List<EmployeeRatingInput> getAttributeRating(int eid) {
         Employee employee = employeeRepo.findById(eid)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Employee Id"));
-        EmployeeDesignationMapping employeeDesignationMapping=employee.getEmployeeDesignationMapping();
-        if(employeeDesignationMapping==null)
+        EmployeeDesignationMapping employeeDesignationMapping = employee.getEmployeeDesignationMapping();
+        if (employeeDesignationMapping == null)
             throw new IllegalArgumentException("abcd");
         Map<Attributes, String> attributeRating = employee.getEmployeeDesignationMapping().getSkillRating();
         List<EmployeeRatingInput> employeeRatingInputs = new ArrayList<>();
@@ -142,14 +147,24 @@ public class AdminDashboardServices {
             employeeRatingInput.setRating(string);
             employeeRatingInputs.add(employeeRatingInput);
         }));
-        log.info("Attribute Ratings accessed of "+employee.getFirstName());
+        log.info("Attribute Ratings accessed of " + employee.getFirstName());
         return employeeRatingInputs;
     }
 
     public void deleteEmployee(int id) {
-        Employee employee=employeeRepo.findById(id).orElseThrow((()->new IllegalArgumentException("Invalid User id")));
-        log.info(employee.getFirstName() +" is deleted");
+        Employee employee = employeeRepo.findById(id)
+                .orElseThrow((() -> new IllegalArgumentException("Invalid User id")));
+        log.info(employee.getFirstName() + " is deleted");
         employeeRepo.deleteById(id);
+    }
+
+    public Object getAppraisableEmployees() {
+        List<EmployeeDTO> employees = findAll();
+        return employees.stream().filter(emp -> {
+            return !emp.getRole().equals("ADMIN") 
+            && ChronoUnit.YEARS.between(emp.getDoj().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()) >= 1
+            && emp.getEmpTask().stream().anyMatch(task -> task.isMarkedForAppraisal());
+        }).toList();
     }
 
 }

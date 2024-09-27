@@ -27,7 +27,7 @@ const AdminDashboard = () => {
     async function getAllEmp() {
       try {
         const res = await axiosInstance.get(
-          "/admin/employees"
+          "/admin/employees/appraisal"
         );
         setEmpList(res.data);
       } catch (error:any) {
@@ -72,16 +72,7 @@ const AdminDashboard = () => {
             {!empList && <EmployeeCardSkeleton />}
             {empList &&
               empList
-                .filter((emp: Employee) => {
-                  const empDate = new Date(emp.doj).getFullYear();
-                  const currDate = new Date().getFullYear();
-                  return (
-                    empDate <= currDate - 1 &&
-                    emp.role !== "ADMIN" &&
-                    emp.empTask.some((task: Task) => task.markedForAppraisal) &&
-                    !emp.apprasailDone
-                  );
-                })
+                .filter((emp: Employee) => !emp.apprasailDone)
                 .map((emp: Employee) => (
                   <EmployeeCard
                     key={emp.empId}
@@ -94,16 +85,7 @@ const AdminDashboard = () => {
                 ))}
             {empList &&
               empList
-                .filter((emp: Employee) => {
-                  const empDate = new Date(emp.doj).getFullYear();
-                  const currDate = new Date().getFullYear();
-                  return (
-                    empDate <= currDate - 1 &&
-                    emp.role !== "ADMIN" &&
-                    emp.empTask.some((task: Task) => task.markedForAppraisal) &&
-                    emp.apprasailDone
-                  );
-                })
+                .filter((emp: Employee) => emp.apprasailDone)
                 .map((emp: Employee) => (
                   <EmployeeCard
                     key={emp.empId}

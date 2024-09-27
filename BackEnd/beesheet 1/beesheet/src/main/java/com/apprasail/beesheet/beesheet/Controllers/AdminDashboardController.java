@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apprasail.beesheet.beesheet.Services.AdminDashboardServices;
 import com.apprasail.beesheet.beesheet.Services.SignUpService;
+import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmpToProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
+
 
 @RestController
 @RequestMapping("/admin")
@@ -40,6 +42,11 @@ public class AdminDashboardController {
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
+    @GetMapping("/employees/appraisal")
+    public ResponseEntity<?> getAppraisableEmployees() {
+        return new ResponseEntity<>(adminDashboardServices.getAppraisableEmployees(),HttpStatus.OK);
+    }
+    
     @GetMapping("/employee/approve/{id}")
     public ResponseEntity<Object> aproveEmployee(@PathVariable int id) {
         signUpService.approveUser(id);
