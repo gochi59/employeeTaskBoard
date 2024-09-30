@@ -109,7 +109,7 @@ const Navbar = () => {
   }
 
   async function getAllNotifications(empId:string) {
-    console.log(empId);
+    // console.log(empId);
     setLoader(true);
     try {
       const empId=jwtDecode<JwtPayload>(localStorage.getItem("userToken")||"").sub||"";

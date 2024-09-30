@@ -161,7 +161,7 @@ const EmployeeDashBoard = () => {
   };
 
   const handleSub = async (e: FieldValues) => {
-    console.log(currTask);
+    // console.log(currTask);
     const task = {
       title: e.title,
       markedForAppraisal:
@@ -173,15 +173,15 @@ const EmployeeDashBoard = () => {
       date: e.date,
       taskId: currTask?.taskId,
     };
-    console.log(task);
+    // console.log(task);
 
     if (modalText) {
       try {
         await axiosInstance.post("/tasks/" + empId, task);
         setTaskList([...taskList, task]);
         reset();
-        setTogalModal(false);
-        console.log(taskList, "Aa");
+        // setTogalModal(false);
+        // console.log(taskList, "Aa");
         getTaskList();
       } catch (error: any) {
         console.log(error);
@@ -201,7 +201,7 @@ const EmployeeDashBoard = () => {
       }
     } else {
       try {
-        console.log(currTask);
+        // console.log(currTask);
 
         const res = await axiosInstance.put(
           "/task/" + empId + "/" + currTask?.taskId,
@@ -211,7 +211,7 @@ const EmployeeDashBoard = () => {
           t.taskId === currTask?.taskId ? task : t
         );
         setTaskList(editTaskList);
-        console.log(res);
+        // console.log(res);
         setTogalModal(false);
       } catch (error: any) {
         if ((error.message as string).includes("Invalid token specified:")) {
@@ -238,7 +238,7 @@ const EmployeeDashBoard = () => {
   };
 
   const deleteTask = (id: number) => {
-    console.log(id);
+    // console.log(id);
     // const id = task.taskId;
     async function deleteTaskFunc() {
       try {
@@ -272,7 +272,7 @@ const EmployeeDashBoard = () => {
   const editTask = (task: Task) => {
     setModalText(false);
     setTogalModal(true);
-    console.log(task);
+    // console.log(task);
     setCurrTask(task);
     const taskDate = new Date(task.date).toISOString().split("T")[0];
 

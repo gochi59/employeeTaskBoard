@@ -66,7 +66,7 @@ const Signup = () => {
     }, [designationList]);
   }
 
-  console.log(designationList);
+  // console.log(designationList);
   const {
     register,
     handleSubmit,

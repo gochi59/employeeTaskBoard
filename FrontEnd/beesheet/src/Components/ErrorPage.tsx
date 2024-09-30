@@ -30,7 +30,7 @@ const ErrorPage = () => {
               The page you are looking for might have been removed or is temporarily unavailable.
             </p>
             <Link to="/">
-              <button className="btn btn-dark" onClick={logout}>Go Back to Home</button>
+              <button className="btn btn-dark" onClick={logout}>Logout</button>
             </Link>
           </div>
         </div>
