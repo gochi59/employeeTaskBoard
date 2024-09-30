@@ -45,7 +45,6 @@ const TaskAttributeRating = ({
                 updatedAttribute
             );
         }
-        await axiosInstance.post(`/admin/employee/notification/${currEmpId.empId}`);
         dispatch(setEmployeeTaskAttributeList({ emp: currEmpId.empId, taskList: currEmpTaskList, attributeList: currAttributeList }));
 
         closeModal();
