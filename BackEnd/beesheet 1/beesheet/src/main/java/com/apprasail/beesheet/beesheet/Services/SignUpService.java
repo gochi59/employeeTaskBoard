@@ -28,7 +28,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
 @AllArgsConstructor
 @Slf4j
 public class SignUpService {
@@ -41,6 +40,7 @@ public class SignUpService {
     private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
     private final NotificationService notificationService;
 
+    @Transactional
     public void addEmployee(TemporaryUser input) {
         String inputEmail = input.getEmail();
         List<Employee> employees = employeeRepo.findAll();
@@ -56,6 +56,7 @@ public class SignUpService {
         log.info("new user signed up");
     }
 
+    @Transactional
     public List<EmployeeDTO> findAll() {
         List<Employee> employees = employeeRepo.findAll();
         log.info("All employees fetched in signupservice");
@@ -86,6 +87,7 @@ public class SignUpService {
             return dto;
         }).collect(Collectors.toList());
     }
+
 
     public void approveUser(int id) {
         TemporaryUser input = temporaryUserRepo.findById(id).orElseThrow(() -> new IllegalArgumentException());
@@ -131,6 +133,7 @@ public class SignUpService {
         temporaryUserRepo.deleteById(id);
     }
 
+    @Transactional
     public void deleteAllEmployees() {
         log.info("All employees deleted");
         employeeRepo.deleteAll();
