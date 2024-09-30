@@ -26,7 +26,6 @@ const TaskAttributeRating = ({
   const ratingSubmit = async (data: FieldValues) => {
     setLoading(true);
     try {
-        // Update each task one by one
         for (const task of currEmpTaskList) {
             const str = task.taskId;
             const updatedTask = { ...task, taskRating: data[str] };
@@ -37,7 +36,6 @@ const TaskAttributeRating = ({
             );
         }
 
-        // Update each attribute one by one
         for (const attribute of currAttributeList) {
             const attributeTitle = attribute.attribute;
             const updatedAttribute = { ...attribute, rating: data[attributeTitle] };
