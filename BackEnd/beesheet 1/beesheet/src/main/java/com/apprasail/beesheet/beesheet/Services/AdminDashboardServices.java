@@ -129,7 +129,6 @@ public class AdminDashboardServices {
         employeeDesignationRatingRepo.save(employeeDesignationMapping);
         employee.setEmployeeDesignationMapping(employeeDesignationMapping);
         employeeRepo.save(employee);
-        notificationService.sendNotifToEmp(employee, "Admin has rated you");
         log.info("Attribute Rating changed of employee " + employee.getFirstName());
     }
 
@@ -165,6 +164,12 @@ public class AdminDashboardServices {
             && ChronoUnit.YEARS.between(emp.getDoj().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()) >= 1
             && emp.getEmpTask().stream().anyMatch(task -> task.isMarkedForAppraisal());
         }).toList();
+    }
+
+    public void sendNotifToEmp(int id) {
+        Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Id"));
+        notificationService.sendNotifToEmp(employee, "Admin has rated you");
+        
     }
 
 }

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apprasail.beesheet.beesheet.Services.AdminDashboardServices;
+import com.apprasail.beesheet.beesheet.Services.NotificationService;
 import com.apprasail.beesheet.beesheet.Services.SignUpService;
-import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmpToProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.ProjectInput;
@@ -23,18 +23,17 @@ import com.apprasail.beesheet.beesheet.model.InputDTO.Input.TaskInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.EmployeeDTO;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Output.ProjectDTO;
 
+import lombok.AllArgsConstructor;
+
 
 @RestController
 @RequestMapping("/admin")
+@AllArgsConstructor
 public class AdminDashboardController {
 
     private final AdminDashboardServices adminDashboardServices;
     private final SignUpService signUpService;
-
-    public AdminDashboardController(AdminDashboardServices adminDashboardServices, SignUpService signUpService) {
-        this.adminDashboardServices = adminDashboardServices;
-        this.signUpService = signUpService;
-    }
+    private final NotificationService notificationService;
 
     @GetMapping("/employees")
     public ResponseEntity<List<EmployeeDTO>> getMethodName() {
@@ -98,4 +97,10 @@ public class AdminDashboardController {
     public void deleteEmployee(@PathVariable int id) {
         adminDashboardServices.deleteEmployee(id);
     }
+
+    @PostMapping("/employee/notification/{id}")
+    public void sendAppraisalNotification(@PathVariable int id) {
+        adminDashboardServices.sendNotifToEmp(id);
+    }
+    
 }
