@@ -23,7 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
       
         int userId;
         try {
-            userId = Integer.parseInt(username); // Convert username to integer
+            userId = Integer.parseInt(username);
         } catch (NumberFormatException e) {
             throw new UsernameNotFoundException("Invalid ID format: " + username);
         }
