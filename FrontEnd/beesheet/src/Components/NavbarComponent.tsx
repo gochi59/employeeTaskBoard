@@ -176,21 +176,21 @@ const Navbar = () => {
     return () => stopPolling();
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target as Node)
-      ) {
-        setShowNotifications(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (
+  //       notificationRef.current &&
+  //       !notificationRef.current.contains(event.target as Node)
+  //     ) {
+  //       setShowNotifications(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   if (!localStorage.getItem("userToken")) {
     return <Navigate to="/"></Navigate>;
