@@ -171,7 +171,7 @@ const Signup = () => {
               Password:
             </label>
             <input
-              type="text"
+              type="password"
               {...register("password")}
               name="password"
               id="password"
