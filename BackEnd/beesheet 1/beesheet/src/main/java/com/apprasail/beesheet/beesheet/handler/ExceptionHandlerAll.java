@@ -67,7 +67,7 @@ public class ExceptionHandlerAll {
     {
         log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());
 
-        return new ResponseEntity<>(exception.getClass().getName(),HttpStatus.I_AM_A_TEAPOT);
+        return new ResponseEntity<>(exception.getClass().getName(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
