@@ -84,7 +84,7 @@ const ProjectModal = ({
           </div>
           <form onSubmit={handleSubmit(assignProjects)}>
             <div className="modal-body">
-              <label htmlFor="project">Select a project:</label>
+              <label htmlFor="project">Select a project (Hold cntrl for multiple selections) :</label>
               <select
                 id="project"
                 required
