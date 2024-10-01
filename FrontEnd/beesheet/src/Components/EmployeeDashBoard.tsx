@@ -235,6 +235,7 @@ const EmployeeDashBoard = () => {
         console.log(error);
       }
     }
+    getTaskList(empId);
   };
 
   const deleteTask = (id: number) => {
@@ -268,6 +269,7 @@ const EmployeeDashBoard = () => {
       }
     }
     deleteTaskFunc();
+    getTaskList(empId);
   };
   const editTask = (task: Task) => {
     setModalText(false);
