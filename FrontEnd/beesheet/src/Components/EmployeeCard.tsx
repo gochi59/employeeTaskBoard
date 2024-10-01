@@ -16,6 +16,8 @@ import ProjectModal from "./ProjectModal";
 import { setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faI, faInfo, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface props {
   emp: Employee;
@@ -88,7 +90,7 @@ const EmployeeCard = ({
 
   useEffect(()=>{
     getTaskList(emp.empId);
-    console.log(currEmpTaskList);
+    // console.log(currEmpTaskList);
 
   },[])
   const openEmpTasks = (empId: number) => {
@@ -151,67 +153,86 @@ const EmployeeCard = ({
               {emp.firstName} {emp.lastName}
               {emp.apprasailDone && (
                 <>
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 200 }}
-                    overlay={(props) => (
-                      <Tooltip {...props}>Employee Rated</Tooltip>
-                    )}
-                  >
-                    <i
-                      className="fa fa-solid fa-check"
-                      style={{ color: "green" }}
-                    ></i>
-                  </OverlayTrigger>
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 200 }}
-                    overlay={(props) => (
-                      <Tooltip {...props}>Average Employee Task Rating</Tooltip>
-                    )}
-                  >
-                    <span className="px-2">
-                      {(
-                        reduxTaskList.taskList
-                          .filter(
-                            (task: Task) =>
-                              task.taskRating !== "0" && task.markedForAppraisal
-                          )
-                          .reduce(
-                            (acc, task) => acc + parseInt(task.taskRating),
-                            0
-                          ) /
-                        reduxTaskList.taskList.filter(
-                          (task: Task) =>
-                            task.taskRating !== "0" && task.markedForAppraisal
-                        ).length
-                      ).toFixed(2)}
-                    </span>
-                  </OverlayTrigger>
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 200 }}
-                    overlay={(props) => (
-                      <Tooltip {...props}>Average Employee Attribute Rating</Tooltip>
-                    )}
-                  >
-                    <span className="px-2">
-                      {(
-                        reduxTaskList.attributeList
-                          .filter(
-                            (attribute: AttributeRating) =>
-                              attribute.rating !== "0" 
-                          )
-                          .reduce(
-                            (acc, attribute) => acc + parseInt(attribute.rating),
-                            0
-                          ) /
-                        reduxTaskList.attributeList.filter(
-                          (attribute: AttributeRating) =>
-                            attribute.rating !== "0" 
-                            
-                        ).length
-                      ).toFixed(2)}
-                    </span>
-                  </OverlayTrigger>
-                </>
+                <OverlayTrigger
+                  delay={{ hide: 450, show: 200 }}
+                  overlay={(props) => (
+                    <Tooltip {...props}>Employee Rated</Tooltip>
+                  )}
+                >
+                  <i
+                    className="fa fa-solid fa-check"
+                    style={{ color: "green" }}
+                  ></i>
+                </OverlayTrigger>
+                <span>
+                <span className="px-1">
+                  {(
+                    reduxTaskList.taskList
+                      .filter(
+                        (task: Task) =>
+                          task.taskRating !== "0" && task.markedForAppraisal
+                      )
+                      .reduce(
+                        (acc, task) => acc + parseInt(task.taskRating),
+                        0
+                      ) /
+                    reduxTaskList.taskList.filter(
+                      (task: Task) =>
+                        task.taskRating !== "0" && task.markedForAppraisal
+                    ).length
+                  ).toFixed(2)}
+                </span>
+                <OverlayTrigger
+                  delay={{ hide: 450, show: 200 }}
+                  overlay={(props) => (
+                    <Tooltip {...props}>
+                      Average Employee Task Rating
+                    </Tooltip>
+                  )}
+                >
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    color="grey"
+                    size="xs"
+                    className="my-auto align-middle"
+                  />
+                </OverlayTrigger>
+                </span>
+                <span>
+                <span className="px-1">
+                  {(
+                    reduxTaskList.attributeList
+                      .filter(
+                        (attribute: AttributeRating) =>
+                          attribute.rating !== "0"
+                      )
+                      .reduce(
+                        (acc, attribute) => acc + parseInt(attribute.rating),
+                        0
+                      ) /
+                    reduxTaskList.attributeList.filter(
+                      (attribute: AttributeRating) =>
+                        attribute.rating !== "0"
+                    ).length
+                  ).toFixed(2)}
+                </span>
+                <OverlayTrigger
+                  delay={{ hide: 450, show: 200 }}
+                  overlay={(props) => (
+                    <Tooltip {...props}>
+                      Average Employee Attribute Rating
+                    </Tooltip>
+                  )}
+                >
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    color="grey"
+                    size="xs"
+                    className="my-auto align-middle"
+                  />
+                </OverlayTrigger>
+                </span>
+              </>
               )}
             </h5>
             <p className="card-text">
