@@ -235,6 +235,7 @@ const EmployeeDashBoard = () => {
         console.log(error);
       }
     }
+    setTogalModal(false);
     getTaskList(empId);
   };
 
