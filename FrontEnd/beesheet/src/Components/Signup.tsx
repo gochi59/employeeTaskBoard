@@ -72,8 +72,7 @@ const Signup = () => {
     handleSubmit,
     reset,
     formState: { errors },
-    setValue,
-  } = useForm<FormDataForSignup>({ resolver: zodResolver(schema) });
+  } = useForm<FormDataForSignup>({ resolver: zodResolver(schema),mode:"all" });
 
   const formSubmit = async (data: FieldValues) => {
     setIsSubmitting(true);
