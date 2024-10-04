@@ -16,7 +16,6 @@ const TaskAttributeRatingSkeleton = () => {
     </>
   );
 
-  // console.log("skeleton called");
   return (
       <div
         className="modal show d-block"

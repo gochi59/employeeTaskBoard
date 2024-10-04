@@ -1,6 +1,4 @@
 import axios from "axios";
-import { changeToken, clearToken } from "../redux/HeaderSlice";
-import { store } from "../redux/store";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 const axiosInstance = axios.create({
@@ -22,10 +20,8 @@ async function refreshAccessToken(empId: number): Promise<string> {
       { withCredentials: true }
     );
     localStorage.setItem("userToken", data); 
-    store.dispatch(changeToken());
     return data;
   } catch (error) {
-    store.dispatch(clearToken());
     localStorage.removeItem("userToken");
     throw new Error("Unable to refresh token");
   }
