@@ -52,6 +52,7 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    @PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
     @DeleteMapping("task/{id}/{taskId}")
     public ResponseEntity<Object> deleteTask(@PathVariable int  id, @PathVariable int taskId) throws IllegalAccessException {
             service.deleteTask(id, taskId);
