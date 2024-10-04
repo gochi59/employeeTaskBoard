@@ -143,7 +143,7 @@ const AdminApprovalDashboard = () => {
                         <strong>Designation:</strong> {user.designation}
                       </p>
                       <p className="card-text">
-                        <strong>Date of Join:</strong> {user.dateOfJoin}
+                        <strong>Date of Join:</strong> {user.dateOfJoin.slice(0,10)}
                       </p>
                       <p className="card-text">
                         <strong>Contact Number:</strong> {user.contactNumber}
