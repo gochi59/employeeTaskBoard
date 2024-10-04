@@ -1,4 +1,3 @@
-import React from "react";
 
 const TaskAttributeRatingSkeleton = () => {
   const renderSkeletonRows = (columns: number, rows: number) => (
@@ -42,7 +41,7 @@ const TaskAttributeRatingSkeleton = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {renderSkeletonRows(5, 5)} {/* 5 rows */}
+                  {renderSkeletonRows(5, 5)}
                 </tbody>
               </table>
 
@@ -54,7 +53,7 @@ const TaskAttributeRatingSkeleton = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {renderSkeletonRows(2, 5)} {/* 5 rows for attributes */}
+                  {renderSkeletonRows(2, 5)}
                 </tbody>
               </table>
             </div>
