@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.apprasail.beesheet.beesheet.Services.JWTService;
 import com.apprasail.beesheet.beesheet.Services.RefreshTokenService;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.RefreshId;
 
@@ -18,7 +17,6 @@ import lombok.AllArgsConstructor;
 public class RefreshTokenController {
 
     private final RefreshTokenService refreshTokenService;
-    private final JWTService jwtService;
 
     @PostMapping("/refresh")
     public String generateRefreshToken(@CookieValue(value="userToken") String userCookie,HttpServletResponse response,@RequestBody RefreshId id) {

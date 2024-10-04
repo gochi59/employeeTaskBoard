@@ -28,26 +28,6 @@ public class ExceptionHandlerAll {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    // @ExceptionHandler(TransactionSystemException.class)
-    // public ResponseEntity<Map<String, String>> handleTransactionSystemException(TransactionSystemException tse) {
-    //     Throwable cause = tse.getRootCause();
-    //     if (cause instanceof ConstraintViolationException constraintViolationException) {
-    //         return handleConstraintViolationException(constraintViolationException);
-    //     }
-    //     return new ResponseEntity<>(Map.of("error", tse.getMessage()), HttpStatus.NOT_ACCEPTABLE);
-    // }
-
-    // @ExceptionHandler(ConstraintViolationException.class)
-    // public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex) {
-    //     Map<String, String> errors = new HashMap<>();
-    //     ex.getConstraintViolations().forEach(violation -> {
-    //         String fieldName = violation.getPropertyPath().toString();
-    //         String errorMessage = violation.getMessage();
-    //         errors.put(fieldName, errorMessage);
-    //     });
-    //     return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    // }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -88,7 +68,7 @@ public class ExceptionHandlerAll {
     public ResponseEntity<String>handleIllegalAccessException(IllegalAccessException exception)
     {
         log.info("Error Message: "+exception.getMessage()+" Error:"+exception.getClass());     
-        return new ResponseEntity<String>(exception.getMessage(),HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.UNAUTHORIZED);
         
     }
 

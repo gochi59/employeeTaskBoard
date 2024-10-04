@@ -14,6 +14,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy =GenerationType.AUTO)
     private int id;
+    
     @ManyToOne
     private Employee emp;
 

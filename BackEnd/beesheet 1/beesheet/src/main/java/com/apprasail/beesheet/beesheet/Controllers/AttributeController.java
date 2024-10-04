@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import com.apprasail.beesheet.beesheet.model.Entities.Attributes;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.AttributeInput;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +34,7 @@ public class AttributeController {
     
 
     @PostMapping("/attribute")
-    public void  addAttribute(@RequestBody Attributes attributeInput) {
+    public void  addAttribute(@Valid @RequestBody Attributes attributeInput) {
         attributeService.addAttribute(attributeInput);
     }
     

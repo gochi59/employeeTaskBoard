@@ -21,6 +21,7 @@ public class TemporaryUser {
     
     @NotBlank(message="Invalid Employee Name")
     String firstName;
+    
     String lastName;
         
     @Email(message = "Invalid email")

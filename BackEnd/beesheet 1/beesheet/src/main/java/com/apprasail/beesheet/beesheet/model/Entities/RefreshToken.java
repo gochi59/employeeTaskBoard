@@ -15,8 +15,11 @@ public class RefreshToken {
     @Id
     @GeneratedValue
     private int id;
+
     private Instant expiry;
+
     @ManyToOne
     private Employee emp;
+    
     private String token;
 }

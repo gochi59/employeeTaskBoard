@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apprasail.beesheet.beesheet.Services.AdminDashboardServices;
-import com.apprasail.beesheet.beesheet.Services.NotificationService;
 import com.apprasail.beesheet.beesheet.Services.SignUpService;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmpToProjectInput;
 import com.apprasail.beesheet.beesheet.model.InputDTO.Input.EmployeeRatingInput;
@@ -33,8 +32,7 @@ public class AdminDashboardController {
 
     private final AdminDashboardServices adminDashboardServices;
     private final SignUpService signUpService;
-    private final NotificationService notificationService;
-
+    
     @GetMapping("/employees")
     public ResponseEntity<List<EmployeeDTO>> getMethodName() {
         List<EmployeeDTO> employees = adminDashboardServices.findAll();
