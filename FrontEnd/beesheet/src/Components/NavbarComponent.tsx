@@ -307,14 +307,7 @@ const Navbar = () => {
                 </div>
 
                 <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-                  {loader && (
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
-                      <div
-                        className="spinner-border spinner-border-sm text-light"
-                        role="status"
-                      ></div>
-                    </span>
-                  )}
+                  
                   {notificationList.length > 0 ? (
                     <ul className="list-group">
                       {notificationList
