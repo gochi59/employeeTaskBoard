@@ -4,7 +4,6 @@ import { Link, Navigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { jwtDecode, JwtPayload } from "jwt-decode";
 import { StyledText } from "../models/AllModels";
 import { useDispatch } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
@@ -64,11 +63,11 @@ const LoginPage = () => {
     <div className="row vh-100 vw-100">
       <div className="col-md-6 bg-dark text-bg-dark justify-content-center align-content-center h-auto">
         <StyledText>
-          <p className="h1 text-center">
+          <span className="h1 text-center d-flex justify-content-center">
             Beesheet
             <br />
             Login and Signup
-          </p>
+          </span>
         </StyledText>
       </div>
       <div className="col-md-6 bg-dark-subtle align-content-center col-12 me-0">

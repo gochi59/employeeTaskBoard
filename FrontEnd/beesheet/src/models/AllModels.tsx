@@ -6,7 +6,7 @@ export interface Designation {
   title: string;
 }
 
-export const StyledText = styled.p`
+export const StyledText = styled.span`
   font-family: "Monsterrat", sans-serif;
 `;
 
