@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { TemporaryEmployee, ReduxState } from "../models/AllModels";
 import { useDispatch, useSelector } from "react-redux";
 import ToastComponent from "./ToastComponent";
@@ -13,7 +12,6 @@ const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>();
   const headerConfig = useSelector((state: ReduxState) => state.header);
   const [errorPresent, setErrorPresent] = useState("");
-  const empId = useSelector((state: ReduxState) => state.ID);
   const [loader, setLoader] = useState(false);
   const [navigateToError, setNavigateToError] = useState(false);
   const dispatch = useDispatch();
@@ -22,7 +20,7 @@ const AdminApprovalDashboard = () => {
     async function fetchUsers() {
       try {
         const response = await axiosInstance.get(
-          "tempusers"
+          "/tempusers"
         );
         setUsers(response.data);
       } catch (error: any) {
@@ -64,7 +62,7 @@ const AdminApprovalDashboard = () => {
         error.response.data === "JWT token is expired." ||
         error.response.data === "Invalid JWT token."
       ) {
-        dispatch(clearToken());
+        // dispatch(clearToken());
         localStorage.removeItem("userToken");
       }
     } finally {

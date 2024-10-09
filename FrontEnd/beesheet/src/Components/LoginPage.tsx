@@ -42,7 +42,7 @@ const LoginPage = () => {
         {
           alert("Internal Server Error");   
         }
-      else if (error.status===401) {
+      else if (error.status===401||error.status===500) {
         alert("Invalid Username or password");
       }
     }

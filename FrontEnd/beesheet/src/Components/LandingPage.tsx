@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Employee, ReduxState } from "../models/AllModels";
+import { Employee } from "../models/AllModels";
 import axiosInstance from "../axios/axiosInstance"; // Use the interceptor-based axios instance
 import { Navigate } from "react-router-dom";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
@@ -9,7 +8,6 @@ import NavbarComponent from "./NavbarComponent";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 const LandingPage = () => {
-  const config = useSelector((state: ReduxState) => state.header);
 
   const [currEmp, setCurrEmp] = useState<Employee>();
   const [navigateToEmp, setNavigateToEmp] = useState<boolean>(false);

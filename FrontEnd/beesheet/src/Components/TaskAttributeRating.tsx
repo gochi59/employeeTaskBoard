@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { AttributeRating, Employee, ReduxState, Task } from "../models/AllModels";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { clearToken, setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
+import { AttributeRating, Employee, Task } from "../models/AllModels";
+import { useDispatch } from "react-redux";
+import { setEmployeeTaskAttributeList } from "../redux/HeaderSlice";
 import { Navigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 
@@ -20,7 +19,6 @@ const TaskAttributeRating = ({
   currEmpId,
   currAttributeList,
 }: props) => {
-  const headerConfig = useSelector((state: ReduxState) => state.header);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch=useDispatch();
   const ratingSubmit = async (data: FieldValues) => {
@@ -46,7 +44,7 @@ const TaskAttributeRating = ({
             );
         }
         dispatch(setEmployeeTaskAttributeList({ emp: currEmpId.empId, taskList: currEmpTaskList, attributeList: currAttributeList }));
-
+        await axiosInstance.post(`/admin/employee/notification/${currEmpId.empId}`);
         closeModal();
         currEmpId.apprasailDone = true;
     } catch (error: any) {

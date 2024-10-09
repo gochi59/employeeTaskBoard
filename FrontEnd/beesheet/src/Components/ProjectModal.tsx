@@ -21,9 +21,7 @@ const ProjectModal = ({
   updateEmpProjects,
 }: Props) => {
   const { register, reset, handleSubmit } = useForm();
-  const headerConfig = useSelector((state: ReduxState) => state.header);
   const [loader, setLoader] = useState(false);
-  const dispatch=useDispatch();
   const assignProjects = async (data: FieldValues) => {
     setLoader(true);
     const responseBody = {

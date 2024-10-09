@@ -38,7 +38,7 @@ const Signup = () => {
     if (errorPresent) {
       const timer = setTimeout(() => {
         setErrorPresent("");
-      }, 900);
+      }, 1800);
       return () => clearTimeout(timer);
     }
   }, [errorPresent]);

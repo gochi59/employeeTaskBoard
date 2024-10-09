@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Employee, Project, ReduxState } from "../models/AllModels";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { Employee } from "../models/AllModels";
+import { useDispatch } from "react-redux";
 import EmployeeCard from "./EmployeeCard";
 import Navbar from "./NavbarComponent";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";

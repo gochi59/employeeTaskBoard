@@ -12,8 +12,6 @@ import axiosInstance from "../axios/axiosInstance";
 
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
-  const headerConfig = useSelector((state: ReduxState) => state.header);
-  const loginId = useSelector((state: ReduxState) => state.ID);
   const [navigateToError,setNavigateToError]=useState(false);
   const [errorPresent,setErrorPresent]=useState("");
 
