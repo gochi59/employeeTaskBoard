@@ -31,6 +31,7 @@ public class DesignationService {
         this.attributeRepo=attributeRepo;
     }
 
+    //new designation creation
     public void addDesignation(DesignationInput input) {
         Designation designation=designationRepo.findByTitle(input.getName());
         if(designation!=null)
@@ -43,6 +44,7 @@ public class DesignationService {
         log.info("New designation added "+input.getName());
     }
 
+    //all designations fetched
     public List<DesignationOutputDTO> findAll() {
         List<DesignationOutputDTO>designationOutputDTOs=designationRepo.findAll().stream().map(des->{
             DesignationOutputDTO designationOutputDTO=new DesignationOutputDTO();
@@ -57,6 +59,7 @@ public class DesignationService {
     }
 
   
+    //all employees of a particular designation fetched
     public List<EmployeeByDesignationDTO> findemp(String name) {
         Designation designation=designationRepo.findByTitle(name);
         List<Employee>empList=designation.getEmpList();
@@ -71,6 +74,7 @@ public class DesignationService {
         return allEmpByDesig;
     }
 
+    //adding attributes to designation
     public void addAttribute(int dId, int aId) {
         Designation designation=designationRepo.findById(dId).orElseThrow(()->new IllegalArgumentException("Invalid Designation Id"));
         List<Attributes>attributes=designation.getAttributes();

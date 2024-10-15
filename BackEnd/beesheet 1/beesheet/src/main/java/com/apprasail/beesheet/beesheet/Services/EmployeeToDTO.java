@@ -29,6 +29,7 @@ public class EmployeeToDTO {
         this.employeeRepo=employeeRepo;
     }
 
+    //Used to convert employee entitiy to dto
     public EmployeeDTO employeeDTO(Employee emp) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setEmpId(emp.getEmpId());

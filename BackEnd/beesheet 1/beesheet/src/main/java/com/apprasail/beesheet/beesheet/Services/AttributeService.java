@@ -19,6 +19,7 @@ public class AttributeService {
         this.attributeRepo = attributeRepo;
     }
 
+    //new attribute creation
     public void addAttribute(Attributes attributeInput) {
         Attributes attribute=attributeRepo.findByTitle(attributeInput.getTitle());
         log.info("New attribute added: "+attributeInput.getTitle());

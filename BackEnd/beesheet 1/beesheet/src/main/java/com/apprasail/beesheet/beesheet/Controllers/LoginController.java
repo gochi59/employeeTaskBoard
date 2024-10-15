@@ -23,6 +23,7 @@ public class LoginController {
         this.loginService=loginService;
     }
 
+    //login page controller
     @PostMapping("/login")
     public String login(@RequestBody @Valid LoginInput loginInput,HttpServletResponse response) {
         return loginService.login(loginInput,response);

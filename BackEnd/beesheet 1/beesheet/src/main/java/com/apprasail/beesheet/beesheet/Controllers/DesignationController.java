@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 public class DesignationController {
 
-    
+    //constructor injection
     private final DesignationService designationService;
 
 
@@ -31,21 +31,25 @@ public class DesignationController {
         this.designationService = designationService;
     }
 
+    //adding a new designation
     @PostMapping("/designation")
     public void postMethodName(@RequestBody @Valid DesignationInput input) {
             designationService.addDesignation(input); 
     }
 
+    //all designation fetches
     @GetMapping("/alldes")
     public List<DesignationOutputDTO> getMethodName() {
         return designationService.findAll();
     }
     
+    //finding all employees of that desgination
     @GetMapping("/designation/{name}")
     public List<EmployeeByDesignationDTO> getMethodName(@PathVariable String name) {
        return designationService.findemp(name);
     }
     
+    //Adding a attribute aId to designation dId
     @PutMapping("/designation/{dId}/{aId}")
     public void  addAttribute(@PathVariable int dId,@PathVariable int aId) {
         designationService.addAttribute(dId,aId);

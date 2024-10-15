@@ -27,6 +27,7 @@ public class RefreshTokenService {
     private final EmployeeRepo employeeRepo;
     private final JWTService jwtService;
 
+    //new refresh token generation with validity of one hour and random uuid string
     public RefreshToken generateRefreshToken(int id) {
         RefreshToken token = new RefreshToken();
         token.setEmp(employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Employee Not Found")));
@@ -35,6 +36,7 @@ public class RefreshTokenService {
         refreshTokenRepo.save(token);
         return token;
     }
+
 
     public Optional<RefreshToken> findToken(String token) {
         return refreshTokenRepo.findByToken(token);
@@ -48,6 +50,7 @@ public class RefreshTokenService {
         return token;
     }
 
+    //updated the refresh token saved in db with new uuid string on refresh request by client
     public RefreshToken refreshTokenForRenew(RefreshToken token) {
         RefreshToken refreshToken = refreshTokenRepo.findById(token.getId())
                 .orElseThrow(() -> new IllegalArgumentException("invalid token"));
@@ -56,6 +59,7 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    //return new access token and also set a new refersh token with it
     public String renewToken(String userCookie, HttpServletResponse response, RefreshId id) {
         RefreshToken token = findToken(userCookie).orElseThrow(() -> new JwtException("Invalid Refresh Token"));
         token = verifyExpiration(token);
@@ -73,6 +77,7 @@ public class RefreshTokenService {
         return jwtService.generateToken(refreshToken.getEmp().getEmpId(), refreshToken.getEmp().getRole());
     }
 
+    //removing the cookie from browser after log out
     public void logout(String userCookie, HttpServletResponse response) {
         RefreshToken token=refreshTokenRepo.findByToken(userCookie).orElseThrow(()->new IllegalArgumentException("Invalid Refresh token from cookie"));
         refreshTokenRepo.delete(token);

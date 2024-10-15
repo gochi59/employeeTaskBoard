@@ -26,6 +26,7 @@ public class NotificationService {
     private final EmployeeToDTO employeeToDTO;
     private final NotificationRepo notificationRepo;
 
+    //used for sending notifs to all the admins
     public void sendNotifToAdmin(int id, String message)
     {
         List<Employee>admins=employeeRepo.findByRole("ADMIN");
@@ -42,6 +43,7 @@ public class NotificationService {
         log.info("Notifcation sent to all admins");
     }
 
+    //for sending notif to a particular employee
     public void sendNotifToEmp(Employee emp,String message)
     {
         List<Notification>notifications=emp.getNotifications();
@@ -55,6 +57,7 @@ public class NotificationService {
 
     }
 
+    //all notifs deleted for that employee
     public void deleteAll(int id) {
         Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Argument"));
         List<Notification>notifications=new ArrayList<>(employee.getNotifications());
@@ -64,6 +67,7 @@ public class NotificationService {
         log.info("All notifications deleted of "+employee.getFirstName());
     }
 
+    //fetching notifs list
     public List<NotificationOutput> getNotif(int id) {
         Employee employee=employeeRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Employee Argument"));
         log.info("Notification list being fetched for "+employee.getFirstName());
@@ -81,6 +85,7 @@ public class NotificationService {
         return notificationOutputs;
     }
 
+    //deleting a particular notif
     public void deleteById(int id) {
         log.info("notification being deleted:"+id);
         Notification notification=notificationRepo.findById(id).orElseThrow(()->new IllegalArgumentException("Invalid Notification Id"));

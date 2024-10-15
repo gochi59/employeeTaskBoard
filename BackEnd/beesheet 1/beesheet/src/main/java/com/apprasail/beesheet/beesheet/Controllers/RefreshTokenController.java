@@ -18,12 +18,14 @@ public class RefreshTokenController {
 
     private final RefreshTokenService refreshTokenService;
 
+    //api to hit for new access control generation on verification of the refersh token stored in the cookie
     @PostMapping("/refresh")
     public String generateRefreshToken(@CookieValue(value="userToken") String userCookie,HttpServletResponse response,@RequestBody RefreshId id) {
         return refreshTokenService.renewToken(userCookie,response,id);
         
     }
 
+    //used while log out also deletes the cookie and the token from db
     @DeleteMapping("/cookie")
     public void  logout(@CookieValue(value="userToken")String userCookie,HttpServletResponse response) {
 

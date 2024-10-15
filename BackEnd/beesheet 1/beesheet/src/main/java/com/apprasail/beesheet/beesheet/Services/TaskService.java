@@ -38,6 +38,7 @@ public class TaskService {
             log.info("new task added");
     }
 
+    //deleting a particular task by checking if not already rated by admin
     public void deleteTask(int empId, int taskId) throws IllegalAccessException {
 
         Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
@@ -70,6 +71,7 @@ public class TaskService {
         taskRepo.deleteById(taskId);
     }
 
+    //editing a task only if not already rated by admin
     public void updateTask(int empId, int taskId, TaskInput input) throws IllegalAccessException {
         log.info(taskId+" task being updated for "+empId);
         Employee employee = employeeRepo.findById(empId).orElseThrow(() -> new IllegalArgumentException("Invalid id"));

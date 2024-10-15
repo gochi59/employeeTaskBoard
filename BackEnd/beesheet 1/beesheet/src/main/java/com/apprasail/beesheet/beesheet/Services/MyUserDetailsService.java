@@ -18,6 +18,7 @@ public class MyUserDetailsService implements UserDetailsService {
         this.employeeRepo = employeeRepo;
     }
 
+    //Custom user detail service returning a new user principal object to be used further
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
       

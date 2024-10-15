@@ -41,6 +41,7 @@ public class JWTFilter extends OncePerRequestFilter {
             throws ServletException, IOException, IllegalArgumentException {
         try {
             String url = request.getRequestURI();
+            //propagating forward for non required urls
             if (url.equals("login") || url.equals("signup") || url.equals("alldes")) {
                 filterChain.doFilter(request, response);
                 return;
@@ -60,6 +61,7 @@ public class JWTFilter extends OncePerRequestFilter {
                         .loadUserByUsername(username);
 
                 if (jwtService.validateToken(token, userDetails)) {
+                    //creating  an authentication object to be used for setting the authentication object in the security context holder
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken
@@ -84,6 +86,7 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write("Invalid JWT token.");
             log.info("Error: "+e.getClass()+" Error Message: "+e.getMessage());
         }
+        //Exceptions handled here in try catch as exceptions thrown here dont reach controller so unable to be caught by the global exception handler
     }
 
 }

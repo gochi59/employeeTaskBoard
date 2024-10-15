@@ -34,6 +34,7 @@ public class EmployeeDashboardController {
     }
 
 
+    //task list of employee id which return a paginated response
     @GetMapping("/tasks/{id}")
     public ResponseEntity<?> findTaskListOfEmployee(@PathVariable int id,@RequestParam int pageSize,@RequestParam int pageNumber) {
         return new ResponseEntity<>(service.getTaskofEmployee(id,pageSize,pageNumber),HttpStatus.ACCEPTED);
@@ -41,6 +42,7 @@ public class EmployeeDashboardController {
 
 
 
+    //checking if the id in url and id in token match or not
     @PreAuthorize("@userSecurity.checkUserId(authentication, #id)")
     @PostMapping("/tasks/{id}")
     public ResponseEntity<Object> addTaskToEmployee(@RequestBody @Valid TaskInput input, @PathVariable int id) {
@@ -48,11 +50,13 @@ public class EmployeeDashboardController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    //fnding the already assigned projects of this employee
     @GetMapping("/{id}/project")
     public List<ProjectDTO> getAssignedProjects(@PathVariable int id) {
         return service.getProject(id);
     }
     
+    //fetching employee info used for landing page
     @GetMapping("/employee/{id}")
     public EmployeeDTO getEmpInfo(@PathVariable int id) {
         return service.getEmpInfo(id);

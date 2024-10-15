@@ -54,6 +54,7 @@ public class AdminDashboardServices {
         return employeeDTOList;
     }
 
+    //all projects returned in form of dto
     public List<ProjectDTO> findAllProjects() {
         log.info("All projects list fetched");
         List<ProjectDTO> dtoList;
@@ -68,6 +69,7 @@ public class AdminDashboardServices {
         return dtoList;
     }
 
+    //New project creation
     public void addProject(ProjectInput projectInput) {
         log.info("New Project added " + projectInput.getName());
         Project checkProject = projectRepo.findByName(projectInput.getName());
@@ -79,6 +81,7 @@ public class AdminDashboardServices {
         projectRepo.save(project);
     }
 
+    //adding an employee to a project
     public void addEmpToProject(EmpToProjectInput input, int empid) {
         List<Project> projects = new ArrayList<>();
         projects = (input.getProjects().stream()
@@ -102,6 +105,7 @@ public class AdminDashboardServices {
         });
     }
 
+    //rating chnages by admin
     public void changeTaskRating(int id, TaskInput input) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Task Id"));
         task.setTaskRating(input.getTaskRating());
@@ -109,6 +113,7 @@ public class AdminDashboardServices {
         log.info("Rating of task of id " + id + " is being changed");
     }
 
+    //attribute rating changes by admin
     public void changeAttributeRating(int id, EmployeeRatingInput input) {
 
         Employee employee = employeeRepo.findById(id)
@@ -157,6 +162,7 @@ public class AdminDashboardServices {
         employeeRepo.deleteById(id);
     }
 
+    //All employees ready for appraisal fetched
     public Object getAppraisableEmployees() {
         List<EmployeeDTO> employees = findAll();
         return employees.stream().filter(emp -> {

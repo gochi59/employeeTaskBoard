@@ -37,6 +37,7 @@ public class EmployeeDashboardService {
     private final NotificationService notificationService;
     private final TaskRepository taskRepository;
 
+    //return a paginated response of the employees' tasks
     public Page<TaskOutput> getTaskofEmployee(int id,int pageSize,int pageNumber) {
         Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         
@@ -59,6 +60,7 @@ public class EmployeeDashboardService {
         });
     }
 
+    //new task creation
     public void addTaskToEmp(int id, TaskInput input) {
         Employee emp = employeeRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
         List<Task> taskList = emp.getEmp_Tasks();
@@ -81,6 +83,7 @@ public class EmployeeDashboardService {
         log.info("New task added to employee: " + emp.getFirstName());
     }
 
+    
     public List<ProjectDTO> getProject(int id) {
         Employee employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Id"));

@@ -19,6 +19,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 @RestControllerAdvice
 public class ExceptionHandlerAll {
 
+    //global exception handler for all exceptions encountered
     private static final Logger log=LoggerFactory.getLogger(ExceptionHandlerAll.class);
 
 

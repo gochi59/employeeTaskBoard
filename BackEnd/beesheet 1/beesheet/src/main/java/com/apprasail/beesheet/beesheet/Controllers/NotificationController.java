@@ -19,16 +19,19 @@ public class NotificationController {
 
     private final NotificationService notificationServices;
 
+    //fetch all notifications of employee id
     @GetMapping("/notification/{id}")
     public List<NotificationOutput> getNotifs(@PathVariable int id) {
         return notificationServices.getNotif(id);
     }
 
+    //Deleting all notifications of employee
     @DeleteMapping("/notifications/{id}")
     public void deleteAllNotifs(@PathVariable int id) {
         notificationServices.deleteAll(id);
     }
 
+    //Deleting the particular notification
     @DeleteMapping("/notification/{id}")
     public void deleteNotificationById(@PathVariable int id)
     {

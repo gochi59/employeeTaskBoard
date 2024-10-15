@@ -40,6 +40,7 @@ public class SignUpService {
     private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
     private final NotificationService notificationService;
 
+    //sign up new employee creation 
     @Transactional
     public void addEmployee(TemporaryUser input) {
         String inputEmail = input.getEmail();
@@ -56,6 +57,7 @@ public class SignUpService {
         log.info("new user signed up");
     }
 
+    //all temporary employees accessed
     @Transactional
     public List<EmployeeDTO> findAll() {
         List<Employee> employees = employeeRepo.findAll();
@@ -89,6 +91,7 @@ public class SignUpService {
     }
 
 
+    //approving a user to be added to permanent db
     public void approveUser(int id) {
         TemporaryUser input = temporaryUserRepo.findById(id).orElseThrow(() -> new IllegalArgumentException());
         log.info(input.getFirstName() +" being approved");
@@ -124,7 +127,9 @@ public class SignUpService {
 
     }
 
+    //deleting a user from temp db 
     public void rejectEmployee(int id) {
+
         TemporaryUser user = temporaryUserRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
         log.info(user.getFirstName()+" being rejected");

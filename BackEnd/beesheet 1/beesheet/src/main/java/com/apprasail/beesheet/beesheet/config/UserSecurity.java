@@ -13,6 +13,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserSecurity 
 {
+
+    //used for pre authorisation to match the id in the url and id in the token for disallowing people with same level of authorisation to access each others task
+
     private final EmployeeRepo employeeRepo;
 
     public boolean checkUserId(Authentication authentication, String id) {

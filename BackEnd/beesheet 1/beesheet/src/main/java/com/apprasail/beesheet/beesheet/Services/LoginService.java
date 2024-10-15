@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LoginService {
 
+    //On successful login set a new cookie in browser with a newly generated refresh token AND returning an access token
+
     private final JWTService jWTService;
     private final AuthenticationManager authenticationManager;
     private final EmployeeRepo employeeRepo;

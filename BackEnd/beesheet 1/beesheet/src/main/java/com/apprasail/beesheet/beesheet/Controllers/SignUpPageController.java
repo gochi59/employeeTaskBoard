@@ -20,6 +20,7 @@ public class SignUpPageController {
         this.signup = signup;
     }
 
+    //api for creation of new employee
     @PostMapping("/signup")
     public ResponseEntity<?> postMethodName(@RequestBody @Valid TemporaryUser input) {
         signup.addEmployee(input);

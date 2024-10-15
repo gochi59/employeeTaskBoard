@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.apprasail.beesheet.beesheet.model.Entities.Employee;
 
+
+//User Principal defined here with username as the employee id
 public class UserPrincipal implements UserDetails {
 
     Employee employee;

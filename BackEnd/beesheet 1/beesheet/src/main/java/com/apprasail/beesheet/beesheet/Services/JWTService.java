@@ -27,6 +27,7 @@ public class JWTService {
         // System.out.println(secretKey);
     }
 
+    //token gernation by encoding header payload and secret key to a signature and then using signature for signing the token
     public String generateToken(int id, String Role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("Role", Role);
@@ -40,11 +41,13 @@ public class JWTService {
                 .compact();
     }
 
+    //decoding the key and converting into key object from byte array
     private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    //token validation using expiry check
     public boolean validateToken(String token, UserDetails user){
         final String username = extractUsername(token);
 
@@ -67,6 +70,7 @@ public class JWTService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    //for extraction of all claims stored by verifying signature
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver)  {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);}

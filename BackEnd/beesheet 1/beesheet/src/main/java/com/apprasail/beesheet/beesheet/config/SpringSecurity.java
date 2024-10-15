@@ -39,6 +39,7 @@ public class SpringSecurity {
         this.jWTFilter = jwtFilter;
     }
 
+    //Filter chain and url protection done along with csrf and state management
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception {
         // .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -69,6 +70,8 @@ public class SpringSecurity {
         return configuration.getAuthenticationManager();
     }
 
+
+    //Global cors configuration for control on headers methods being allowed
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();

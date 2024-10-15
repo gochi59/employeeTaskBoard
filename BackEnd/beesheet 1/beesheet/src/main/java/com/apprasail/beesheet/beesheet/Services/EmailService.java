@@ -20,6 +20,7 @@ public class EmailService {
     }
 
 
+    //used for sending mail on approval or rejection by admin on signup
     @Async
     public void sendNewMail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();

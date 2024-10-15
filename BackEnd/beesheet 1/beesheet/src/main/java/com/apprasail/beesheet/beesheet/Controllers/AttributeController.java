@@ -23,16 +23,19 @@ public class AttributeController {
 
     private final AttributeService attributeService;
 
+    //constructor injection
     public AttributeController(AttributeService attributeService) {
         this.attributeService = attributeService;
     }
     
+    //all attributes fetches
     @GetMapping("/attributes")
     public List<Attributes> getAllAttributes() {
         return attributeService.getAll();
     }
     
 
+    //new attribute created
     @PostMapping("/attribute")
     public void  addAttribute(@Valid @RequestBody Attributes attributeInput) {
         attributeService.addAttribute(attributeInput);
