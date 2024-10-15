@@ -8,11 +8,13 @@ import {
 } from "../models/AllModels";
 import { z, ZodSchema } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is imported
-import "bootstrap/dist/js/bootstrap.bundle.min"; // Ensure Bootstrap JS is imported
+import "bootstrap/dist/css/bootstrap.min.css"; 
+import "bootstrap/dist/js/bootstrap.bundle.min"; 
 import { Toast } from "react-bootstrap";
 import ToastComponent from "./ToastComponent";
 import { Navigate } from "react-router-dom";
+
+//Singup page with basic details of new joinee form validation present and shows a toast on successful submition and error such as email used already existing in db
 
 const Signup = () => {
   const [designationList, setDesignationList] = useState<Designation[]>([]);

@@ -2,6 +2,8 @@ interface props{
     closeMessage:()=>void;
     errorPresent:string;
 }
+
+//Small toast shown at right bottom of screen for internal server error or other types of error
 const ToastComponent = ({closeMessage,errorPresent}:props) => {
   return (
     <div

@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+//All existing interfaces defined here and exported
+
 export interface Designation {
   attributes: string[];
   id: number;

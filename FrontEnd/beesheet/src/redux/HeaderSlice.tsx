@@ -2,11 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { ReduxEmpList } from "../models/AllModels";
 
+//Redux initial state and all the reducer functions being described here basically used for real time updation of ratings on updation either from notifications or the employee card that is the task appraisal page
+
 const initialState = {
   header:
     {
-      headers: { Authorization: "Bearer " + localStorage.getItem("userToken") },
-    } || {},
+    } ,
   ID: "",
   employeeTaskAndAttributeList: [
     {

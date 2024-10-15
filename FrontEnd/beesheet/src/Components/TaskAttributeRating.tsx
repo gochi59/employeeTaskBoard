@@ -13,6 +13,8 @@ interface props {
   currAttributeList:AttributeRating[];
 }
 
+//Table showing all tasks and the employee's attribute with a select drop down besides with rating to give from 1 to 5 sending data as a string
+
 const TaskAttributeRating = ({
   closeModal,
   currEmpTaskList,

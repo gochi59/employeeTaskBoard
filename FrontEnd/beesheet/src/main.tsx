@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import LandingPage from "./Components/LandingPage";
 import ErrorPage from "./Components/ErrorPage";
+//Routes protected using checks inside the components which on unauthorised access redirect you to the error page
 
 const router = createBrowserRouter([
   {

@@ -3,6 +3,10 @@ import { ReduxState, StyledText } from "../models/AllModels";
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../redux/HeaderSlice";
 import axiosInstance from "../axios/axiosInstance";
+
+//Error Page that loads up on unauthorized access to url such as access of admin or on some authentication error such as invalid token
+//Allows user to log out
+
 const ErrorPage = () => {
   const empId=useSelector((state:ReduxState)=>state.ID);
 

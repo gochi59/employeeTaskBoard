@@ -9,6 +9,8 @@ import { clearToken } from "../redux/HeaderSlice";
 import ToastComponent from "./ToastComponent";
 import axiosInstance from "../axios/axiosInstance";
 
+//Project allocation page
+
 const AdminProjectAllocation = () => {
   const [empList, setEmpList] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);

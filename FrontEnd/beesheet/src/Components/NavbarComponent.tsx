@@ -16,6 +16,8 @@ import TaskAttributeRating from "./TaskAttributeRating";
 import axiosInstance from "../axios/axiosInstance";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
+//The navbar component with a navigation button to home log out button and also the notification count
+//Short polling used for updation of notifs in every 10 seconds.
 
 const Navbar = () => {
   const [notificationList, setNotificationList] = useState<Notifications[]>([]);

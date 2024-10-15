@@ -8,6 +8,7 @@ import { StyledText } from "../models/AllModels";
 import { useDispatch } from "react-redux";
 import { changeToken } from "../redux/HeaderSlice";
 
+//Login Page with form validation and an alert pop up on invalid credentials 
 
 const LoginPage = () => {
   const [navigate,setNavigate]=useState(false);

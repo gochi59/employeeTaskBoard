@@ -8,6 +8,8 @@ import { Navigate } from "react-router-dom";
 import { clearToken } from "../redux/HeaderSlice";
 import axiosInstance from "../axios/axiosInstance";
 
+
+// The page where admin approves which user to approve from signup and which to reject
 const AdminApprovalDashboard = () => {
   const [users, setUsers] = useState<TemporaryEmployee[]>();
   const headerConfig = useSelector((state: ReduxState) => state.header);

@@ -14,6 +14,9 @@ interface Props {
   updateEmpProjects: (emp: number, projects: string[]) => void;
 }
 
+//Project Modal used for assigning multiple projects to the employee selected using the employee card project button
+//Only shows list of projects not already assigned to the employee
+
 const ProjectModal = ({
   closeModal,
   projectList,

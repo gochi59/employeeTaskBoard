@@ -1,4 +1,4 @@
-
+//Skeleton for Employee card and also used for landing page and tasks cards
 const EmployeeCardSkeleton = () => {
   return (
     <>

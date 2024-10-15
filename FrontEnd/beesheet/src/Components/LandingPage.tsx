@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Employee } from "../models/AllModels";
-import axiosInstance from "../axios/axiosInstance"; // Use the interceptor-based axios instance
+import axiosInstance from "../axios/axiosInstance"; // Using the interceptor-based axios instance
 import { Navigate } from "react-router-dom";
 import EmployeeCardSkeleton from "./Skeletons/EmployeeCardSkeleton";
 import ToastComponent from "./ToastComponent";
 import NavbarComponent from "./NavbarComponent";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
+//Common landing page for both admin and employee with basic info about the current user and buttons according to the role
 const LandingPage = () => {
 
   const [currEmp, setCurrEmp] = useState<Employee>();

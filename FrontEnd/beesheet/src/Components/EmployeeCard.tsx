@@ -27,6 +27,8 @@ interface props {
   updateEmployeeProjects: (emp: number, projects: string[]) => void;
 }
 
+//Employee Card component used for displaying employee info and with buttons depending on the page we are at right now
+
 const EmployeeCard = ({
   emp,
   buttonText,
@@ -151,7 +153,8 @@ const EmployeeCard = ({
           <div className="card-body">
             <h5 className="card-title mb-3 text-primary d-flex justify-content-between">
               {emp.firstName} {emp.lastName}
-              {emp.apprasailDone && (
+              {/* Tool tip for showing wether an employee has been rated or not and also shows its average rating */}
+              {emp.apprasailDone  &&(
                 <>
                 <OverlayTrigger
                   delay={{ hide: 450, show: 200 }}
@@ -266,6 +269,7 @@ const EmployeeCard = ({
           </div>
         </div>
       </div>
+      {/* Loads the task attribute rating modal depending on the loader prop which is true if we are on the appraisal page also has the skeletons*/ }
       {(showModal && loader) && loading && <TaskAttributeRatingSkeleton />}
       {showModal && !loader && loading && (
         <TaskAttributeRating
@@ -275,6 +279,7 @@ const EmployeeCard = ({
           currAttributeList={currAttributeList}
         />
       )}
+      {/*Loads the project assigning modal if loader is false that is we are on the project allocation modal */}
       {projectModalToggle && (
         <ProjectModal
           closeModal={closeModal}

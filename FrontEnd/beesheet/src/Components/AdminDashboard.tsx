@@ -10,6 +10,8 @@ import { Navigate } from "react-router-dom";
 import ToastComponent from "./ToastComponent";
 import axiosInstance from "../axios/axiosInstance";
 
+//Task appraisal page using the employee card component and sending it required props
+
 const AdminDashboard = () => {
   const [empList, setEmpList] = useState<Employee[]>();
   const [navigateToError,setNavigateToError]=useState(false);

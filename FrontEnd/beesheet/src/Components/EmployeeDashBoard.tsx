@@ -21,6 +21,10 @@ import { Navigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
+//Employee Dashboard page with pagination buttons for next and previous page also a modal used commonly for editing and adding task.
+//Employee can add or delete unrated or non marked for appraisal tasks. Once a task is rated it shows a toast with the error message
+
+
 const EmployeeDashBoard = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [togalModal, setTogalModal] = useState(false);

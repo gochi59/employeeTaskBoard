@@ -1,4 +1,4 @@
-
+//Skeleton used for the task attribute table
 const TaskAttributeRatingSkeleton = () => {
   const renderSkeletonRows = (columns: number, rows: number) => (
     <>
