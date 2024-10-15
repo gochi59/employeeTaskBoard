@@ -178,11 +178,10 @@ const TaskAttributeRating = ({
                   </>
                 )}
               </div>
-              <div className="modal-footer d-flex justify-content-between align-items-center" style={{height:"20%"}}>
-                <span className="h-100 ">
+              <div className="modal-footer d-flex justify-content-between">
                 <button
                   type="submit"
-                  className="btn btn-success mb-0"
+                  className="btn btn-success m-1"
                   disabled={loading}
                 >
                   {loading && (
@@ -194,17 +193,14 @@ const TaskAttributeRating = ({
                   )}
                   <span> Submit Rating</span>
                 </button>
-                </span>
-                <span className="h-100">
                 <button
                   type="button"
-                  className="btn btn-secondary "
+                  className="btn btn-secondary"
                   onClick={closeModal}
                   disabled={loading}
                 >
                   Close
                 </button>
-                </span>
               </div>
             </form>
           </div>
