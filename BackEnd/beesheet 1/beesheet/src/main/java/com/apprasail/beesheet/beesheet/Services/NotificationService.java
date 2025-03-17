@@ -38,6 +38,7 @@ public class NotificationService {
             notification.setLinkedId(id);
             notifications.add(notification);
             adm.setNotifications(notifications);
+            notificationRepo.save(notification);
             employeeRepo.save(adm);
         });
         log.info("Notifcation sent to all admins");

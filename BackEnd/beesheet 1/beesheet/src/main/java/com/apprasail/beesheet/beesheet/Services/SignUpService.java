@@ -53,7 +53,7 @@ public class SignUpService {
         }
         input.setPassword(encoder.encode(input.getPassword()));
         temporaryUserRepo.save(input);
-        notificationService.sendNotifToAdmin(-1,input.getFirstName()+" "+input.getLastName()+" just signed up");
+        // notificationService.sendNotifToAdmin(-1,input.getFirstName()+" "+input.getLastName()+" just signed up");
         log.info("new user signed up");
     }
 
