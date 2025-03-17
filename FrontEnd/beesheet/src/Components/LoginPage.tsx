@@ -65,7 +65,7 @@ const LoginPage = () => {
       <div className="col-md-6 bg-dark text-bg-dark justify-content-center align-content-center h-auto">
         <StyledText>
           <span className="h1 text-center d-flex justify-content-center">
-            Beesheet
+            Employee Task Board
             <br />
             Login and Signup
           </span>
